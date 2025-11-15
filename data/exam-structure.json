@@ -1,0 +1,264 @@
+{
+  "exam_info": {
+    "name": "Professional Machine Learning Engineer",
+    "provider": "Google Cloud",
+    "version": "2024",
+    "description": "A Professional Machine Learning Engineer builds, evaluates, productionizes, and optimizes AI solutions by using Google Cloud capabilities and knowledge of conventional ML approaches.",
+    "total_sections": 6,
+    "exam_duration_minutes": 120,
+    "passing_score_percentage": 70,
+    "question_count_range": "50-60",
+    "includes_generative_ai": true
+  },
+  "sections": [
+    {
+      "section_number": 1,
+      "id": "low_code_ai",
+      "name": "Architecting low-code AI solutions",
+      "exam_weight": 0.13,
+      "percentage": "13%",
+      "description": "Building AI solutions using low-code and no-code tools like BigQuery ML, AutoML, and foundation models",
+      "subsections": [
+        {
+          "id": "bigquery_ml",
+          "name": "Developing ML models by using BigQuery ML",
+          "topics": [
+            "Building appropriate BigQuery ML models (linear, binary classification, regression, time-series, matrix factorization, boosted trees, autoencoders)",
+            "Feature engineering or selection by using BigQuery ML",
+            "Generating predictions by using BigQuery ML"
+          ]
+        },
+        {
+          "id": "ml_apis_foundation",
+          "name": "Building AI solutions by using ML APIs or foundation models",
+          "topics": [
+            "Building applications by using ML APIs from Model Garden",
+            "Building applications by using industry-specific APIs (Document AI API, Retail API)",
+            "Implementing retrieval augmented generation (RAG) applications by using Vertex AI Agent Builder"
+          ]
+        },
+        {
+          "id": "automl_training",
+          "name": "Training models by using AutoML",
+          "topics": [
+            "Preparing data for AutoML (feature selection, data labeling, Tabular Workflows)",
+            "Using available data (tabular, text, speech, images, videos) to train custom models",
+            "Using AutoML for tabular data",
+            "Creating forecasting models by using AutoML",
+            "Configuring and debugging trained models"
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 2,
+      "id": "data_collaboration",
+      "name": "Collaborating within and across teams to manage data and models",
+      "exam_weight": 0.14,
+      "percentage": "14%",
+      "description": "Managing data preprocessing, model prototyping, and experiment tracking",
+      "subsections": [
+        {
+          "id": "data_exploration",
+          "name": "Exploring and preprocessing organization-wide data",
+          "topics": [
+            "Organizing different types of data (tabular, text, speech, images, videos) for efficient training",
+            "Managing datasets in Vertex AI",
+            "Data preprocessing (Dataflow, TensorFlow Extended [TFX], BigQuery)",
+            "Creating and consolidating features in Vertex AI Feature Store",
+            "Privacy implications of data usage (handling PII and PHI)",
+            "Ingesting different data sources into Vertex AI for inference"
+          ],
+          "data_sources": ["Cloud Storage", "BigQuery", "Spanner", "Cloud SQL", "Apache Spark", "Apache Hadoop"]
+        },
+        {
+          "id": "model_prototyping",
+          "name": "Model prototyping using Jupyter notebooks",
+          "topics": [
+            "Choosing appropriate Jupyter backend (Vertex AI Workbench, Colab Enterprise, notebooks on Dataproc)",
+            "Applying security best practices in Vertex AI Workbench",
+            "Using Spark kernels",
+            "Integrating code source repositories",
+            "Developing models using common frameworks (TensorFlow, PyTorch, sklearn, Spark, JAX)",
+            "Leveraging foundation and open-source models in Model Garden"
+          ]
+        },
+        {
+          "id": "experiment_tracking",
+          "name": "Tracking and running ML experiments",
+          "topics": [
+            "Choosing appropriate Google Cloud environment for development and experimentation",
+            "Using Vertex AI Experiments, Kubeflow Pipelines, Vertex AI TensorBoard",
+            "Evaluating generative AI solutions"
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 3,
+      "id": "scaling_models",
+      "name": "Scaling prototypes into ML models",
+      "exam_weight": 0.18,
+      "percentage": "18%",
+      "description": "Building, training, and optimizing production ML models",
+      "subsections": [
+        {
+          "id": "building_models",
+          "name": "Building models",
+          "topics": [
+            "Choosing ML framework and model architecture",
+            "Modeling techniques given interpretability requirements"
+          ]
+        },
+        {
+          "id": "training_models",
+          "name": "Training models",
+          "topics": [
+            "Organizing training data on Google Cloud (Cloud Storage, BigQuery)",
+            "Ingestion of various file types (CSV, JSON, images, Hadoop, databases)",
+            "Training using different SDKs (Vertex AI custom training, Kubeflow on GKE, AutoML, tabular workflows)",
+            "Using distributed training to organize reliable pipelines",
+            "Hyperparameter tuning",
+            "Troubleshooting ML model training failures",
+            "Fine-tuning foundation models (Vertex AI, Model Garden)"
+          ]
+        },
+        {
+          "id": "training_hardware",
+          "name": "Choosing appropriate hardware for training",
+          "topics": [
+            "Evaluation of compute and accelerator options (CPU, GPU, TPU, edge devices)",
+            "Distributed training with TPUs and GPUs (Reduction Server on Vertex AI, Horovod)"
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 4,
+      "id": "serving_scaling",
+      "name": "Serving and scaling models",
+      "exam_weight": 0.20,
+      "percentage": "20%",
+      "description": "Deploying models for batch and online inference at scale",
+      "subsections": [
+        {
+          "id": "serving_models",
+          "name": "Serving models",
+          "topics": [
+            "Batch and online inference (Vertex AI, Dataflow, BigQuery ML, Dataproc)",
+            "Using different frameworks to serve models (PyTorch, XGBoost)",
+            "Organizing a model registry",
+            "A/B testing different versions of a model"
+          ]
+        },
+        {
+          "id": "scaling_serving",
+          "name": "Scaling online model serving",
+          "topics": [
+            "Vertex AI Feature Store",
+            "Vertex AI public and private endpoints",
+            "Choosing appropriate hardware (CPU, GPU, TPU, edge)",
+            "Scaling serving backend based on throughput (Vertex AI Prediction, containerized serving)",
+            "Tuning ML models for training and serving in production (simplification, optimization for performance, latency, memory, throughput)"
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 5,
+      "id": "automation_orchestration",
+      "name": "Automating and orchestrating ML pipelines",
+      "exam_weight": 0.22,
+      "percentage": "22%",
+      "description": "Building automated, reproducible ML pipelines",
+      "subsections": [
+        {
+          "id": "pipeline_development",
+          "name": "Developing end-to-end ML pipelines",
+          "topics": [
+            "Data and model validation",
+            "Ensuring consistent data pre-processing between training and serving",
+            "Hosting third-party pipelines on Google Cloud (MLFlow)",
+            "Identifying components, parameters, triggers, and compute needs (Cloud Build, Cloud Run)",
+            "Orchestration framework (Kubeflow Pipelines, Vertex AI Pipelines, Cloud Composer)",
+            "Hybrid or multicloud strategies",
+            "System design with TFX components or Kubeflow DSL (Dataflow)"
+          ]
+        },
+        {
+          "id": "model_retraining",
+          "name": "Automating model retraining",
+          "topics": [
+            "Determining appropriate retraining policy",
+            "Continuous integration and continuous delivery (CI/CD) model deployment (Cloud Build, Jenkins)"
+          ]
+        },
+        {
+          "id": "metadata_tracking",
+          "name": "Tracking and auditing metadata",
+          "topics": [
+            "Tracking and comparing model artifacts and versions (Vertex AI Experiments, Vertex ML Metadata)",
+            "Hooking into model and dataset versioning",
+            "Model and data lineage"
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 6,
+      "id": "monitoring",
+      "name": "Monitoring AI solutions",
+      "exam_weight": 0.13,
+      "percentage": "13%",
+      "description": "Identifying risks and monitoring AI systems in production",
+      "subsections": [
+        {
+          "id": "risk_identification",
+          "name": "Identifying risks to AI solutions",
+          "topics": [
+            "Building secure AI systems by protecting against unintentional exploitation",
+            "Aligning with Google's Responsible AI practices (monitoring for bias)",
+            "Assessing AI solution readiness (fairness, bias)",
+            "Model explainability on Vertex AI (Vertex AI Prediction)"
+          ]
+        },
+        {
+          "id": "monitoring_testing",
+          "name": "Monitoring, testing, and troubleshooting AI solutions",
+          "topics": [
+            "Establishing continuous evaluation metrics (Vertex AI Model Monitoring, Explainable AI)",
+            "Monitoring for training-serving skew",
+            "Monitoring for feature attribution drift",
+            "Monitoring model performance against baselines, simpler models, and across time",
+            "Monitoring for common training and serving errors"
+          ]
+        }
+      ]
+    }
+  ],
+  "key_technologies": [
+    "Vertex AI",
+    "BigQuery ML",
+    "AutoML",
+    "TensorFlow",
+    "PyTorch",
+    "Kubeflow",
+    "Cloud Storage",
+    "Dataflow",
+    "Cloud Composer",
+    "Vertex AI Workbench",
+    "Vertex AI Pipelines",
+    "Vertex AI Feature Store",
+    "Model Garden",
+    "Vertex AI Agent Builder",
+    "TensorBoard"
+  ],
+  "generative_ai_topics": [
+    "Foundation models",
+    "Model Garden",
+    "Vertex AI Agent Builder",
+    "Retrieval Augmented Generation (RAG)",
+    "Fine-tuning foundation models",
+    "Evaluating generative AI solutions"
+  ]
+}

@@ -1,0 +1,368 @@
+{
+  "metadata": {
+    "exam_name": "Professional Machine Learning Engineer",
+    "total_topics": 46,
+    "extraction_date": "2025-11-15",
+    "source": "Exam Guide and Sample Questions"
+  },
+  "topics": [
+    {
+      "id": "low_code_ai",
+      "name": "Architecting low-code AI solutions",
+      "exam_weight": 0.13,
+      "parent_topic_id": null,
+      "description": "Building AI solutions using low-code and no-code tools"
+    },
+    {
+      "id": "bigquery_ml",
+      "name": "BigQuery ML",
+      "exam_weight": null,
+      "parent_topic_id": "low_code_ai",
+      "description": "Developing ML models using BigQuery ML for various use cases"
+    },
+    {
+      "id": "automl",
+      "name": "AutoML",
+      "exam_weight": null,
+      "parent_topic_id": "low_code_ai",
+      "description": "Training models using Vertex AI AutoML"
+    },
+    {
+      "id": "ml_apis",
+      "name": "ML APIs",
+      "exam_weight": null,
+      "parent_topic_id": "low_code_ai",
+      "description": "Using pre-built ML APIs from Model Garden"
+    },
+    {
+      "id": "foundation_models",
+      "name": "Foundation Models",
+      "exam_weight": null,
+      "parent_topic_id": "low_code_ai",
+      "description": "Working with foundation models and Model Garden"
+    },
+    {
+      "id": "rag",
+      "name": "Retrieval Augmented Generation (RAG)",
+      "exam_weight": null,
+      "parent_topic_id": "low_code_ai",
+      "description": "Implementing RAG applications using Vertex AI Agent Builder"
+    },
+    {
+      "id": "data_collaboration",
+      "name": "Data and Model Collaboration",
+      "exam_weight": 0.14,
+      "parent_topic_id": null,
+      "description": "Managing data preprocessing and model development"
+    },
+    {
+      "id": "data_prep",
+      "name": "Data Preparation & Processing",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Preprocessing and organizing data for ML"
+    },
+    {
+      "id": "data_privacy",
+      "name": "Data Privacy",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Handling PII, PHI, and sensitive data"
+    },
+    {
+      "id": "feature_engineering",
+      "name": "Feature Engineering",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Creating and selecting features for ML models"
+    },
+    {
+      "id": "feature_store",
+      "name": "Vertex AI Feature Store",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Managing and serving features using Feature Store"
+    },
+    {
+      "id": "jupyter_notebooks",
+      "name": "Jupyter Notebooks",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Model prototyping using Vertex AI Workbench and Colab Enterprise"
+    },
+    {
+      "id": "experiment_tracking",
+      "name": "Experiment Tracking",
+      "exam_weight": null,
+      "parent_topic_id": "data_collaboration",
+      "description": "Tracking experiments using Vertex AI Experiments and TensorBoard"
+    },
+    {
+      "id": "model_dev",
+      "name": "Model Development",
+      "exam_weight": 0.18,
+      "parent_topic_id": null,
+      "description": "Scaling prototypes into production ML models"
+    },
+    {
+      "id": "model_architecture",
+      "name": "Model Architecture",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Choosing appropriate ML frameworks and architectures"
+    },
+    {
+      "id": "model_training",
+      "name": "Model Training",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Training ML models using various approaches"
+    },
+    {
+      "id": "distributed_training",
+      "name": "Distributed Training",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Training models across multiple GPUs/TPUs"
+    },
+    {
+      "id": "hyperparameter_tuning",
+      "name": "Hyperparameter Tuning",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Optimizing model hyperparameters"
+    },
+    {
+      "id": "tensorflow",
+      "name": "TensorFlow",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Building models with TensorFlow"
+    },
+    {
+      "id": "pytorch",
+      "name": "PyTorch",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Building models with PyTorch"
+    },
+    {
+      "id": "regularization",
+      "name": "Regularization",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Preventing overfitting with regularization techniques"
+    },
+    {
+      "id": "model_optimization",
+      "name": "Model Optimization",
+      "exam_weight": null,
+      "parent_topic_id": "model_dev",
+      "description": "Optimizing models for latency, size, and performance"
+    },
+    {
+      "id": "model_serving",
+      "name": "Model Serving",
+      "exam_weight": 0.20,
+      "parent_topic_id": null,
+      "description": "Deploying and scaling models for inference"
+    },
+    {
+      "id": "batch_prediction",
+      "name": "Batch Prediction",
+      "exam_weight": null,
+      "parent_topic_id": "model_serving",
+      "description": "Serving models for batch inference"
+    },
+    {
+      "id": "online_prediction",
+      "name": "Online Prediction",
+      "exam_weight": null,
+      "parent_topic_id": "model_serving",
+      "description": "Serving models for real-time inference"
+    },
+    {
+      "id": "vertex_ai_endpoints",
+      "name": "Vertex AI Endpoints",
+      "exam_weight": null,
+      "parent_topic_id": "model_serving",
+      "description": "Deploying models to Vertex AI endpoints"
+    },
+    {
+      "id": "model_registry",
+      "name": "Model Registry",
+      "exam_weight": null,
+      "parent_topic_id": "model_serving",
+      "description": "Managing model versions and artifacts"
+    },
+    {
+      "id": "ab_testing",
+      "name": "A/B Testing",
+      "exam_weight": null,
+      "parent_topic_id": "model_serving",
+      "description": "Testing different model versions"
+    },
+    {
+      "id": "mlops",
+      "name": "MLOps & Automation",
+      "exam_weight": 0.22,
+      "parent_topic_id": null,
+      "description": "Automating and orchestrating ML pipelines"
+    },
+    {
+      "id": "vertex_ai_pipelines",
+      "name": "Vertex AI Pipelines",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Building automated pipelines with Vertex AI"
+    },
+    {
+      "id": "kubeflow",
+      "name": "Kubeflow Pipelines",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Building pipelines with Kubeflow"
+    },
+    {
+      "id": "tfx",
+      "name": "TensorFlow Extended (TFX)",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Building production ML pipelines with TFX"
+    },
+    {
+      "id": "cicd",
+      "name": "CI/CD for ML",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Continuous integration and deployment for ML"
+    },
+    {
+      "id": "model_retraining",
+      "name": "Model Retraining",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Automating model retraining"
+    },
+    {
+      "id": "metadata_tracking",
+      "name": "Metadata Tracking",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Tracking model and data lineage"
+    },
+    {
+      "id": "deployment_strategies",
+      "name": "Deployment Strategies",
+      "exam_weight": null,
+      "parent_topic_id": "mlops",
+      "description": "Canary, blue-green, and shadow deployments"
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring & Optimization",
+      "exam_weight": 0.13,
+      "parent_topic_id": null,
+      "description": "Monitoring AI solutions in production"
+    },
+    {
+      "id": "model_monitoring",
+      "name": "Model Monitoring",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Monitoring model performance in production"
+    },
+    {
+      "id": "training_serving_skew",
+      "name": "Training-Serving Skew",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Detecting and fixing training-serving skew"
+    },
+    {
+      "id": "feature_drift",
+      "name": "Feature Drift",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Monitoring for feature attribution drift"
+    },
+    {
+      "id": "responsible_ai",
+      "name": "Responsible AI",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Fairness, bias detection, and explainability"
+    },
+    {
+      "id": "model_explainability",
+      "name": "Model Explainability",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Explaining model predictions"
+    },
+    {
+      "id": "bias_fairness",
+      "name": "Bias & Fairness",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Detecting and mitigating bias in ML models"
+    },
+    {
+      "id": "tensorboard",
+      "name": "TensorBoard",
+      "exam_weight": null,
+      "parent_topic_id": "monitoring",
+      "description": "Visualizing training metrics and model performance"
+    },
+    {
+      "id": "computer_vision",
+      "name": "Computer Vision",
+      "exam_weight": null,
+      "parent_topic_id": null,
+      "description": "Image and video processing with ML"
+    },
+    {
+      "id": "model_interpretability",
+      "name": "Model Interpretability",
+      "exam_weight": null,
+      "parent_topic_id": null,
+      "description": "Building interpretable ML models"
+    }
+  ],
+  "topic_coverage_by_question": {
+    "q001": ["mlops", "vertex_ai_pipelines", "batch_prediction"],
+    "q002": ["distributed_training", "tensorflow", "model_training"],
+    "q003": ["data_privacy", "data_prep", "pii"],
+    "q004": ["automl", "computer_vision", "object_detection"],
+    "q005": ["mlops", "vertex_ai_pipelines", "kubeflow"],
+    "q006": ["model_serving", "feature_store", "online_prediction"],
+    "q007": ["model_monitoring", "tensorboard", "pipeline_quality"],
+    "q008": ["model_monitoring", "training_serving_skew", "mlops"],
+    "q009": ["bias_fairness", "responsible_ai", "data_prep"],
+    "q010": ["model_optimization", "latency_reduction", "tensorflow"],
+    "q011": ["model_training", "regularization", "overfitting"],
+    "q012": ["deployment_strategies", "model_serving", "mlops"],
+    "q013": ["model_interpretability", "tabular_workflows", "vertex_ai"],
+    "q014": ["data_storage", "training_performance", "data_prep"],
+    "q015": ["online_prediction", "real_time_inference", "dataflow"]
+  },
+  "common_technologies": [
+    "Vertex AI",
+    "BigQuery",
+    "Cloud Storage",
+    "Dataflow",
+    "Cloud Composer",
+    "TensorFlow",
+    "PyTorch",
+    "Kubeflow",
+    "TensorBoard",
+    "AutoML",
+    "Model Garden",
+    "Vertex AI Agent Builder",
+    "Cloud Run",
+    "Google Kubernetes Engine (GKE)",
+    "Cloud Functions",
+    "Cloud Filestore",
+    "Dataproc"
+  ]
+}
