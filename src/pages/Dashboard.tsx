@@ -146,7 +146,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Practice Mode</CardTitle>
@@ -172,6 +172,22 @@ export default function Dashboard() {
               <Link to="/exam-sim">
                 <Button className="w-full" variant="outline">
                   Start Exam Simulation
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics & Insights</CardTitle>
+              <CardDescription>
+                View detailed performance analytics and generate a personalized study plan
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/analytics">
+                <Button className="w-full" variant="outline">
+                  View Analytics
                 </Button>
               </Link>
             </CardContent>
