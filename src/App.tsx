@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { PublicRoute } from './components/auth/PublicRoute';
 import Dashboard from './pages/Dashboard';
 import Practice from './pages/Practice';
+import ExamSim from './pages/ExamSim';
 import Login from './pages/Login';
 
 const queryClient = new QueryClient({
@@ -41,6 +42,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Practice />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exam-sim"
+        element={
+          <ProtectedRoute>
+            <ExamSim />
           </ProtectedRoute>
         }
       />

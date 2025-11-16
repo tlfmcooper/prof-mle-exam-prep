@@ -23,20 +23,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Fetch user profile
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 5000)
+      );
+
+      const fetchPromise = supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+
       if (error) {
-        console.error('Error fetching profile:', error);
+        // Profile might not exist yet - this is okay
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      // Timeout or other error - continue without profile
       return null;
     }
   };
@@ -52,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
     });
 
     // Listen for auth changes
@@ -59,14 +68,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (_event, session) => {
         setUser(session?.user ?? null);
 
-        if (session?.user) {
-          const profileData = await fetchProfile(session.user.id);
-          setProfile(profileData);
-        } else {
-          setProfile(null);
+        try {
+          if (session?.user) {
+            const profileData = await fetchProfile(session.user.id);
+            setProfile(profileData);
+          } else {
+            setProfile(null);
+          }
+        } finally {
+          setLoading(false);
         }
-
-        setLoading(false);
       }
     );
 

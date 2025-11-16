@@ -1,6 +1,15 @@
 -- Professional Machine Learning Engineer Exam Prep - Seed Data
 -- Generated: 2025-11-15
 -- Source: Professional Machine Learning Engineer Sample Questions PDF
+--
+-- This script is idempotent - it can be run multiple times safely
+-- Uses transactions and ON CONFLICT clauses to prevent duplicates
+
+-- ============================================================================
+-- BEGIN TRANSACTION
+-- ============================================================================
+
+BEGIN;
 
 -- ============================================================================
 -- TOPICS TABLE
@@ -47,7 +56,12 @@ INSERT INTO topics (id, name, description, exam_weight, parent_topic_id, created
 ('550e8400-e29b-41d4-a716-446655440602', 'Training-Serving Skew', 'Detecting skew', NULL, '550e8400-e29b-41d4-a716-446655440006', NOW()),
 ('550e8400-e29b-41d4-a716-446655440603', 'Bias & Fairness', 'Detecting and mitigating bias', NULL, '550e8400-e29b-41d4-a716-446655440006', NOW()),
 ('550e8400-e29b-41d4-a716-446655440604', 'TensorBoard', 'Visualizing training metrics', NULL, '550e8400-e29b-41d4-a716-446655440006', NOW()),
-('550e8400-e29b-41d4-a716-446655440605', 'Computer Vision', 'Image and video processing', NULL, '550e8400-e29b-41d4-a716-446655440006', NOW());
+('550e8400-e29b-41d4-a716-446655440605', 'Computer Vision', 'Image and video processing', NULL, '550e8400-e29b-41d4-a716-446655440006', NOW())
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  description = EXCLUDED.description,
+  exam_weight = EXCLUDED.exam_weight,
+  parent_topic_id = EXCLUDED.parent_topic_id;
 
 -- ============================================================================
 -- QUESTIONS TABLE
@@ -101,7 +115,7 @@ NOW()),
 'medium',
 'Professional Machine Learning Engineer Sample Questions.pdf',
 7,
-NOW());
+NOW()),
 
 -- Question 4
 ('650e8400-e29b-41d4-a716-446655440004',
@@ -293,7 +307,15 @@ NOW()),
 'hard',
 'Professional Machine Learning Engineer Sample Questions.pdf',
 27,
-NOW());
+NOW())
+ON CONFLICT (id) DO UPDATE SET
+  question_text = EXCLUDED.question_text,
+  question_type = EXCLUDED.question_type,
+  options = EXCLUDED.options,
+  explanation = EXCLUDED.explanation,
+  difficulty = EXCLUDED.difficulty,
+  source = EXCLUDED.source,
+  source_page = EXCLUDED.source_page;
 
 -- ============================================================================
 -- QUESTION_TOPICS JUNCTION TABLE
@@ -362,7 +384,8 @@ INSERT INTO question_topics (question_id, topic_id) VALUES
 
 -- Question 15: Online Prediction, Model Serving
 ('650e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440402'),
-('650e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440004');
+('650e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440004')
+ON CONFLICT (question_id, topic_id) DO NOTHING;
 
 -- ============================================================================
 -- INDEXES
@@ -376,6 +399,12 @@ CREATE INDEX IF NOT EXISTS idx_question_topics_question_id ON question_topics(qu
 CREATE INDEX IF NOT EXISTS idx_topics_parent ON topics(parent_topic_id);
 
 -- ============================================================================
+-- COMMIT TRANSACTION
+-- ============================================================================
+
+COMMIT;
+
+-- ============================================================================
 -- NOTES
 -- ============================================================================
 
@@ -385,10 +414,18 @@ CREATE INDEX IF NOT EXISTS idx_topics_parent ON topics(parent_topic_id);
 -- - 41 question-topic associations
 -- - Performance indexes
 --
+-- IDEMPOTENT: This script can be run multiple times safely
+-- - Uses transactions (BEGIN/COMMIT) for atomicity
+-- - Uses ON CONFLICT clauses to handle duplicates:
+--   * Topics: Updates existing records with new data
+--   * Questions: Updates existing records with new data
+--   * Question-Topics: Ignores duplicates (DO NOTHING)
+--   * Indexes: Created only IF NOT EXISTS
+--
 -- To load this data:
 -- 1. Ensure the schema from exam-prep-architecture skill is created first
--- 2. Run: psql -h your-db-host -U your-user -d your-db -f seed.sql
--- Or use Supabase SQL Editor to execute this file
+-- 2. Run in Supabase SQL Editor or: psql -h host -U user -d db -f seed.sql
+-- 3. Safe to run multiple times - will not create duplicates
 --
 -- Total records:
 -- - Topics: 46 (6 main sections + 40 subtopics)

@@ -32,7 +32,8 @@ export default function Practice() {
     if (questions && questions.length > 0 && currentQuestions.length === 0) {
       startSession(questions, 'practice');
     }
-  }, [questions, currentQuestions.length, startSession]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions?.length, currentQuestions.length]);
 
   const currentQuestion = currentQuestions[currentQuestionIndex];
 
@@ -59,7 +60,7 @@ export default function Practice() {
         confidence_level: 3, // Default
       });
     } catch (error) {
-      console.error('Failed to submit attempt:', error);
+      // Silently fail - user can continue practicing
     }
 
     // Reset timer for next question
@@ -87,11 +88,27 @@ export default function Practice() {
     );
   }
 
+  // Show loading if questions loaded but session not initialized yet
+  if (!isLoading && questions && questions.length > 0 && currentQuestions.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Initializing practice session...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!currentQuestion) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-lg mb-4">No questions available</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Questions loaded: {questions?.length || 0} |
+            Session questions: {currentQuestions.length}
+          </p>
           <Link to="/dashboard">
             <Button>Back to Dashboard</Button>
           </Link>
