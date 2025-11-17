@@ -16,9 +16,9 @@ interface AccuracyBySectionProps {
 }
 
 const COLORS = {
-  high: 'hsl(var(--chart-1))', // >= 80%
-  medium: 'hsl(var(--chart-2))', // 60-80%
-  low: 'hsl(var(--destructive))', // < 60%
+  high: '#10b981', // green >= 80%
+  medium: '#3b82f6', // blue 60-80%
+  low: '#ef4444', // red < 60%
 };
 
 export function AccuracyBySection({ topics }: AccuracyBySectionProps) {
@@ -94,7 +94,7 @@ export function AccuracyBySection({ topics }: AccuracyBySectionProps) {
         <Legend
           wrapperStyle={{ paddingTop: '20px' }}
           content={() => (
-            <div className="flex justify-center gap-4 text-sm">
+            <div className="flex justify-center gap-4 text-sm text-foreground">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded" style={{ backgroundColor: COLORS.high }} />
                 <span>≥80%</span>

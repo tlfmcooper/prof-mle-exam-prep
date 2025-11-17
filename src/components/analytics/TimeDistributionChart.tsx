@@ -64,12 +64,12 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
   };
 
   return (
-    <ResponsiveContainer width="100%" height={700} className="min-h-[700px]">
+    <ResponsiveContainer width="100%" height={450} className="min-h-[450px]">
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="30%"
+          cy="40%"
           labelLine={false}
           label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
           outerRadius={80}
@@ -104,7 +104,7 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
         />
         <Legend
           verticalAlign="bottom"
-          height={200}
+          height={120}
           content={renderLegend}
         />
       </PieChart>

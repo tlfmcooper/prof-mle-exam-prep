@@ -235,7 +235,7 @@ export default function Analytics() {
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Time Distribution */}
-          <Card className="mb-16 lg:mb-0">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <PieChart className="h-5 w-5" />
