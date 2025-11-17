@@ -1,0 +1,37 @@
+{
+  "light": {
+    "primary": "#3b82f6",
+    "primaryHsl": "hsl(221.2, 83.2%, 53.3%)",
+    "background": "#ffffff",
+    "backgroundHsl": "hsl(0, 0%, 100%)",
+    "foreground": "#0a0f1e",
+    "foregroundHsl": "hsl(222.2, 84%, 4.9%)",
+    "accent": "#f3f4f6",
+    "accentHsl": "hsl(210, 40%, 96.1%)"
+  },
+  "dark": {
+    "primary": "#60a5fa",
+    "primaryHsl": "hsl(217.2, 91.2%, 59.8%)",
+    "background": "#0a0f1e",
+    "backgroundHsl": "hsl(222.2, 84%, 4.9%)",
+    "foreground": "#f9fafb",
+    "foregroundHsl": "hsl(210, 40%, 98%)",
+    "accent": "#1e293b",
+    "accentHsl": "hsl(217.2, 32.6%, 17.5%)"
+  },
+  "design": {
+    "borderRadius": "0.5rem",
+    "borderRadiusPx": "8px",
+    "shadows": "subtle",
+    "style": "modern-professional"
+  },
+  "palette": {
+    "blue": "#3b82f6",
+    "lightBlue": "#60a5fa",
+    "green": "#10b981",
+    "amber": "#f59e0b",
+    "red": "#ef4444",
+    "violet": "#8b5cf6",
+    "pink": "#ec4899"
+  }
+}
