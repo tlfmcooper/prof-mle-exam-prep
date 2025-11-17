@@ -41,12 +41,12 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
   const totalQuestions = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%" height={500} className="min-h-[500px]">
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="45%"
+          cy="35%"
           labelLine={false}
           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
           outerRadius={80}
