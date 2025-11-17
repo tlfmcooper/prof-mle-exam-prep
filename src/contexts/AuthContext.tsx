@@ -114,8 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateProfile = async (updates: Updates<'profiles'>) => {
     if (!user) throw new Error('No user logged in');
 
-    // @ts-expect-error - Supabase type inference issue
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('profiles')
       .update(updates)
       .eq('id', user.id);

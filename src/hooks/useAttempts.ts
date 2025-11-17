@@ -58,10 +58,9 @@ export function useSubmitAttempt() {
         confidence_level: attempt.confidence_level,
       };
 
-      // @ts-expect-error - Supabase type inference issue
       const { data, error } = await supabase
         .from('user_attempts')
-        .insert(insertData)
+        .insert(insertData as any)
         .select()
         .single();
 
@@ -84,7 +83,6 @@ export function useUserStats(userId?: string) {
     queryFn: async () => {
       if (!userId) return null;
 
-      // @ts-expect-error - Supabase type inference issue
       const { data, error } = await supabase
         .from('user_attempts')
         .select('is_correct, time_spent_seconds')

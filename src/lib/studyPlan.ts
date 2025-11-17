@@ -104,7 +104,7 @@ function prioritizeTopics(topics: TopicPerformance[]): StudyPlanItem[] {
  */
 function generateReason(
   topic: TopicPerformance,
-  priority: 'high' | 'medium' | 'low'
+  _priority: 'high' | 'medium' | 'low'
 ): string {
   const reasons: string[] = [];
 
@@ -161,7 +161,8 @@ function createWeeklySchedule(
   // Separate by priority
   const highPriority = planItems.filter((p) => p.priority === 'high');
   const mediumPriority = planItems.filter((p) => p.priority === 'medium');
-  const lowPriority = planItems.filter((p) => p.priority === 'low');
+  // Low priority topics are for maintenance review
+  // Low priority topics are for maintenance review (not actively used in schedule generation)
 
   // Calculate phase durations
   const reviewWeeks = Math.max(1, Math.floor(weeksUntilExam * 0.2)); // 20% for review

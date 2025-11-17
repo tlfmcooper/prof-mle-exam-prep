@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useExamQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
@@ -13,7 +13,6 @@ const EXAM_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 const TOTAL_QUESTIONS = 15; // Using 15 for demo, would be 50-60 in production
 
 export default function ExamSim() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { data: questions, isLoading } = useExamQuestions(TOTAL_QUESTIONS);
   const submitAttempt = useSubmitAttempt();

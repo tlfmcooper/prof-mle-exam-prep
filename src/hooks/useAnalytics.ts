@@ -75,11 +75,11 @@ export function useWeakAreas(userId?: string, threshold = 75, minAttempts = 3) {
     queryFn: async () => {
       if (!userId) return [];
 
-      const { data, error } = await supabase.rpc('get_weak_topics', {
+      const { data, error } = await ((supabase as any).rpc('get_weak_topics', {
         p_user_id: userId,
         p_accuracy_threshold: threshold,
         p_min_attempts: minAttempts,
-      });
+      }));
 
       if (error) throw error;
       return (data || []) as WeakArea[];
@@ -114,9 +114,9 @@ function calculateOverallMetrics(attempts: any[], totalQuestionsInBank: number):
  * Fetch topic performance using SQL function
  */
 async function fetchTopicPerformance(userId: string): Promise<TopicPerformance[]> {
-  const { data, error } = await supabase.rpc('calculate_topic_performance', {
+  const { data, error } = await ((supabase as any).rpc('calculate_topic_performance', {
     p_user_id: userId,
-  });
+  }));
 
   if (error) throw error;
 
@@ -172,9 +172,9 @@ function calculateRecommendedPractice(
  * Fetch difficulty breakdown using SQL function
  */
 async function fetchDifficultyBreakdown(userId: string): Promise<DifficultyMetrics[]> {
-  const { data, error } = await supabase.rpc('calculate_difficulty_breakdown', {
+  const { data, error } = await ((supabase as any).rpc('calculate_difficulty_breakdown', {
     p_user_id: userId,
-  });
+  }));
 
   if (error) throw error;
 
@@ -190,10 +190,10 @@ async function fetchDifficultyBreakdown(userId: string): Promise<DifficultyMetri
  * Fetch performance trends over time
  */
 async function fetchTrends(userId: string, days: number): Promise<TrendData[]> {
-  const { data, error } = await supabase.rpc('calculate_daily_trends', {
+  const { data, error } = await ((supabase as any).rpc('calculate_daily_trends', {
     p_user_id: userId,
     p_days: days,
-  });
+  }));
 
   if (error) throw error;
 
@@ -209,10 +209,10 @@ async function fetchTrends(userId: string, days: number): Promise<TrendData[]> {
  * Fetch calendar/heatmap data
  */
 async function fetchCalendarData(userId: string, days: number): Promise<CalendarData[]> {
-  const { data, error } = await supabase.rpc('get_study_calendar', {
+  const { data, error } = await ((supabase as any).rpc('get_study_calendar', {
     p_user_id: userId,
     p_days: days,
-  });
+  }));
 
   if (error) throw error;
 

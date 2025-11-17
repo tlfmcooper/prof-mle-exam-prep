@@ -82,7 +82,7 @@ export function useCreateSession() {
 
       const { data, error } = await supabase
         .from('study_sessions')
-        .insert(insertData)
+        .insert(insertData as any)
         .select()
         .single();
 
@@ -110,12 +110,12 @@ export function useUpdateSession() {
       sessionId: string;
       updates: Partial<StudySession>;
     }) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('study_sessions')
         .update({
           ended_at: updates.ended_at,
           correct_answers: updates.correct_answers,
-          score_percentage: updates.score_percentage as any,
+          score_percentage: updates.score_percentage,
         })
         .eq('id', sessionId)
         .select()
@@ -154,7 +154,7 @@ export function useLinkAttemptToSession() {
           session_id: sessionId,
           attempt_id: attemptId,
           sequence_number: sequenceNumber,
-        })
+        } as any)
         .select()
         .single();
 

@@ -13,16 +13,16 @@ export function useTopicStats(userId?: string) {
       if (!userId) return [];
 
       // Get all main topics (those without parent_topic_id)
-      const { data: topics, error: topicsError } = await supabase
+      const { data: topics, error: topicsError } = await (supabase
         .from('topics')
         .select('*')
         .is('parent_topic_id', null)
-        .order('exam_weight', { ascending: false });
+        .order('exam_weight', { ascending: false }) as any);
 
       if (topicsError) throw topicsError;
 
       // Get all questions with their topics
-      const { data: allQuestions, error: questionsError } = await supabase
+      const { data: allQuestions, error: questionsError } = await (supabase
         .from('questions')
         .select(`
           id,
@@ -33,7 +33,7 @@ export function useTopicStats(userId?: string) {
               parent_topic_id
             )
           )
-        `);
+        `) as any);
 
       if (questionsError) throw questionsError;
 
@@ -49,7 +49,7 @@ export function useTopicStats(userId?: string) {
       if (attemptsError) throw attemptsError;
 
       // Calculate stats for each main topic
-      const stats: TopicStats[] = topics.map((topic) => {
+      const stats: TopicStats[] = topics.map((topic: any) => {
         // Find all questions for this topic or its subtopics
         const topicQuestions = allQuestions.filter((q: any) => {
           const questionTopics = q.question_topics || [];

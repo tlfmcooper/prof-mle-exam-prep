@@ -31,7 +31,6 @@ export function useQuestions(filters?: QuestionFilters) {
         query = query.limit(filters.limit);
       }
 
-      // @ts-expect-error - Supabase type inference issue
       const { data, error } = await query;
 
       if (error) throw error;
@@ -52,8 +51,7 @@ export function useQuestion(questionId: string) {
   return useQuery({
     queryKey: ['question', questionId],
     queryFn: async () => {
-      // @ts-expect-error - Supabase type inference issue
-      const { data, error } = await supabase
+      const { data, error } = await (supabase
         .from('questions')
         .select(`
           *,
@@ -62,7 +60,7 @@ export function useQuestion(questionId: string) {
           )
         `)
         .eq('id', questionId)
-        .single();
+        .single() as any);
 
       if (error) throw error;
 
@@ -116,7 +114,6 @@ export function useRandomQuestions(count: number, filters?: QuestionFilters) {
           query = query.eq('difficulty', filters.difficulty);
         }
 
-        // @ts-expect-error - Supabase type inference issue
         const { data } = await query;
         return data?.[0];
       });
@@ -143,16 +140,16 @@ export function useExamQuestions(totalQuestions = 50) {
     queryKey: ['exam-questions', totalQuestions],
     queryFn: async () => {
       // Get all main topics with their weights
-      const { data: topics, error: topicsError } = await supabase
+      const { data: topics, error: topicsError } = await (supabase
         .from('topics')
         .select('id, name, exam_weight')
         .is('parent_topic_id', null)
-        .order('exam_weight', { ascending: false });
+        .order('exam_weight', { ascending: false }) as any);
 
       if (topicsError) throw topicsError;
 
       // Get all questions with their topic associations
-      const { data: allQuestions, error: questionsError } = await supabase
+      const { data: allQuestions, error: questionsError } = await (supabase
         .from('questions')
         .select(`
           *,
@@ -163,14 +160,14 @@ export function useExamQuestions(totalQuestions = 50) {
               parent_topic_id
             )
           )
-        `);
+        `) as any);
 
       if (questionsError) throw questionsError;
 
       // Group questions by main topic
       const questionsByTopic = new Map<string, any[]>();
 
-      topics.forEach((topic) => {
+      topics.forEach((topic: any) => {
         const topicQuestions = allQuestions.filter((q: any) => {
           const questionTopics = q.question_topics || [];
           return questionTopics.some((qt: any) => {
@@ -191,7 +188,7 @@ export function useExamQuestions(totalQuestions = 50) {
       const selectedQuestions: any[] = [];
       const totalWeight = topics.reduce((sum: number, t: any) => sum + (t.exam_weight || 0), 0);
 
-      topics.forEach((topic) => {
+      topics.forEach((topic: any) => {
         const weight = topic.exam_weight || 0;
         const questionsForTopic = Math.round((weight / totalWeight) * totalQuestions);
         const availableQuestions = questionsByTopic.get(topic.id) || [];
@@ -226,6 +223,6 @@ export function useExamQuestions(totalQuestions = 50) {
       return shuffledQuestions as Question[];
     },
     staleTime: 0, // Always fetch fresh for each exam
-    cacheTime: 0, // Don't cache exam questions
+    gcTime: 0, // Don't cache exam questions (renamed from cacheTime in React Query v5)
   });
 }

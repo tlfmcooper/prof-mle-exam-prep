@@ -9,7 +9,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
@@ -251,7 +251,69 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_topic_performance: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: {
+          topic_id: string
+          topic_name: string
+          exam_weight: number
+          attempted_count: number
+          correct_count: number
+          accuracy: number
+          avg_confidence: number
+          last_attempted: string | null
+        }[]
+      }
+      calculate_difficulty_breakdown: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: {
+          difficulty: string
+          attempted: number
+          correct: number
+          accuracy: number
+        }[]
+      }
+      calculate_daily_trends: {
+        Args: {
+          p_user_id: string
+          p_days: number
+        }
+        Returns: {
+          date: string
+          questions_attempted: number
+          accuracy: number
+          study_time_minutes: number
+        }[]
+      }
+      get_study_calendar: {
+        Args: {
+          p_user_id: string
+          p_days: number
+        }
+        Returns: {
+          date: string
+          activity_count: number
+          total_time_minutes: number
+        }[]
+      }
+      get_weak_topics: {
+        Args: {
+          p_user_id: string
+          p_accuracy_threshold: number
+          p_min_attempts: number
+        }
+        Returns: {
+          topic_id: string
+          topic_name: string
+          accuracy: number
+          questions_attempted: number
+          recommended_focus_count: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
