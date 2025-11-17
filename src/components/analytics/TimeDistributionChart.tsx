@@ -7,12 +7,12 @@ interface TimeDistributionChartProps {
 }
 
 const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-  'hsl(221.2 83.2% 53.3%)', // blue
+  '#3b82f6', // blue
+  '#10b981', // green
+  '#f59e0b', // amber
+  '#ef4444', // red
+  '#8b5cf6', // violet
+  '#ec4899', // pink
 ];
 
 export function TimeDistributionChart({ topics, totalTime }: TimeDistributionChartProps) {
@@ -40,27 +40,26 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
 
   const totalQuestions = data.reduce((sum, d) => sum + d.value, 0);
 
-  // Custom label with theme-aware color
-  const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-
-    // Get CSS variable value for foreground color
-    const foregroundColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--foreground') || '0 0% 100%';
-
+  // Custom legend with proper styling
+  const renderLegend = (props: any) => {
+    const { payload } = props;
     return (
-      <text
-        x={x}
-        y={y}
-        fill={`hsl(${foregroundColor})`}
-        textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline="central"
-        fontSize={12}
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
+      <div className="flex flex-wrap justify-center gap-3 px-4 mt-4">
+        {payload.map((entry: any, index: number) => {
+          const item = data.find((d) => d.name === entry.value);
+          return (
+            <div key={`legend-${index}`} className="flex items-center gap-2">
+              <div
+                className="w-3 h-3 rounded-sm"
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-xs text-foreground">
+                {entry.value} ({item?.value || 0})
+              </span>
+            </div>
+          );
+        })}
+      </div>
     );
   };
 
@@ -72,7 +71,7 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
           cx="50%"
           cy="30%"
           labelLine={false}
-          label={renderLabel}
+          label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
           outerRadius={80}
           fill="#8884d8"
           dataKey="value"
@@ -106,11 +105,7 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
         <Legend
           verticalAlign="bottom"
           height={200}
-          wrapperStyle={{ color: 'hsl(var(--foreground))' }}
-          formatter={(value) => {
-            const item = data.find((d) => d.name === value);
-            return item ? `${value} (${item.value})` : value;
-          }}
+          content={renderLegend}
         />
       </PieChart>
     </ResponsiveContainer>
