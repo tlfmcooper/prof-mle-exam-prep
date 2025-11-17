@@ -1,13 +1,20 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+import { ErrorBoundary } from './components/error/ErrorBoundary';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { PublicRoute } from './components/auth/PublicRoute';
-import Dashboard from './pages/Dashboard';
-import Practice from './pages/Practice';
-import ExamSim from './pages/ExamSim';
-import Analytics from './pages/Analytics';
-import Login from './pages/Login';
+import { DashboardSkeleton } from './components/loading/DashboardSkeleton';
+import { AnalyticsSkeleton } from './components/loading/AnalyticsSkeleton';
+
+// Lazy load pages for better performance
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Practice = lazy(() => import('./pages/Practice'));
+const ExamSim = lazy(() => import('./pages/ExamSim'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const Login = lazy(() => import('./pages/Login'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +33,9 @@ function AppRoutes() {
         path="/login"
         element={
           <PublicRoute>
-            <Login />
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div></div>}>
+              <Login />
+            </Suspense>
           </PublicRoute>
         }
       />
@@ -34,7 +43,9 @@ function AppRoutes() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <Suspense fallback={<DashboardSkeleton />}>
+              <Dashboard />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -42,7 +53,9 @@ function AppRoutes() {
         path="/practice"
         element={
           <ProtectedRoute>
-            <Practice />
+            <Suspense fallback={<DashboardSkeleton />}>
+              <Practice />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -50,7 +63,9 @@ function AppRoutes() {
         path="/exam-sim"
         element={
           <ProtectedRoute>
-            <ExamSim />
+            <Suspense fallback={<DashboardSkeleton />}>
+              <ExamSim />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -58,7 +73,9 @@ function AppRoutes() {
         path="/analytics"
         element={
           <ProtectedRoute>
-            <Analytics />
+            <Suspense fallback={<AnalyticsSkeleton />}>
+              <Analytics />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -69,13 +86,16 @@ function AppRoutes() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+          <Toaster position="top-right" richColors closeButton />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

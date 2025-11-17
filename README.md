@@ -34,21 +34,26 @@ npm run dev
 prof-mle-exam-prep/
 ├── src/                              # React application source
 │   ├── components/                   # UI components
-│   │   ├── ui/                       # Base components (Button, Card)
-│   │   └── exam/                     # Exam components (QuestionCard)
+│   │   ├── analytics/                # Analytics components (charts, gauges)
+│   │   ├── auth/                     # Authentication components
+│   │   ├── error/                    # Error boundary
+│   │   ├── loading/                  # Loading skeletons
+│   │   └── ui/                       # Base UI components
 │   ├── pages/                        # Page components
+│   │   ├── Analytics.tsx             # Analytics dashboard
 │   │   ├── Dashboard.tsx             # Main dashboard
+│   │   ├── ExamSim.tsx               # Timed exam simulation
 │   │   ├── Practice.tsx              # Practice mode
 │   │   └── Login.tsx                 # Authentication
 │   ├── hooks/                        # React Query hooks
+│   │   ├── useAnalytics.ts           # Analytics queries
 │   │   ├── useQuestions.ts           # Question queries
 │   │   └── useAttempts.ts            # Attempt mutations
 │   ├── lib/                          # Core utilities
 │   │   ├── supabase.ts               # Supabase client
-│   │   ├── types.ts                  # TypeScript types
+│   │   ├── studyPlan.ts              # Study plan algorithms
+│   │   ├── types/                    # TypeScript types
 │   │   └── utils.ts                  # Helper functions
-│   ├── stores/                       # Zustand stores
-│   │   └── examStore.ts              # Exam state management
 │   ├── contexts/                     # React contexts
 │   │   └── AuthContext.tsx           # Auth provider
 │   └── App.tsx                       # Main app component
@@ -64,18 +69,23 @@ prof-mle-exam-prep/
 │   ├── topics.json                   # 46 topics and tags
 │   └── VALIDATION_REPORT.md          # Data quality validation
 │
+├── docs/                             # Complete documentation
+│   ├── DEPLOYMENT.md                 # Production deployment guide
+│   ├── SETUP.md                      # Developer setup guide
+│   └── USER_GUIDE.md                 # End-user documentation
+│
 ├── supabase/                         # Database files
 │   ├── migrations/                   # Database schema migrations
 │   │   └── 20250115000000_initial_schema.sql
-│   └── seed.sql                      # SQL INSERT statements (15 questions + 46 topics)
+│   ├── analytics_functions.sql       # Analytics SQL functions
+│   └── seed.sql                      # SQL INSERT statements
 │
 ├── public/                           # Static assets
 ├── package.json                      # Dependencies
 ├── tsconfig.json                     # TypeScript config
 ├── vite.config.ts                    # Vite config
 ├── tailwind.config.js                # Tailwind CSS config
-├── vercel.json                       # Vercel deployment config
-└── SETUP.md                          # Complete setup guide
+└── vercel.json                       # Vercel deployment config
 ```
 
 ---
@@ -127,11 +137,17 @@ prof-mle-exam-prep/
 
 3. **Core Features Implemented**
    - ✅ User authentication (sign up, sign in, sign out)
-   - ✅ Dashboard with user stats
+   - ✅ Dashboard with user stats and section progress
    - ✅ Practice mode with instant feedback
-   - ✅ Question card with explanations
-   - ✅ Progress tracking
-   - ✅ User attempt history
+   - ✅ Timed exam simulation mode (2 hours)
+   - ✅ Comprehensive analytics dashboard
+   - ✅ Performance charts and visualizations
+   - ✅ Study plan generator
+   - ✅ Weak areas identification
+   - ✅ Readiness score calculation
+   - ✅ Exam score prediction
+   - ✅ Study calendar heatmap
+   - ✅ Progress tracking across all sections
 
 4. **Components Created**
    - `QuestionCard`: Interactive question display
@@ -197,16 +213,28 @@ prof-mle-exam-prep/
    - Click "Sign Up"
    - Start practicing!
 
-### Next Features (Planned)
+### Production Features ✅
 
-- 🔜 Timed exam mode
-- 🔜 Topic-based filtering
-- 🔜 Advanced analytics dashboard
-- 🔜 Spaced repetition algorithm
-- 🔜 Study plan generator
-- 🔜 Performance charts
-- 🔜 Bookmarks and notes
-- 🔜 Mobile responsive design
+- ✅ Timed exam simulation (2 hours)
+- ✅ Advanced analytics dashboard
+- ✅ Study plan generator
+- ✅ Performance charts (6 visualization types)
+- ✅ Readiness score & exam prediction
+- ✅ Loading skeletons & error boundaries
+- ✅ Toast notifications
+- ✅ Code splitting for performance
+- ✅ Vercel deployment configuration
+
+### Future Enhancements 🔜
+
+- 🔜 Topic-based question filtering
+- 🔜 Spaced repetition scheduling
+- 🔜 Bookmarks and personal notes
+- 🔜 Dark mode toggle
+- 🔜 Keyboard shortcuts
+- 🔜 Offline mode with service worker
+- 🔜 Additional question banks
+- 🔜 Mobile app (React Native)
 
 ---
 
@@ -392,6 +420,11 @@ const hardQuestions = questions.questions.filter(q =>
 
 ## 📖 Documentation
 
+### User & Developer Guides
+- **[📘 User Guide](docs/USER_GUIDE.md)** - Complete guide for students using the app
+- **[🔧 Setup Guide](docs/SETUP.md)** - Developer setup and local development
+- **[🚀 Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment to Vercel
+
 ### Skills Documentation
 - [Exam Prep Architecture](.skills/exam-prep-architecture/SKILL.md)
 - [PDF Question Extraction](.skills/pdf-question-extraction/SKILL.md)
@@ -405,6 +438,8 @@ const hardQuestions = questions.questions.filter(q =>
 - Topics: `data/topics.json`
 
 ### Database
+- [Analytics Implementation](ANALYTICS_IMPLEMENTATION.md)
+- Analytics Functions: `supabase/analytics_functions.sql`
 - Seed Script: `supabase/seed.sql`
 - Schema: See `.skills/exam-prep-architecture/SKILL.md`
 
