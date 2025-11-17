@@ -40,15 +40,39 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
 
   const totalQuestions = data.reduce((sum, d) => sum + d.value, 0);
 
+  // Custom label with theme-aware color
+  const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+
+    // Get CSS variable value for foreground color
+    const foregroundColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--foreground') || '0 0% 100%';
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill={`hsl(${foregroundColor})`}
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        fontSize={12}
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   return (
-    <ResponsiveContainer width="100%" height={500} className="min-h-[500px]">
+    <ResponsiveContainer width="100%" height={700} className="min-h-[700px]">
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="35%"
+          cy="30%"
           labelLine={false}
-          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+          label={renderLabel}
           outerRadius={80}
           fill="#8884d8"
           dataKey="value"
@@ -81,7 +105,8 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
         />
         <Legend
           verticalAlign="bottom"
-          height={36}
+          height={200}
+          wrapperStyle={{ color: 'hsl(var(--foreground))' }}
           formatter={(value) => {
             const item = data.find((d) => d.name === value);
             return item ? `${value} (${item.value})` : value;
