@@ -1,8 +1,11 @@
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserAnalytics, useExamPrediction } from '@/hooks/useAnalytics';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { ReadinessGauge } from '@/components/analytics/ReadinessGauge';
 import { WeakAreasAlert } from '@/components/analytics/WeakAreasAlert';
 import { PerformanceChart } from '@/components/analytics/PerformanceChart';
@@ -13,9 +16,28 @@ import { StudyPlanGenerator } from '@/components/analytics/StudyPlanGenerator';
 import { TrendingUp, BarChart3, PieChart, Calendar, Award } from 'lucide-react';
 
 export default function Analytics() {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { data: analytics, isLoading } = useUserAnalytics(user?.id);
   const { data: prediction } = useExamPrediction(user?.id);
+
+  // Keyboard shortcuts
+  const shortcuts = useMemo(() => [
+    {
+      key: 'd',
+      description: 'Go to Dashboard',
+      action: () => navigate('/dashboard'),
+      preventDefault: true,
+    },
+    {
+      key: 'p',
+      description: 'Go to Practice Mode',
+      action: () => navigate('/practice'),
+      preventDefault: true,
+    },
+  ], [navigate]);
+
+  useKeyboardShortcuts({ shortcuts });
 
   if (isLoading) {
     return (
@@ -73,6 +95,7 @@ export default function Analytics() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Performance Analytics</h1>
             <div className="flex items-center gap-4">
+              <KeyboardShortcutsHelp shortcuts={shortcuts} />
               <Link to="/dashboard">
                 <Button variant="ghost">Dashboard</Button>
               </Link>

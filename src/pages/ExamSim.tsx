@@ -4,9 +4,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useExamQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
 import { useCreateSession, useUpdateSession, useLinkAttemptToSession } from '@/hooks/useStudySession';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { QuestionCard } from '@/components/exam/QuestionCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { checkAnswer } from '@/lib/utils';
 
 const EXAM_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
@@ -184,6 +186,28 @@ export default function ExamSim() {
   const handleGoToQuestion = (index: number) => {
     setCurrentQuestionIndex(index);
   };
+
+  // Keyboard shortcuts (only active during exam)
+  const shortcuts = useMemo(() => {
+    if (!hasStarted || hasEnded) return [];
+
+    return [
+      {
+        key: 'ArrowRight',
+        description: 'Next question',
+        action: handleNext,
+        preventDefault: true,
+      },
+      {
+        key: 'ArrowLeft',
+        description: 'Previous question',
+        action: handlePrevious,
+        preventDefault: true,
+      },
+    ];
+  }, [hasStarted, hasEnded, currentQuestionIndex, totalQuestions]);
+
+  useKeyboardShortcuts({ enabled: hasStarted && !hasEnded, shortcuts });
 
   const handleEndExam = async () => {
     if (!user || !questions || !sessionId) {
@@ -380,6 +404,7 @@ export default function ExamSim() {
             </div>
 
             <div className="flex items-center gap-4">
+              <KeyboardShortcutsHelp shortcuts={shortcuts} />
               <div className={`font-mono text-lg font-bold ${timeRemaining < 600000 ? 'text-red-600' : ''}`}>
                 {formatTime(timeRemaining)}
               </div>

@@ -1,20 +1,48 @@
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserStats } from '@/hooks/useAttempts';
 import { useTopicStats, useOverallProgress } from '@/hooks/useTopicStats';
 import { useRecentActivity, useStudyStreak } from '@/hooks/useStudySession';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { TopicProgressCard } from '@/components/analytics/TopicProgressCard';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { data: stats, isLoading } = useUserStats(user?.id);
   const { data: topicStats, isLoading: topicStatsLoading } = useTopicStats(user?.id);
   const { data: overallProgress, isLoading: progressLoading } = useOverallProgress(user?.id);
   const { data: recentActivity } = useRecentActivity(user?.id, 7);
   const { data: streak } = useStudyStreak(user?.id);
+
+  // Keyboard shortcuts
+  const shortcuts = useMemo(() => [
+    {
+      key: 'p',
+      description: 'Go to Practice Mode',
+      action: () => navigate('/practice'),
+      preventDefault: true,
+    },
+    {
+      key: 'e',
+      description: 'Go to Exam Simulation',
+      action: () => navigate('/exam-sim'),
+      preventDefault: true,
+    },
+    {
+      key: 'a',
+      description: 'Go to Analytics',
+      action: () => navigate('/analytics'),
+      preventDefault: true,
+    },
+  ], [navigate]);
+
+  useKeyboardShortcuts({ shortcuts });
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,6 +52,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Professional ML Engineer Exam Prep</h1>
             <div className="flex items-center gap-2">
+              <KeyboardShortcutsHelp shortcuts={shortcuts} />
               <ThemeToggle />
               <Button variant="outline" onClick={signOut}>
                 Sign Out
