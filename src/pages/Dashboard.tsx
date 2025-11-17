@@ -49,12 +49,15 @@ export default function Dashboard() {
       {/* Header */}
       <header className="bg-card border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Professional ML Engineer Exam Prep</h1>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">
+              <span className="hidden sm:inline">Professional ML Engineer Exam Prep</span>
+              <span className="sm:hidden">ML Exam Prep</span>
+            </h1>
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <KeyboardShortcutsHelp shortcuts={shortcuts} />
               <ThemeToggle />
-              <Button variant="outline" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={signOut}>
                 Sign Out
               </Button>
             </div>

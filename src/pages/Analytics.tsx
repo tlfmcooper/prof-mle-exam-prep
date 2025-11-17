@@ -92,17 +92,17 @@ export default function Analytics() {
       {/* Header */}
       <header className="bg-card border-b sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Performance Analytics</h1>
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">Performance Analytics</h1>
+            <div className="flex items-center gap-1 sm:gap-2">
               <KeyboardShortcutsHelp shortcuts={shortcuts} />
-              <Link to="/dashboard">
-                <Button variant="ghost">Dashboard</Button>
+              <Link to="/dashboard" className="hidden sm:inline-block">
+                <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
-              <Link to="/practice">
-                <Button variant="outline">Practice</Button>
+              <Link to="/practice" className="hidden sm:inline-block">
+                <Button variant="outline" size="sm">Practice</Button>
               </Link>
-              <Button variant="outline" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={signOut}>
                 Sign Out
               </Button>
             </div>

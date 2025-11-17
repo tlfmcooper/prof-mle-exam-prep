@@ -393,19 +393,19 @@ export default function ExamSim() {
       {/* Header with timer */}
       <header className="bg-card border-b sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                Question {currentQuestionIndex + 1} of {totalQuestions}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+                Q {currentQuestionIndex + 1}/{totalQuestions}
               </span>
-              <span className="text-sm text-muted-foreground">
-                {Object.keys(answers).length} answered
+              <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap hidden xs:inline">
+                {Object.keys(answers).length} done
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <KeyboardShortcutsHelp shortcuts={shortcuts} />
-              <div className={`font-mono text-lg font-bold ${timeRemaining < 600000 ? 'text-red-600' : ''}`}>
+              <div className={`font-mono text-sm sm:text-lg font-bold ${timeRemaining < 600000 ? 'text-red-600' : ''}`}>
                 {formatTime(timeRemaining)}
               </div>
               <Button
@@ -413,7 +413,7 @@ export default function ExamSim() {
                 size="sm"
                 onClick={handleEndExam}
               >
-                End Exam
+                End
               </Button>
             </div>
           </div>

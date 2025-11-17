@@ -154,14 +154,18 @@ export default function Practice() {
       {/* Header */}
       <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <Link to="/dashboard">
-              <Button variant="ghost" size="sm">← Back to Dashboard</Button>
+              <Button variant="ghost" size="sm">
+                <span className="hidden sm:inline">← Back to Dashboard</span>
+                <span className="sm:hidden">← Back</span>
+              </Button>
             </Link>
-            <div className="text-sm text-muted-foreground">
-              Question {currentQuestionIndex + 1} of {currentQuestions.length}
+            <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+              <span className="hidden xs:inline">Question </span>
+              {currentQuestionIndex + 1}/{currentQuestions.length}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <KeyboardShortcutsHelp shortcuts={shortcuts} />
               <Button variant="outline" size="sm" onClick={reset}>
                 Reset
