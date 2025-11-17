@@ -19,7 +19,7 @@ export default function Analytics() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading your analytics...</p>
@@ -30,8 +30,8 @@ export default function Analytics() {
 
   if (!analytics || analytics.overall.total_questions_attempted === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b">
+      <div className="min-h-screen bg-background">
+        <header className="bg-card border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">Analytics</h1>
@@ -66,9 +66,9 @@ export default function Analytics() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10 shadow-sm">
+      <header className="bg-card border-b sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Performance Analytics</h1>

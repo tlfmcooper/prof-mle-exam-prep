@@ -5,6 +5,7 @@ import { useTopicStats, useOverallProgress } from '@/hooks/useTopicStats';
 import { useRecentActivity, useStudyStreak } from '@/hooks/useStudySession';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { TopicProgressCard } from '@/components/analytics/TopicProgressCard';
 
 export default function Dashboard() {
@@ -16,15 +17,18 @@ export default function Dashboard() {
   const { data: streak } = useStudyStreak(user?.id);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b">
+      <header className="bg-card border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Professional ML Engineer Exam Prep</h1>
-            <Button variant="outline" onClick={signOut}>
-              Sign Out
-            </Button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="outline" onClick={signOut}>
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -195,7 +199,7 @@ export default function Dashboard() {
         </div>
 
         {/* Data Notice */}
-        <Card className="mt-8 bg-blue-50 border-blue-200">
+        <Card className="mt-8 bg-accent/50 border-border">
           <CardHeader>
             <CardTitle className="text-lg">Getting Started</CardTitle>
           </CardHeader>

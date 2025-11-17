@@ -249,15 +249,15 @@ export default function ExamSim() {
   // Start screen
   if (!hasStarted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full">
           <CardHeader>
             <CardTitle className="text-2xl">Exam Simulation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-accent/50 border border-border rounded-lg p-4">
               <h3 className="font-semibold mb-2">Exam Instructions:</h3>
-              <ul className="list-disc list-inside space-y-2 text-sm text-gray-700">
+              <ul className="list-disc list-inside space-y-2 text-sm">
                 <li>You have <strong>2 hours</strong> to complete {totalQuestions} questions</li>
                 <li>Once started, the timer cannot be paused</li>
                 <li>You can navigate between questions freely</li>
@@ -289,7 +289,7 @@ export default function ExamSim() {
     const passed = results.score >= passScore;
 
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-background p-4">
         <div className="max-w-4xl mx-auto">
           <Card className="mb-6">
             <CardHeader>
@@ -365,9 +365,9 @@ export default function ExamSim() {
 
   // Exam in progress
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header with timer */}
-      <header className="bg-white border-b sticky top-0 z-10 shadow-sm">
+      <header className="bg-card border-b sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">

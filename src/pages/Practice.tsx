@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
 import { useExamStore } from '@/stores/examStore';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { QuestionCard } from '@/components/exam/QuestionCard';
 import { Button } from '@/components/ui/button';
+import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { checkAnswer } from '@/lib/utils';
 
 export default function Practice() {
@@ -77,6 +79,36 @@ export default function Practice() {
     setStartTime(new Date());
   };
 
+  // Keyboard shortcuts
+  const shortcuts = useMemo(() => [
+    {
+      key: 'ArrowRight',
+      description: 'Next question',
+      action: handleNext,
+      preventDefault: true,
+    },
+    {
+      key: 'ArrowLeft',
+      description: 'Previous question',
+      action: handlePrevious,
+      preventDefault: true,
+    },
+    {
+      key: 'e',
+      description: 'Toggle explanation',
+      action: toggleExplanation,
+      preventDefault: true,
+    },
+    {
+      key: 'r',
+      description: 'Reset practice session',
+      action: reset,
+      preventDefault: true,
+    },
+  ], [handleNext, handlePrevious, toggleExplanation, reset]);
+
+  useKeyboardShortcuts({ shortcuts });
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -118,9 +150,9 @@ export default function Practice() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link to="/dashboard">
@@ -129,9 +161,12 @@ export default function Practice() {
             <div className="text-sm text-muted-foreground">
               Question {currentQuestionIndex + 1} of {currentQuestions.length}
             </div>
-            <Button variant="outline" size="sm" onClick={reset}>
-              Reset
-            </Button>
+            <div className="flex items-center gap-2">
+              <KeyboardShortcutsHelp shortcuts={shortcuts} />
+              <Button variant="outline" size="sm" onClick={reset}>
+                Reset
+              </Button>
+            </div>
           </div>
         </div>
       </header>
