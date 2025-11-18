@@ -237,7 +237,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="text-sm">
             <p>
-              This application contains 15 sample questions from the Professional Machine Learning Engineer exam.
+              This application contains {overallProgress?.total_questions || 587} practice questions from the Professional Machine Learning Engineer exam.
               Use the Practice mode to familiarize yourself with question types and get instant feedback.
             </p>
             <p className="mt-2 text-muted-foreground">
