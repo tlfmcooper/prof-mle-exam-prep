@@ -144,6 +144,1005 @@
     "created_at": "2025-11-15T00:00:00Z"
   },
   {
+    "id": "q022",
+    "question_number": 22,
+    "question_text": "A streaming media company wants to build a recommendation system that suggests movies to users based on their viewing history and ratings. The company has a large dataset of user-movie interactions stored in BigQuery. Which BigQuery ML model type should you use?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a matrix factorization model using model_type='MATRIX_FACTORIZATION' to learn latent factors for users and movies.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a boosted tree classifier using model_type='BOOSTED_TREE_CLASSIFIER' to classify movies users will like.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a k-means clustering model using model_type='KMEANS' to group similar movies together.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a linear regression model using model_type='LINEAR_REG' to predict movie ratings.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because matrix factorization is specifically designed for collaborative filtering recommendation systems, learning latent factors that capture user preferences and movie characteristics. B is not correct because while classification could predict if a user likes a movie, it doesn't provide ranked recommendations like matrix factorization does. C is not correct because k-means groups movies but doesn't personalize recommendations based on individual user preferences. D is not correct because while linear regression can predict ratings, matrix factorization is more effective for recommendation systems as it handles sparse user-item interaction matrices better.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Matrix Factorization",
+      "Recommendation Systems",
+      "Collaborative Filtering"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q023",
+    "question_number": 23,
+    "question_text": "Your retail analytics team needs to forecast daily sales for the next 90 days based on 3 years of historical sales data with seasonal patterns. The data is stored in BigQuery with columns for date, sales amount, promotional events, and weather conditions. What BigQuery ML model should you use?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a time-series model using model_type='ARIMA_PLUS' which handles seasonality and external covariates like promotions and weather.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a linear regression model using model_type='LINEAR_REG' with date features as predictors.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a boosted tree regression model using model_type='BOOSTED_TREE_REGRESSOR' with engineered time features.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a deep neural network using model_type='DNN_REGRESSOR' to capture complex temporal patterns.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ARIMA_PLUS is specifically designed for time-series forecasting with automatic handling of seasonality, trends, and holiday effects, plus support for external covariates like promotions and weather. B is not correct because standard linear regression doesn't capture temporal dependencies and seasonal patterns as effectively as time-series models. C is not correct because while boosted trees can work with engineered features, they don't inherently model time-series patterns and seasonality like ARIMA_PLUS does. D is not correct because BigQuery ML doesn't support DNN_REGRESSOR, and even if it did, ARIMA_PLUS is more appropriate and interpretable for time-series forecasting.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Time Series Forecasting",
+      "ARIMA_PLUS",
+      "Seasonality"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q024",
+    "question_number": 24,
+    "question_text": "A financial services company wants to detect anomalies in transaction patterns to identify potential data quality issues. They have millions of transactions with multiple numeric features like amount, frequency, and time-of-day. Which BigQuery ML model type is most appropriate?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create an autoencoder model using model_type='AUTOENCODER' which learns normal patterns and identifies transactions that deviate significantly.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a logistic regression model using model_type='LOGISTIC_REG' to classify transactions as normal or anomalous.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a k-means clustering model using model_type='KMEANS' and treat small clusters as anomalies.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a linear regression model using model_type='LINEAR_REG' to predict transaction amounts and flag large residuals.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because autoencoders are specifically designed for unsupervised anomaly detection, learning to reconstruct normal patterns and identifying anomalies based on reconstruction error without requiring labeled data. B is not correct because logistic regression requires labeled training data (normal vs anomalous), which is typically not available for anomaly detection scenarios. C is not correct because while k-means can identify outliers, it's less effective than autoencoders for high-dimensional anomaly detection and doesn't provide a clear anomaly score. D is not correct because linear regression is supervised and requires defining what to predict, whereas anomaly detection is typically unsupervised and autoencoders are better suited for this task.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Autoencoder",
+      "Anomaly Detection",
+      "Unsupervised Learning"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q025",
+    "question_number": 25,
+    "question_text": "Your company needs to categorize customer support tickets into one of five priority levels (P0 to P4) based on ticket text and metadata. You have 100,000 labeled historical tickets stored in BigQuery. Which model type should you choose?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a multiclass logistic regression model using model_type='LOGISTIC_REG' which supports classification into multiple categories.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create five separate binary logistic regression models, one for each priority level.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a linear regression model using model_type='LINEAR_REG' to predict priority as a numeric value from 0 to 4.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a k-means clustering model using model_type='KMEANS' with k=5 to group tickets.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because BigQuery ML's logistic regression automatically handles multiclass classification when the target variable has more than two categories, providing a single unified model. B is not correct because while this approach (one-vs-rest) works, it's unnecessarily complex and requires managing multiple models when a single multiclass model is more efficient and maintainable. C is not correct because linear regression treats the output as continuous numeric values, not discrete categories, which can produce invalid predictions like 2.7 that don't correspond to actual priority levels. D is not correct because k-means is unsupervised clustering and doesn't use the labeled data to learn the relationship between features and priority levels.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Multiclass Classification",
+      "Logistic Regression",
+      "Text Classification"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q026",
+    "question_number": 26,
+    "question_text": "An e-commerce company wants to segment customers into distinct groups based on their browsing behavior, purchase history, and demographic information for targeted marketing campaigns. They have no predefined categories. Which BigQuery ML approach should you use?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a k-means clustering model using model_type='KMEANS' to discover natural customer segments without predefined labels.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a logistic regression model using model_type='LOGISTIC_REG' to classify customers into segments.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a boosted tree classifier using model_type='BOOSTED_TREE_CLASSIFIER' to categorize customers.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a matrix factorization model using model_type='MATRIX_FACTORIZATION' to group similar customers.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because k-means clustering is an unsupervised learning algorithm ideal for discovering natural groupings in data when no predefined categories exist. B is not correct because logistic regression is a supervised algorithm requiring labeled training data with predefined categories. C is not correct because boosted tree classifiers also require labeled data with known categories, which doesn't exist in this scenario. D is not correct because matrix factorization is designed for recommendation systems with user-item interactions, not for general customer segmentation based on features.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "K-means Clustering",
+      "Customer Segmentation",
+      "Unsupervised Learning"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q027",
+    "question_number": 27,
+    "question_text": "Your team is building a house price prediction model using BigQuery ML with features like square footage, number of bedrooms, location, and age. You want to estimate the dollar value of each house. What model type should you select?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a linear regression model using model_type='LINEAR_REG' to predict the continuous house price value.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a logistic regression model using model_type='LOGISTIC_REG' to classify houses into price ranges.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a boosted tree classifier using model_type='BOOSTED_TREE_CLASSIFIER' to categorize house values.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a k-means clustering model using model_type='KMEANS' to group houses by similar prices.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because linear regression is designed to predict continuous numeric values like house prices, establishing relationships between features and the target variable. B is not correct because logistic regression is for classification into categories, not for predicting specific numeric values. C is not correct because the classifier would categorize into price ranges rather than predict exact dollar amounts, losing precision. D is not correct because k-means clustering groups similar houses but doesn't predict specific price values for new houses.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Linear Regression",
+      "Price Prediction",
+      "Regression"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q028",
+    "question_number": 28,
+    "question_text": "A telecommunications company wants to predict customer monthly data usage based on device type, plan details, and historical usage patterns. The target variable is gigabytes consumed per month. Which BigQuery ML model should you create?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a boosted tree regressor using model_type='BOOSTED_TREE_REGRESSOR' which handles complex non-linear relationships in the data.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a logistic regression model using model_type='LOGISTIC_REG' to predict usage levels.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create an ARIMA_PLUS model using model_type='ARIMA_PLUS' to forecast future usage.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a matrix factorization model using model_type='MATRIX_FACTORIZATION' to predict usage patterns.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because boosted tree regressors excel at predicting continuous values with complex non-linear relationships and feature interactions, making them suitable for usage prediction. While LINEAR_REG could also work, boosted trees often provide better accuracy for this type of problem. B is not correct because logistic regression is for binary or multiclass classification, not continuous numeric prediction. C is not correct because ARIMA_PLUS is for time-series forecasting over time for a single entity, not for predicting individual customer usage based on cross-sectional features. D is not correct because matrix factorization is designed for recommendation systems with user-item interactions, not regression problems.",
+    "difficulty": "easy",
+    "topics": [
+      "BigQuery ML",
+      "Boosted Tree Regressor",
+      "Regression",
+      "Non-linear Relationships"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q029",
+    "question_number": 29,
+    "question_text": "You are building a BigQuery ML model to predict customer churn, and you have 30 features including both categorical variables (e.g., product type, region) and numeric variables (e.g., account age, transaction count). You want to improve model performance by creating interaction features and polynomial features. How should you implement this in BigQuery ML?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the TRANSFORM clause in CREATE MODEL to define feature engineering operations like ML.POLYNOMIAL_EXPAND and ML.FEATURE_CROSS that will be applied consistently during training and prediction.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a separate preprocessing query that materializes the engineered features into a new table, then train the model on this table.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use BigQuery SQL to create all engineered features in the training query SELECT statement before the CREATE MODEL statement.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Export the data to Vertex AI Workbench, use pandas to create the features, save back to BigQuery, then train the model.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because the TRANSFORM clause ensures that feature engineering is applied consistently during both training and prediction, preventing training-serving skew. ML.POLYNOMIAL_EXPAND and ML.FEATURE_CROSS are built-in functions for creating these features. B is not correct because materializing features into a separate table requires manually ensuring the same transformations are applied at prediction time, increasing the risk of inconsistency. C is not correct because feature engineering in the SELECT statement outside the model definition doesn't automatically apply those transformations during prediction. D is not correct because exporting data adds unnecessary complexity and latency, and doesn't leverage BigQuery ML's native feature engineering capabilities.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Feature Engineering",
+      "TRANSFORM Clause",
+      "Polynomial Features",
+      "Feature Cross"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q030",
+    "question_number": 30,
+    "question_text": "Your marketing team trained a BigQuery ML model that predicts customer purchase probability. The model uses 45 features, but you suspect many are not contributing to predictions. You want to identify and remove uninformative features to simplify the model while maintaining performance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Train a model with L1_REG parameter to encourage sparsity, then use ML.WEIGHTS to identify features with non-zero coefficients and retrain with only those features.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use ML.FEATURE_INFO to get feature importance scores after training, manually calculate feature correlations, and remove features below a certain threshold.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train a boosted tree model instead and use ML.GLOBAL_EXPLAIN to get feature importance, then select top features for a simpler model.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create multiple models with different random subsets of features and select the subset that performs best on the validation set.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because L1 regularization (Lasso) automatically performs feature selection by driving uninformative feature coefficients to exactly zero, and ML.WEIGHTS provides a clear view of which features remain important. B is not correct because while ML.FEATURE_INFO provides insights, manually calculating correlations and setting thresholds is subjective and doesn't automatically optimize for the best feature subset. C is not correct because while boosted trees provide feature importance, this requires switching model types and doesn't directly simplify the original model architecture. D is not correct because random feature subset selection is inefficient compared to L1 regularization's principled approach to feature selection.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Feature Selection",
+      "L1 Regularization",
+      "ML.WEIGHTS",
+      "Model Simplification"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q031",
+    "question_number": 31,
+    "question_text": "You have text data containing customer reviews that you want to use as features in a BigQuery ML sentiment classification model. The reviews are stored in a TEXT column. How should you prepare this text data for the model?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.NGRAMS in the TRANSFORM clause to automatically extract n-gram features from the text, which BigQuery ML will convert to TF-IDF representations.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Manually tokenize the text using BigQuery string functions like SPLIT, create a vocabulary table, and one-hot encode each word.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Export reviews to Cloud Storage, use the Natural Language API to get embeddings, import embeddings back to BigQuery, and use as features.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use REGEXP_EXTRACT to extract specific keywords and phrases from the text, then use these as categorical features.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ML.NGRAMS is BigQuery ML's built-in function for text feature extraction that automatically handles tokenization and TF-IDF transformation, making it the most efficient native solution. B is not correct because manual tokenization and one-hot encoding is complex, inefficient for high-cardinality vocabulary, and doesn't leverage BigQuery ML's optimized text processing. C is not correct because using an external API adds latency, cost, and complexity when BigQuery ML has native text handling capabilities. D is not correct because manually extracting keywords requires domain knowledge, is not scalable, and misses the semantic information that n-grams and TF-IDF capture automatically.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Text Features",
+      "ML.NGRAMS",
+      "TF-IDF",
+      "NLP"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q032",
+    "question_number": 32,
+    "question_text": "Your BigQuery ML model uses customer age as a feature, but you've noticed that the model performs poorly for customers in certain age ranges. You want to create age buckets (e.g., 18-25, 26-35, 36-50, 51+) to help the model better capture non-linear relationships. What's the best approach?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.BUCKETIZE in the TRANSFORM clause to automatically create quantile-based age buckets that will be consistently applied during training and prediction.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create age buckets using CASE statements in the training query and manually apply the same logic in prediction queries.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a separate lookup table mapping age values to buckets and JOIN this table during both training and prediction.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use ML.POLYNOMIAL_EXPAND to create polynomial features of age, which will capture non-linear effects.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ML.BUCKETIZE in the TRANSFORM clause automatically creates consistent buckets and ensures they're applied identically during prediction, preventing training-serving skew. B is not correct because manually applying CASE statements in separate queries is error-prone and requires maintaining the same logic in multiple places. C is not correct because using a lookup table adds complexity and requires managing a separate table, plus it doesn't guarantee the exact same bucketing strategy at prediction time. D is not correct because while polynomial features capture non-linearity, they don't create discrete buckets as requested and may not capture the specific age-range effects as effectively as explicit bucketing.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Feature Engineering",
+      "ML.BUCKETIZE",
+      "Binning",
+      "Non-linear Relationships"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q033",
+    "question_number": 33,
+    "question_text": "You're building a BigQuery ML model with features that have very different scales: income ranges from $0 to $500,000, age from 18 to 100, and transaction counts from 0 to 10. You're concerned about feature scale affecting model training. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.STANDARD_SCALER or ML.MIN_MAX_SCALER in the TRANSFORM clause to normalize features, which BigQuery ML will apply consistently during training and prediction.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Don't worry about scaling because BigQuery ML automatically handles feature normalization for all model types.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Manually calculate mean and standard deviation for each feature, then apply z-score normalization in SQL before training.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use log transformation on all features to bring them to similar scales before training the model.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ML.STANDARD_SCALER (z-score normalization) and ML.MIN_MAX_SCALER in the TRANSFORM clause provide consistent, automatic feature scaling during both training and prediction, which is crucial for distance-based algorithms. B is not correct because BigQuery ML does not automatically normalize features for all model types; some models like linear regression benefit from explicit normalization. C is not correct because manually calculating normalization parameters and applying them doesn't guarantee consistency at prediction time and increases maintenance burden. D is not correct because log transformation changes the distribution and isn't appropriate for all features (especially those with zeros or negative values), and doesn't guarantee features are on similar scales.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Feature Scaling",
+      "Normalization",
+      "ML.STANDARD_SCALER",
+      "ML.MIN_MAX_SCALER"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q034",
+    "question_number": 34,
+    "question_text": "Your BigQuery dataset has a 'region' categorical feature with 50 different values. You want to use this feature in a BigQuery ML model, but you're concerned about the high cardinality. How should you handle this feature?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the region feature directly in BigQuery ML, which will automatically one-hot encode categorical variables during training.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Manually create 50 binary columns (one for each region) using CASE statements before training the model.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use ML.BUCKETIZE to reduce the number of regions into fewer groups based on some business logic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Convert region names to numeric IDs (1-50) and use as a single numeric feature.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because BigQuery ML automatically handles categorical features by applying one-hot encoding, making it the simplest and most maintainable approach. B is not correct because manually creating binary columns is tedious, error-prone, and doesn't automatically apply at prediction time, defeating the purpose of BigQuery ML's automatic handling. C is not correct because ML.BUCKETIZE is for continuous variables, not categorical ones, and arbitrarily grouping regions loses information. D is not correct because converting categorical values to numeric IDs imposes an artificial ordinal relationship that doesn't exist (region 1 is not 'less than' region 2), which can mislead the model.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Categorical Features",
+      "One-hot Encoding",
+      "High Cardinality",
+      "Feature Engineering"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q035",
+    "question_number": 35,
+    "question_text": "You trained a BigQuery ML model, and you want to understand which features are most important in making predictions. You need to generate feature importance scores. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "For tree-based models, use ML.GLOBAL_EXPLAIN to get feature importance scores based on information gain. For linear models, use ML.WEIGHTS to examine coefficient magnitudes.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use ML.FEATURE_INFO which provides feature importance for all model types in BigQuery ML.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Export the model to Vertex AI and use Vertex Explainable AI to generate feature importance scores.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Retrain the model multiple times, removing one feature at a time, and measure the impact on model performance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because BigQuery ML provides model-specific interpretation methods: ML.GLOBAL_EXPLAIN for tree-based models shows feature importance via information gain, while ML.WEIGHTS for linear models shows coefficient values indicating feature impact. B is not correct because ML.FEATURE_INFO provides feature statistics and metadata, not importance scores. C is not correct because exporting to Vertex AI adds unnecessary complexity when BigQuery ML has native explainability functions. D is not correct because the permutation feature importance approach is computationally expensive, time-consuming, and unnecessary when native functions provide feature importance more efficiently.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Feature Importance",
+      "ML.GLOBAL_EXPLAIN",
+      "ML.WEIGHTS",
+      "Model Interpretability"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q036",
+    "question_number": 36,
+    "question_text": "Your dataset has a date column that you want to use for prediction. You believe day of week and month might be important predictors. How should you engineer these features in BigQuery ML?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.EXTRACT_DAY_OF_WEEK and ML.EXTRACT_MONTH in the TRANSFORM clause to extract temporal components that will be automatically applied during prediction.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use standard BigQuery date functions like EXTRACT(DAYOFWEEK FROM date) and EXTRACT(MONTH FROM date) in the TRANSFORM clause.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create separate columns for day of week and month using EXTRACT functions in a preprocessing query, then train on the preprocessed table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use the date column directly and let BigQuery ML automatically extract relevant temporal features.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "B"
+    ],
+    "explanation": "B is correct because standard BigQuery EXTRACT functions work within the TRANSFORM clause to extract temporal components, ensuring consistent feature engineering during both training and prediction. A is not correct because ML.EXTRACT_DAY_OF_WEEK and ML.EXTRACT_MONTH are not actual BigQuery ML functions; the correct approach uses standard EXTRACT. C is not correct because preprocessing in a separate query doesn't automatically apply transformations at prediction time, risking training-serving skew. D is not correct because BigQuery ML doesn't automatically extract temporal features from date columns; you must explicitly specify which components to extract.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Temporal Features",
+      "Date Engineering",
+      "TRANSFORM Clause",
+      "EXTRACT Function"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q037",
+    "question_number": 37,
+    "question_text": "You have a trained BigQuery ML model for customer churn prediction. Now you need to generate predictions for all active customers and store the results in a new BigQuery table for the marketing team to use. What's the most efficient approach?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.PREDICT with a CREATE OR REPLACE TABLE statement to generate predictions and store them in a new table in a single query.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use ML.PREDICT to generate predictions, export results to Cloud Storage as CSV, then import back to BigQuery as a new table.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Write a Python script that queries BigQuery for customer data, calls ML.PREDICT for each customer individually, and inserts results into a new table.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use the BigQuery API to export the model, run predictions in Vertex AI, then import predictions back to BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ML.PREDICT combined with CREATE OR REPLACE TABLE performs batch prediction efficiently within BigQuery, generating and storing all predictions in a single operation without data movement. B is not correct because exporting to Cloud Storage and reimporting adds unnecessary steps, latency, and complexity when predictions can be generated and stored directly in BigQuery. C is not correct because row-by-row prediction is extremely inefficient compared to batch prediction and unnecessarily complicates the process. D is not correct because moving the model to Vertex AI adds significant complexity and data transfer overhead when BigQuery ML can perform predictions natively.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "ML.PREDICT",
+      "Batch Prediction",
+      "CREATE TABLE"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q038",
+    "question_number": 38,
+    "question_text": "Your fraud detection model built with BigQuery ML needs to provide predictions in real-time (under 100ms latency) as transactions occur. The model is currently in BigQuery, and transactions are processed through a Cloud Run application. How should you deploy the model for prediction?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Export the BigQuery ML model to Cloud Storage and deploy it on Vertex AI Prediction with a low-latency endpoint that the Cloud Run application can call.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Have the Cloud Run application make direct SQL queries to BigQuery using ML.PREDICT for each transaction.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use scheduled queries in BigQuery to pre-compute predictions for all possible transaction patterns and cache results in Memorystore.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Keep the model in BigQuery and configure BigQuery BI Engine to cache prediction results for low latency.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI Prediction provides optimized low-latency serving infrastructure suitable for real-time predictions, and BigQuery ML models can be exported for deployment there. B is not correct because BigQuery is optimized for batch analytics, not low-latency individual predictions; query latency typically exceeds 100ms for online serving. C is not correct because pre-computing all possible transaction patterns is impractical and caching doesn't work for real-time, unique transactions. D is not correct because BI Engine is designed for accelerating dashboard queries, not real-time model serving, and doesn't provide the required latency guarantees.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Real-time Prediction",
+      "Model Export",
+      "Vertex AI Prediction",
+      "Low Latency"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q039",
+    "question_number": 39,
+    "question_text": "You need to generate probability scores for each class in a multiclass classification model rather than just the predicted class. Your BigQuery ML model predicts customer segment (A, B, C, D). How do you get the probability distribution?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "ML.PREDICT automatically returns probability scores for all classes in addition to the predicted class label.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use ML.PREDICT_PROBA instead of ML.PREDICT to get probability distributions for each class.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Add an option RETURN_PROBABILITIES=TRUE to the ML.PREDICT function call.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use ML.EVALUATE to get probability scores for each class on the prediction dataset.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because BigQuery ML's ML.PREDICT function automatically returns probability scores for all classes in the output, along with the predicted class label, for classification models. B is not correct because ML.PREDICT_PROBA is not a function in BigQuery ML; ML.PREDICT already includes probabilities. C is not correct because there is no RETURN_PROBABILITIES option for ML.PREDICT; probabilities are returned by default. D is not correct because ML.EVALUATE computes aggregate performance metrics on a dataset, not individual prediction probabilities.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "ML.PREDICT",
+      "Classification Probabilities",
+      "Multiclass Classification"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q040",
+    "question_number": 40,
+    "question_text": "Your company has a BigQuery ML ARIMA_PLUS forecasting model that predicts daily website traffic. The marketing team wants to understand how planned promotional campaigns (which haven't happened yet) might affect future traffic. How should you incorporate these future promotions into your forecasts?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Include promotional campaign data as covariates (additional features) in the ARIMA_PLUS model training, then provide future promotion values in the ML.FORECAST query using the HORIZON and future covariate values.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Train separate ARIMA_PLUS models for periods with and without promotions, then manually combine their forecasts based on the promotional calendar.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use ML.EXPLAIN_FORECAST to understand historical promotion impact, then manually adjust the baseline forecast by the expected promotion effect.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Retrain the model including planned promotions as historical data, then generate forecasts with ML.FORECAST.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because ARIMA_PLUS supports covariates (external regressors) that can be used for both historical and future periods, allowing you to model the impact of promotions and forecast with future promotion schedules. B is not correct because training separate models is complex, doesn't leverage the relationships between promotions and traffic within a single model, and requires manual combination logic. C is not correct because manually adjusting forecasts doesn't properly model the statistical relationship between promotions and traffic, and is less accurate than including covariates in the model. D is not correct because you cannot include future events as historical data; you need to provide future covariate values at prediction time, not during training.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Time Series Forecasting",
+      "ARIMA_PLUS",
+      "Covariates",
+      "ML.FORECAST"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q041",
+    "question_number": 41,
+    "question_text": "You trained a BigQuery ML regression model and want to generate predictions with confidence intervals to understand the uncertainty in your predictions. How can you achieve this?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "For regression models, use ML.PREDICT which automatically returns prediction intervals along with the predicted value when applicable.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use the CALCULATE_P_VALUES option set to TRUE in ML.PREDICT to get confidence intervals.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use ML.FORECAST for time-series models or train multiple models with bootstrapped samples to estimate prediction uncertainty for other regression models.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use ML.CONFIDENCE_INTERVAL function to compute confidence bounds for any regression model predictions.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "C"
+    ],
+    "explanation": "C is correct because ML.FORECAST for time-series models (like ARIMA_PLUS) natively provides confidence intervals. For other regression models, BigQuery ML doesn't directly provide prediction intervals, so you would need to implement bootstrapping or ensemble methods. B is not correct because there is no CALCULATE_P_VALUES option for ML.PREDICT. A is not correct because ML.PREDICT for standard regression models doesn't automatically return prediction intervals; this feature is specific to time-series forecasting. D is not correct because ML.CONFIDENCE_INTERVAL is not a function in BigQuery ML.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Regression",
+      "Confidence Intervals",
+      "Prediction Uncertainty",
+      "ML.FORECAST"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q042",
+    "question_number": 42,
+    "question_text": "Your e-commerce platform needs to provide product recommendations to users in real-time. You've built a matrix factorization model in BigQuery ML. How should you efficiently serve these recommendations with low latency?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use ML.RECOMMEND to pre-compute recommendations for all users, store results in a BigQuery table, and cache frequently accessed recommendations in Memorystore for low-latency serving.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Have the application make real-time ML.RECOMMEND queries to BigQuery for each user request.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Export the model to Vertex AI and use Vertex AI Prediction endpoints for real-time recommendations.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use ML.PREDICT instead of ML.RECOMMEND and deploy on Cloud Functions for serverless recommendation serving.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because pre-computing recommendations with ML.RECOMMEND and caching in Memorystore provides the low latency required for real-time serving while leveraging BigQuery ML's native recommendation function. B is not correct because making real-time queries to BigQuery for each user request would have high latency (typically hundreds of milliseconds) unsuitable for real-time web serving. C is not correct because matrix factorization models from BigQuery ML are optimized for batch recommendation generation, and exporting to Vertex AI adds complexity without solving the latency issue. D is not correct because ML.PREDICT is for general predictions, not recommendations, and Cloud Functions would still need to query BigQuery or load the model, not addressing the latency concern.",
+    "difficulty": "medium",
+    "topics": [
+      "BigQuery ML",
+      "Matrix Factorization",
+      "ML.RECOMMEND",
+      "Real-time Recommendations",
+      "Memorystore"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
     "id": "q045",
     "question_number": 45,
     "question_text": "Your startup needs to add image classification capabilities to your mobile app to identify common household objects. You have limited ML expertise and want to get a solution working quickly without training custom models. What should you do?",
@@ -227,6 +1226,1323 @@
       "Infrastructure as Code",
       "Multi-tenant",
       "Governance"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q046",
+    "question_number": 46,
+    "question_text": "Your company wants to analyze customer feedback emails to determine sentiment (positive, negative, neutral) and extract key topics. You need to implement this quickly with minimal custom code. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Natural Language API to analyze sentiment and extract entities from the email text with simple API calls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Build a custom sentiment analysis model using BigQuery ML with labeled training data from past emails.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Vertex AI to fine-tune a BERT model for sentiment classification on your email corpus.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Deploy a pre-trained sentiment model from Model Garden on Vertex AI Prediction endpoints.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Natural Language API provides pre-trained sentiment analysis and entity extraction capabilities accessible through simple API calls, requiring minimal code and no training. B is not correct because building a custom model requires labeled training data, feature engineering, and more development time. C is not correct because fine-tuning BERT requires significant ML expertise, computational resources, and training data preparation. D is not correct because deploying models on Vertex AI adds infrastructure management overhead compared to the fully managed API approach.",
+    "difficulty": "easy",
+    "topics": [
+      "Natural Language API",
+      "Sentiment Analysis",
+      "ML APIs",
+      "Entity Extraction"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q047",
+    "question_number": 47,
+    "question_text": "You need to add speech-to-text transcription functionality to your customer service application to transcribe phone calls. You want a solution that supports multiple languages and requires no model training. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Speech-to-Text API which provides pre-trained models supporting over 125 languages with simple API integration.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use AutoML Speech to train a custom speech recognition model on your phone call recordings.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Download a Wav2Vec model from Model Garden and deploy it on GKE for transcription.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Vertex AI to fine-tune a foundation model on your customer service audio data.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Speech-to-Text API provides production-ready, pre-trained models for multiple languages accessible via simple API calls without any training required. B is not correct because AutoML Speech would require collecting and labeling training data, which is unnecessary when pre-trained models already support multiple languages. C is not correct because downloading and deploying models requires infrastructure management and more technical complexity than using the managed API. D is not correct because fine-tuning requires audio data preparation, training time, and expertise when the API already provides the needed functionality.",
+    "difficulty": "easy",
+    "topics": [
+      "Speech-to-Text API",
+      "ML APIs",
+      "Speech Recognition",
+      "Multi-language Support"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q048",
+    "question_number": 48,
+    "question_text": "Your e-commerce company wants to generate product descriptions automatically from product images. You need a solution that can understand image content and generate natural language descriptions. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Vision AI API to extract image labels and features, then use a text generation model from Model Garden to create descriptions based on those features.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Train a custom image captioning model using Vertex AI Custom Training with TensorFlow.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use AutoML Vision to classify products, then manually write templates for each product category.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use BigQuery ML to train a model that predicts product descriptions from image metadata.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because combining Vision AI for image understanding with text generation models from Model Garden provides a complete solution using pre-trained models without custom training. B is not correct because training a custom image captioning model requires significant data, expertise, and training time. C is not correct because manual template writing doesn't leverage ML for description generation and doesn't scale well. D is not correct because BigQuery ML isn't designed for image-to-text generation tasks, and this approach doesn't properly handle image data.",
+    "difficulty": "easy",
+    "topics": [
+      "Vision AI",
+      "Model Garden",
+      "Text Generation",
+      "Multi-modal AI"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q049",
+    "question_number": 49,
+    "question_text": "You want to add translation capabilities to your application to translate user-generated content between English, Spanish, and French in real-time. What's the simplest approach?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Translation API which provides neural machine translation for over 100 languages via simple API calls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use AutoML Translation to train custom translation models for your specific domain vocabulary.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Deploy a pre-trained T5 translation model from Model Garden on Vertex AI endpoints.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build a custom translation system using sequence-to-sequence models in TensorFlow.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Translation API provides production-ready neural machine translation with simple API integration, supporting real-time translation without any model training or infrastructure management. B is not correct because AutoML Translation requires parallel translation corpus data and training time, which is unnecessary for general translation between common languages. C is not correct because deploying models on Vertex AI adds complexity and infrastructure management overhead compared to the managed API. D is not correct because building a custom translation system requires extensive ML expertise, large parallel corpora, and significant development time.",
+    "difficulty": "easy",
+    "topics": [
+      "Translation API",
+      "ML APIs",
+      "Neural Machine Translation",
+      "Real-time Translation"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q050",
+    "question_number": 50,
+    "question_text": "Your team needs to detect inappropriate content in user-uploaded videos before publishing them on your platform. You need to identify violent, adult, or racy content. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Video Intelligence API which provides pre-trained models for detecting explicit content, violence, and other safety-related attributes in videos.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use AutoML Video to train a custom content moderation model on labeled video clips.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Extract frames from videos and use Vision AI API to classify each frame individually.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Vertex AI Custom Training to build a 3D convolutional neural network for video classification.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Video Intelligence API includes pre-trained explicit content detection models specifically designed for video moderation, providing a complete solution without training. B is not correct because training a custom model requires extensive labeled video data for content moderation, which is expensive and time-consuming to create. C is not correct because frame-by-frame analysis misses temporal context in videos and is less efficient than using the Video Intelligence API designed for this purpose. D is not correct because building a custom 3D CNN requires significant ML expertise, training data, and computational resources when a pre-trained solution exists.",
+    "difficulty": "easy",
+    "topics": [
+      "Video Intelligence API",
+      "Content Moderation",
+      "ML APIs",
+      "Video Analysis"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q051",
+    "question_number": 51,
+    "question_text": "You want to experiment with different foundation models from Model Garden (like PaLM 2, Gemini, and Llama 2) for a text summarization task before committing to one. What's the most efficient way to test these models?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Model Garden's console interface or API to directly prompt and compare different foundation models without deployment.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Deploy each model to separate Vertex AI endpoints, create a load balancer, and A/B test them in production.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Download each model's weights, deploy them on GKE clusters, and build a custom comparison framework.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Fine-tune each foundation model on your data using Vertex AI, then compare their performance.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Model Garden provides a direct interface to prompt and test foundation models without deployment, enabling quick experimentation and comparison. B is not correct because deploying to endpoints before evaluation is premature and adds unnecessary infrastructure complexity for initial testing. C is not correct because downloading and managing model weights adds significant operational overhead when Model Garden provides direct access. D is not correct because fine-tuning should come after selecting the best base model through initial testing, and adds training time and cost to the evaluation phase.",
+    "difficulty": "easy",
+    "topics": [
+      "Model Garden",
+      "Foundation Models",
+      "Model Evaluation",
+      "Prompt Engineering"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q052",
+    "question_number": 52,
+    "question_text": "Your company needs to integrate a chatbot that can answer customer questions using information from your product manuals and FAQs. You want to use a foundation model but ensure responses are grounded in your documentation. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use a foundation model from Model Garden with retrieval augmented generation (RAG) by providing relevant documentation snippets in the prompt context.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Fine-tune a foundation model on your entire product documentation corpus using Vertex AI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use the Dialogflow CX API to build rule-based conversation flows for each FAQ topic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Train a custom question-answering model from scratch using AutoML Natural Language.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because RAG allows foundation models to generate responses grounded in retrieved documentation without fine-tuning, providing accurate and up-to-date answers. B is not correct because fine-tuning on documentation is more expensive and time-consuming than RAG, and the model can still hallucinate or become outdated when documentation changes. C is not correct because rule-based flows don't leverage foundation models' natural language understanding and require extensive manual configuration. D is not correct because training a custom model from scratch requires significant labeled data and doesn't leverage the capabilities of pre-trained foundation models.",
+    "difficulty": "easy",
+    "topics": [
+      "Foundation Models",
+      "RAG",
+      "Model Garden",
+      "Question Answering"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q053",
+    "question_number": 53,
+    "question_text": "Your law firm processes thousands of legal contracts monthly and needs to automatically extract key information like party names, dates, monetary amounts, and contract terms. The contracts are scanned PDFs with varying layouts. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's Contract Parser, which is specifically designed to extract structured information from legal contracts with pre-trained models.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Vision AI to perform OCR on the documents, then use regular expressions to extract the needed information.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train a custom AutoML Natural Language model for entity extraction using labeled contract examples.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Convert PDFs to text using open-source tools, then use Natural Language API for entity extraction.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI's Contract Parser is purpose-built for legal contract processing with pre-trained models that understand contract structures and can extract specific entities accurately. B is not correct because OCR alone doesn't understand document structure, and regular expressions are brittle and can't handle varying layouts or semantic understanding. C is not correct because training a custom model requires extensive labeled data and doesn't leverage Document AI's specialized contract understanding. D is not correct because text-only conversion loses layout information important for contracts, and Natural Language API isn't specialized for complex legal document structures.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Contract Parser",
+      "Document Processing",
+      "Entity Extraction"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q054",
+    "question_number": 54,
+    "question_text": "Your healthcare organization receives patient intake forms in various formats (handwritten, typed, and mixed). You need to extract patient information like name, date of birth, medical history, and insurance details while ensuring HIPAA compliance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's Healthcare Form Parser with a VPC Service Controls perimeter to process forms while maintaining HIPAA compliance and extracting structured healthcare data.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use the general Document OCR processor from Document AI, then manually parse the extracted text with custom code.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Vision AI API for handwriting recognition, then use Natural Language API to extract entities.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build a custom form extraction pipeline using Vertex AI Custom Training on labeled healthcare forms.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI's Healthcare Form Parser is specialized for medical forms with built-in healthcare entity recognition, and VPC Service Controls ensures HIPAA compliance by keeping data processing within a secure perimeter. B is not correct because general OCR doesn't understand healthcare-specific fields and structures, requiring significant custom parsing logic. C is not correct because this approach doesn't provide healthcare-specific entity recognition and is more complex than using the specialized Healthcare Form Parser. D is not correct because building a custom solution requires extensive labeled data, doesn't leverage Document AI's healthcare expertise, and requires more effort to achieve HIPAA compliance.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Healthcare Form Parser",
+      "HIPAA Compliance",
+      "VPC Service Controls"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q055",
+    "question_number": 55,
+    "question_text": "Your financial services company needs to process invoices from thousands of different vendors with varying formats and extract line items, totals, tax amounts, and vendor information. Processing accuracy is critical for audit compliance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's Invoice Parser which is pre-trained to extract structured information from invoices in various formats with high accuracy.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Document AI's Form Parser and manually configure field mappings for each vendor's invoice format.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Vision AI for OCR and BigQuery ML to train a model that predicts field locations based on labeled invoice data.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build template-based extraction rules using regular expressions for each vendor format you encounter.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI's Invoice Parser is specifically trained to understand invoice structures and can handle varying formats without manual configuration, providing the high accuracy needed for compliance. B is not correct because manually configuring mappings for thousands of vendor formats is not scalable and increases maintenance burden. C is not correct because this custom approach requires extensive labeled data, is complex to implement, and doesn't leverage Document AI's pre-trained invoice understanding. D is not correct because template-based rules are brittle, don't handle format variations well, and require constant maintenance as vendor formats change.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Invoice Parser",
+      "Document Processing",
+      "Financial Documents"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q056",
+    "question_number": 56,
+    "question_text": "Your insurance company receives thousands of claim forms daily that need to be digitized and routed to appropriate departments. The forms have checkboxes, handwritten notes, signatures, and standardized fields. You need to extract all information accurately and quickly. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's custom processor trained on your specific claim forms using the Document AI Workbench with labeled examples.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Document AI's general Form Parser which works with any form structure out of the box.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Vision AI for OCR, then write custom Python code to parse checkboxes and extract field values.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use AutoML Vision to train an image classification model that categorizes different sections of the form.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because custom processors trained on your specific claim forms will provide the highest accuracy for your specialized format, including checkboxes and handwritten notes. Document AI Workbench makes it easy to label and train. B is not correct because while the general Form Parser works for many forms, insurance claim forms have specialized fields and requirements that benefit from a custom trained processor. C is not correct because building custom parsing logic is complex, error-prone, and doesn't leverage Document AI's advanced capabilities like handwriting recognition and form understanding. D is not correct because AutoML Vision for classification doesn't extract structured information from forms; it only categorizes images.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Custom Processors",
+      "Form Parsing",
+      "Document AI Workbench"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q057",
+    "question_number": 57,
+    "question_text": "Your company is digitizing a large archive of historical handwritten documents for searchability. The handwriting varies significantly in style and quality. You need to convert these documents to searchable text. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's Document OCR processor which includes advanced handwriting recognition capabilities for various handwriting styles.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use Vision AI's TEXT_DETECTION feature which works for both printed and handwritten text.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Train a custom handwriting recognition model using Vertex AI Custom Training with labeled historical documents.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use a pre-trained CRNN model from Model Garden and deploy it on Vertex AI Prediction.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI's Document OCR processor is specifically designed for document processing with advanced handwriting recognition that handles varying styles and quality. B is not correct because while Vision AI's TEXT_DETECTION can detect some handwritten text, Document AI's specialized processor provides better accuracy for complex handwriting in documents. C is not correct because training a custom model requires extensive labeled data of historical handwriting and significant ML expertise when a specialized solution already exists. D is not correct because deploying and managing models from Model Garden adds complexity when Document AI provides a managed solution optimized for document processing.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Handwriting Recognition",
+      "OCR",
+      "Document Digitization"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q058",
+    "question_number": 58,
+    "question_text": "Your e-commerce platform wants to improve search relevance and provide personalized product recommendations. You have user browsing history, purchase data, and product catalog information in BigQuery. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Retail API which provides pre-built ML models for personalized search and recommendations specifically designed for retail use cases.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Build a custom recommendation system using BigQuery ML matrix factorization and deploy to Vertex AI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Vertex AI Recommendations AI (the older standalone product) to build your recommendation engine.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Vertex AI Feature Store to store user features and train a custom ranking model using TensorFlow.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Retail API is purpose-built for e-commerce with pre-trained models for search, recommendations, and personalization that integrate directly with product catalogs and user data. B is not correct because while BigQuery ML can build recommendations, Retail API provides more comprehensive retail-specific features like search, business rules, and optimized serving. C is not correct because Vertex AI Recommendations AI has been superseded by Retail API, which offers more features and better integration. D is not correct because building a custom solution requires significantly more development effort and doesn't provide retail-specific optimizations that Retail API offers.",
+    "difficulty": "medium",
+    "topics": [
+      "Retail API",
+      "Recommendations",
+      "Search",
+      "E-commerce"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q059",
+    "question_number": 59,
+    "question_text": "Your retail website has a search bar where users type queries like 'red running shoes size 10'. You want to improve search results by understanding user intent, handling typos, and personalizing results based on user behavior. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Retail API's Search service which provides neural search with semantic understanding, autocomplete, spell correction, and personalization capabilities.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Implement Elasticsearch on GKE with custom relevance tuning and fuzzy matching rules.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use BigQuery full-text search with custom SQL queries for product matching.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build a custom search ranker using Vertex AI with features from Vertex AI Feature Store.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Retail API's Search service is specifically designed for e-commerce search with built-in semantic understanding, spell correction, and personalization based on user behavior. B is not correct because while Elasticsearch is powerful, it requires significant infrastructure management and custom development for features that Retail API provides out-of-the-box. C is not correct because BigQuery full-text search isn't optimized for real-time product search and lacks the semantic understanding and personalization capabilities needed. D is not correct because building a custom ranker requires extensive feature engineering and training when Retail API provides production-ready search specifically optimized for retail.",
+    "difficulty": "medium",
+    "topics": [
+      "Retail API",
+      "Neural Search",
+      "Search Personalization",
+      "Semantic Search"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q060",
+    "question_number": 60,
+    "question_text": "Your online store wants to display 'Frequently Bought Together' and 'You May Also Like' product recommendations on product detail pages. You have historical purchase data and want to minimize development effort. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Retail API's Recommendations service with prediction types 'frequently-bought-together' and 'others-you-may-like', which provides these recommendations with simple API calls.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Use BigQuery ML to train separate matrix factorization models for each recommendation type.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Calculate association rules using Spark on Dataproc and store results in Cloud SQL.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Vertex AI Pipelines to build a custom recommendation pipeline with multiple models.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Retail API provides pre-built recommendation models with specific prediction types designed for common e-commerce scenarios, requiring only API integration. B is not correct because training separate models adds complexity and requires more development when Retail API provides these recommendations natively. C is not correct because calculating association rules manually requires significant data engineering and doesn't provide the real-time personalization that Retail API offers. D is not correct because building custom pipelines requires substantial development effort and ongoing maintenance when a managed solution exists.",
+    "difficulty": "medium",
+    "topics": [
+      "Retail API",
+      "Product Recommendations",
+      "Frequently Bought Together",
+      "Collaborative Filtering"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q061",
+    "question_number": 61,
+    "question_text": "Your retail business wants to implement dynamic pricing and promotional campaigns based on ML predictions, while ensuring business rules like minimum margins are respected. You need predictions to integrate with your existing campaign management system. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Retail API's user event tracking and predictions to inform pricing decisions, then implement business logic controls in your application layer before applying prices.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Build a custom pricing optimization model using Vertex AI that includes business constraints in the loss function.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use BigQuery ML to predict optimal prices and enforce business rules using SQL CHECK constraints.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use AutoML Tables to predict price elasticity and implement a rule engine on Cloud Functions.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Retail API provides the ML-driven insights while allowing the application to enforce business rules and constraints, providing flexibility and control. B is not correct because building a custom model that incorporates all business constraints is complex and doesn't leverage Retail API's specialized retail predictions. C is not correct because SQL constraints aren't the appropriate mechanism for complex dynamic business rules, and BigQuery ML isn't designed for real-time pricing decisions. D is not correct because this approach requires building multiple custom components when Retail API provides retail-specific predictions that can be combined with business logic more efficiently.",
+    "difficulty": "medium",
+    "topics": [
+      "Retail API",
+      "Dynamic Pricing",
+      "Business Rules",
+      "Campaign Management"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q062",
+    "question_number": 62,
+    "question_text": "Your Document AI pipeline processes invoices and occasionally makes extraction errors that need human review. You want to implement a human-in-the-loop review process where low-confidence predictions are flagged for manual verification. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's confidence scores returned with each extraction, route low-confidence documents to a review queue, and use Document AI Workbench for human review and corrections.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Process all documents automatically and have users report errors through a feedback form.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Set up a Cloud Tasks queue and Cloud Functions to randomly sample 10% of documents for manual review.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Vertex AI Pipelines to orchestrate extraction and send all results to BigQuery for batch review.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI provides confidence scores for extractions, enabling intelligent routing of uncertain predictions, and Document AI Workbench is designed for human review workflows. B is not correct because reactive error reporting doesn't prevent errors from affecting downstream systems and provides poor user experience. C is not correct because random sampling doesn't target the documents most likely to have errors, wasting review effort on confident predictions. D is not correct because batch review of all documents is inefficient when confidence scores can identify which documents actually need review.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Human-in-the-loop",
+      "Confidence Scores",
+      "Document AI Workbench"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q063",
+    "question_number": 63,
+    "question_text": "Your company processes documents in batches of 10,000+ files stored in Cloud Storage. You need to extract data from these documents efficiently and store results in BigQuery for analysis. What's the most efficient architecture?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Document AI's batch processing API to process files directly from Cloud Storage, with results automatically written to a Cloud Storage output location, then load into BigQuery.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a Cloud Function triggered by Cloud Storage uploads that processes each document individually using Document AI's synchronous API.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Dataflow to read files, call Document AI API in parallel for each document, and write results directly to BigQuery.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Download all documents locally, process them with Document AI API in a loop, then upload results to BigQuery.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Document AI's batch processing API is specifically designed for large-scale document processing with optimized throughput and automatic output management. B is not correct because processing documents individually with synchronous API is inefficient for large batches and can hit rate limits. C is not correct because while Dataflow works, Document AI's batch API is more efficient and simpler for this use case, handling parallelization automatically. D is not correct because downloading documents locally is inefficient, doesn't scale well, and adds unnecessary data transfer costs.",
+    "difficulty": "medium",
+    "topics": [
+      "Document AI",
+      "Batch Processing",
+      "Cloud Storage",
+      "BigQuery"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q064",
+    "question_number": 64,
+    "question_text": "Your customer support team needs a chatbot that can answer questions about your company's products using information from your product documentation, knowledge base articles, and FAQs. The content is updated frequently. You want to minimize development effort and ensure responses are accurate. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Vertex AI Agent Builder to create a RAG application by importing your documentation as data sources, which will automatically index content and generate grounded responses.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Fine-tune a foundation model from Model Garden on your entire documentation corpus using Vertex AI.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Dialogflow CX with manually created intents and entities for each product and FAQ topic.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build a custom RAG system using Vertex AI Matching Engine for retrieval and a foundation model API for generation.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI Agent Builder provides a managed RAG solution that handles document ingestion, indexing, retrieval, and grounded generation with minimal development effort. B is not correct because fine-tuning requires retraining when documentation changes, is more expensive, and models can still hallucinate. C is not correct because manual intent creation doesn't scale with large documentation and requires constant maintenance as content changes. D is not correct because building a custom RAG system requires significant development effort when Agent Builder provides this functionality as a managed service.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "Chatbots",
+      "Knowledge Base"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q065",
+    "question_number": 65,
+    "question_text": "You're building a RAG application using Vertex AI Agent Builder that needs to answer questions from multiple data sources including public website content, internal PDFs, and a structured database. How should you configure the data sources?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Import each data source separately into Agent Builder as different data stores (website, Cloud Storage for PDFs, BigQuery for structured data) and configure the agent to search across all stores.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Convert all data sources to a single format (text files), combine them into one Cloud Storage bucket, and import as a single data store.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use only the website data source and manually copy content from PDFs and database into additional web pages.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Build a custom preprocessing pipeline to merge all data into a unified format before importing to Agent Builder.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Agent Builder supports multiple heterogeneous data sources natively, allowing each source to be ingested in its optimal format while enabling unified search across all sources. B is not correct because converting everything to a single format loses metadata and structure, and doesn't leverage Agent Builder's ability to handle different data types natively. C is not correct because manually copying content doesn't scale, loses original metadata, and requires ongoing maintenance. D is not correct because custom preprocessing adds unnecessary complexity when Agent Builder can handle different data source types directly.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "Multi-source Data",
+      "Data Stores"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q066",
+    "question_number": 66,
+    "question_text": "Your RAG application using Vertex AI Agent Builder sometimes returns responses that seem to contradict each other when information is found in multiple documents. You want to improve response quality by helping the system identify the most relevant and authoritative sources. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure document metadata with relevance scores, recency dates, and authority levels, then tune the retrieval parameters to prioritize high-quality sources.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Remove older documents from the data store to keep only the most recent information.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Manually review all responses and create override rules for contradictory topics.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Fine-tune the foundation model to learn which sources are more authoritative.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because document metadata and retrieval tuning allows the system to intelligently prioritize authoritative sources while maintaining the full knowledge base. B is not correct because removing older documents may discard still-valid information, and recency alone doesn't determine authority. C is not correct because manual override rules don't scale and require constant maintenance as content changes. D is not correct because fine-tuning is expensive, doesn't directly address the retrieval ranking problem, and models can't be easily updated as source authority changes.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "Retrieval Tuning",
+      "Document Metadata"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q067",
+    "question_number": 67,
+    "question_text": "You deployed a RAG application using Vertex AI Agent Builder, and users report that responses sometimes include information that seems outdated. Your documentation is updated weekly in Cloud Storage. How should you ensure the RAG application uses the latest information?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure automatic refresh for the data store in Agent Builder to periodically re-index the Cloud Storage bucket and pick up updated documents.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Delete and recreate the entire Agent Builder data store each week after documentation updates.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Manually trigger a re-import of documents through the console after each documentation update.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Version the documentation files with timestamps in filenames and configure Agent Builder to only use files from the current week.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Agent Builder supports automatic refresh schedules that detect and index updated documents without manual intervention. B is not correct because deleting and recreating the data store is disruptive, time-consuming, and unnecessary when incremental updates are supported. C is not correct because manual triggering doesn't scale and risks human error in forgetting to update. D is not correct because file versioning doesn't solve the indexing problem and adds complexity in file management.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "Data Refresh",
+      "Document Updates"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q068",
+    "question_number": 68,
+    "question_text": "Your company wants to provide an enterprise search capability across all internal documents (emails, PDFs, presentations, spreadsheets) stored in Google Drive and Cloud Storage. Users should be able to ask natural language questions and get relevant document excerpts. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Vertex AI Agent Builder with Search for Enterprise to create a search application that indexes documents from multiple sources and provides natural language search.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Build a custom search solution using Vertex AI Matching Engine for vector search and BigQuery for metadata.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Elasticsearch on GKE with custom connectors for Google Drive and Cloud Storage.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Export all documents to BigQuery and use BigQuery full-text search with a custom web interface.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI Agent Builder's Search for Enterprise is specifically designed for enterprise search across multiple document sources with natural language understanding and minimal setup. B is not correct because building a custom solution with Matching Engine requires significant development effort for features that Agent Builder provides out-of-the-box. C is not correct because Elasticsearch requires infrastructure management and custom connector development when Agent Builder provides native integrations. D is not correct because BigQuery isn't optimized for document search, doesn't handle document format diversity well, and requires building a custom UI.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "Enterprise Search",
+      "Document Search",
+      "Natural Language Search"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q069",
+    "question_number": 69,
+    "question_text": "You're building a conversational AI agent using Vertex AI Agent Builder that needs to perform actions like checking order status, updating customer information, and creating support tickets. These actions require calling external APIs. How should you implement this?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Configure Agent Builder with function calling capabilities to define available actions, their parameters, and connect them to Cloud Functions or Cloud Run services that implement the business logic.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Include API documentation in the RAG knowledge base and let the agent generate API calls as text responses.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Build a custom orchestration layer that parses agent responses and maps them to API calls based on keywords.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Fine-tune the foundation model to learn the API schemas and generate API requests.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Agent Builder's function calling feature is designed specifically for connecting conversational agents to external actions through well-defined APIs. B is not correct because including API documentation doesn't enable the agent to actually execute actions; it would only describe them in text. C is not correct because custom parsing layers are brittle, error-prone, and don't leverage Agent Builder's native function calling capabilities. D is not correct because fine-tuning for API generation is complex, unreliable, and doesn't provide the structured integration that function calling offers.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "Function Calling",
+      "API Integration",
+      "Conversational AI"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q070",
+    "question_number": 70,
+    "question_text": "Your RAG application using Vertex AI Agent Builder needs to handle sensitive customer data in responses. You want to ensure personally identifiable information (PII) is not included in generated responses even if it exists in source documents. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Cloud Data Loss Prevention (DLP) API to scan and redact PII from documents before ingesting them into Agent Builder's data store.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Configure Agent Builder's safety filters to block responses containing PII patterns.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Fine-tune the foundation model to avoid generating PII in responses.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Add instructions in the system prompt telling the model not to include PII in responses.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because DLP API can systematically identify and redact PII from source documents before they're indexed, preventing PII from being retrieved and included in responses. B is not correct because Agent Builder's safety filters focus on harmful content, not PII redaction, and blocking after retrieval is less reliable than preventing PII ingestion. C is not correct because fine-tuning doesn't prevent the model from accessing PII that exists in retrieved context. D is not correct because prompt instructions are not reliable safeguards; the model may still include PII from retrieved documents despite instructions.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "PII Protection",
+      "Cloud DLP",
+      "Data Privacy"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q071",
+    "question_number": 71,
+    "question_text": "You need to evaluate the quality of responses from your RAG application built with Vertex AI Agent Builder. You want to measure answer accuracy, relevance, and groundedness systematically. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a test set of questions with expected answers, use Vertex AI's evaluation metrics for generative AI to assess response quality including groundedness and relevance scores.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Manually review a random sample of 100 responses and calculate accuracy based on human judgment.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use traditional NLP metrics like BLEU and ROUGE to compare generated responses against reference answers.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Monitor user feedback thumbs up/down ratings as the only evaluation metric.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI provides specialized evaluation metrics for generative AI including groundedness (whether responses are supported by sources), relevance, and other RAG-specific quality measures, along with systematic testing. B is not correct because manual review of a small sample doesn't scale, isn't reproducible, and doesn't provide quantitative metrics for tracking improvements. C is not correct because BLEU and ROUGE measure text overlap, not semantic accuracy or groundedness, which are critical for RAG evaluation. D is not correct because user feedback alone is subjective, delayed, and doesn't provide detailed diagnostic information about specific quality issues.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG Evaluation",
+      "Generative AI Evaluation",
+      "Model Quality"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q072",
+    "question_number": 72,
+    "question_text": "Your Vertex AI Agent Builder RAG application is experiencing slow response times. Users report waiting 5-10 seconds for answers. You want to improve latency while maintaining response quality. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Optimize retrieval by tuning the number of retrieved documents, enable response caching for common queries, and consider using a faster foundation model from Model Garden.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Increase the compute resources allocated to your Agent Builder data store.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Pre-generate and cache all possible question-answer pairs in Memorystore.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Switch from RAG to fine-tuning the foundation model on your documentation.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because retrieval tuning (reducing retrieved documents if unnecessary), caching frequent queries, and model selection are effective strategies to reduce latency while maintaining quality. B is not correct because Agent Builder is a managed service where compute allocation isn't directly configurable by users. C is not correct because pre-generating all possible Q&A pairs is impractical, doesn't leverage the RAG approach's flexibility, and can't handle paraphrased or novel questions. D is not correct because fine-tuning doesn't solve latency issues, loses the ability to update knowledge dynamically, and still requires inference time similar to RAG.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "RAG",
+      "Latency Optimization",
+      "Performance Tuning"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": null,
+      "section": "Generated",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "ai_generated"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q073",
+    "question_number": 73,
+    "question_text": "You're deploying a Vertex AI Agent Builder RAG application to production and need to monitor its performance and usage. You want to track metrics like query volume, response times, error rates, and user satisfaction. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Enable Cloud Logging and Cloud Monitoring for Agent Builder, set up custom dashboards to track key metrics, and implement user feedback collection in your application.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Agent Builder automatically provides all necessary monitoring; no additional configuration needed.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Write all queries and responses to BigQuery and build custom monitoring dashboards with Looker.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use only user-reported issues and tickets as monitoring metrics.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Cloud Logging and Monitoring integration with custom dashboards provides comprehensive observability, while user feedback adds qualitative insights into satisfaction. B is not correct because while Agent Builder provides some default monitoring, production applications require custom dashboards and alerting tailored to specific business needs. C is not correct because while logging to BigQuery works, it requires more custom development when Cloud Monitoring provides integrated solutions for Google Cloud services. D is not correct because reactive issue reporting doesn't provide proactive monitoring, usage insights, or performance metrics needed for production systems.",
+    "difficulty": "medium",
+    "topics": [
+      "Vertex AI Agent Builder",
+      "Monitoring",
+      "Cloud Logging",
+      "Production Operations"
     ],
     "source": {
       "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",

@@ -198,9 +198,7 @@ async function main() {
   }
 }
 
-// Run if executed directly
-if (import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`) {
-  main();
-}
-
 export { runPipeline };
+
+// Run main
+main();
