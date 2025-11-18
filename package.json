@@ -19,7 +19,8 @@
     "ingest-all": "tsx scripts/ingest-all.ts",
     "ingest-all:dry-run": "tsx scripts/ingest-all.ts --dry-run",
     "test-ingestion": "tsx scripts/test-ingestion.ts",
-    "migrate": "tsx scripts/run-migration.ts"
+    "migrate": "tsx scripts/run-migration.ts",
+    "check-plans": "tsx scripts/check-study-plans.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

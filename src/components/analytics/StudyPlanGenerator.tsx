@@ -61,12 +61,19 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
   const savePlanToDb = async (newPlan: StudyPlan) => {
     if (!user?.id) {
       console.error('User not authenticated');
-      return;
+      alert('Please sign in to save your study plan');
+      return false;
     }
 
     setIsSaving(true);
     try {
-      const { error } = await saveStudyPlan(
+      console.log('💾 Saving study plan to database...', {
+        userId: user.id,
+        examDate,
+        hoursPerWeek
+      });
+      
+      const { data, error } = await saveStudyPlan(
         user.id,
         examDate,
         hoursPerWeek,
@@ -74,12 +81,17 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
       );
       
       if (error) {
-        console.error('Failed to save study plan:', error);
+        console.error('❌ Failed to save study plan:', error);
         alert('Failed to save study plan. Please try again.');
+        return false;
       }
+      
+      console.log('✅ Study plan saved successfully!', data);
+      return true;
     } catch (e) {
-      console.error('Failed to save study plan:', e);
+      console.error('❌ Exception saving study plan:', e);
       alert('Failed to save study plan. Please try again.');
+      return false;
     } finally {
       setIsSaving(false);
     }
@@ -102,10 +114,18 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
       return;
     }
 
+    console.log('🎯 Generating study plan...');
     const studyPlan = generateStudyPlan(topics, targetDate, hoursPerWeek);
+    console.log('📊 Study plan generated:', studyPlan);
+    
     setPlan(studyPlan);
-    await savePlanToDb(studyPlan);
-    setIsEditing(false);
+    const saved = await savePlanToDb(studyPlan);
+    
+    if (saved) {
+      setIsEditing(false);
+      // Optional: Show success toast
+      console.log('🎉 Study plan is now available across all your devices!');
+    }
   };
 
   const handleModify = () => {
