@@ -15,6 +15,7 @@
     "merge-questions": "tsx scripts/merge-questions.ts",
     "validate-questions": "tsx scripts/validate-questions.ts",
     "ingest-questions": "tsx scripts/ingest-to-supabase.ts",
+    "ingest-topics": "tsx scripts/ingest-topics.ts",
     "ingest-all": "tsx scripts/ingest-all.ts",
     "ingest-all:dry-run": "tsx scripts/ingest-all.ts --dry-run",
     "test-ingestion": "tsx scripts/test-ingestion.ts"
