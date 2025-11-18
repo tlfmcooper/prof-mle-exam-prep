@@ -283,6 +283,36 @@ Progress tracking & analytics:
 - Weak area detection
 - Spaced repetition
 
+### 4. Data Ingestion
+**Location:** `.skills/data-ingestion/skill.md`
+
+Bulk question data ingestion:
+- Merge multiple JSON batch files
+- Validate question schema
+- Deduplicate questions
+- Insert into Supabase
+- Error handling & retries
+- Progress tracking
+
+---
+
+## 📥 Data Ingestion
+
+For importing question batches into the database:
+
+```bash
+# Test with a sample first
+npm run test-ingestion
+
+# Run full pipeline (dry-run mode)
+npm run ingest-all:dry-run
+
+# Import to database
+npm run ingest-all
+```
+
+See **[Data Ingestion Guide](docs/DATA_INGESTION.md)** for complete instructions.
+
 ---
 
 ## 📊 Data Files
