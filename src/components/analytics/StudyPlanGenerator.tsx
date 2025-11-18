@@ -34,6 +34,7 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
       setIsLoading(true);
       try {
         const { data, error } = await loadStudyPlan(user.id);
+        
         if (error) {
           console.error('Failed to load study plan:', error);
           return;
