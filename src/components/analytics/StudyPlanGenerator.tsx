@@ -7,7 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { generateStudyPlan, estimateStudyHours } from '@/lib/studyPlan';
 import { StudyPlan } from '@/lib/types/analytics';
 import { TopicPerformance } from '@/lib/types/analytics';
-import { Calendar, Clock, Target, TrendingUp, RefreshCw, Edit3 } from 'lucide-react';
+import { Calendar, Clock, Target, TrendingUp, RefreshCw, Edit3, Loader2 } from 'lucide-react';
+import { saveStudyPlan, loadStudyPlan, StudyPlanData } from '@/lib/supabase';
+import { useAuth } from '@/hooks/useAuth';
 
 interface StudyPlanGeneratorProps {
   topics: TopicPerformance[];
@@ -15,54 +17,79 @@ interface StudyPlanGeneratorProps {
   userId?: string;
 }
 
-const STORAGE_KEY = 'mle-study-plan';
-
-interface StoredPlan {
-  plan: StudyPlan;
-  examDate: string;
-  hoursPerWeek: number;
-  createdAt: string;
-}
-
-export function StudyPlanGenerator({ topics, currentAccuracy, userId }: StudyPlanGeneratorProps) {
+export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGeneratorProps) {
+  const { user } = useAuth();
   const [examDate, setExamDate] = useState('');
   const [hoursPerWeek, setHoursPerWeek] = useState(10);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Load saved plan on mount
   useEffect(() => {
-    const stored = localStorage.getItem(`${STORAGE_KEY}-${userId || 'default'}`);
-    if (stored) {
+    if (!user?.id) return;
+
+    const loadPlan = async () => {
+      setIsLoading(true);
       try {
-        const parsed: StoredPlan = JSON.parse(stored);
-        // Check if plan is still valid (exam date not passed)
-        if (new Date(parsed.examDate) > new Date()) {
-          setPlan(parsed.plan);
-          setExamDate(parsed.examDate);
-          setHoursPerWeek(parsed.hoursPerWeek);
-        } else {
-          // Clear expired plan
-          localStorage.removeItem(`${STORAGE_KEY}-${userId || 'default'}`);
+        const { data, error } = await loadStudyPlan(user.id);
+        if (error) {
+          console.error('Failed to load study plan:', error);
+          return;
+        }
+        
+        if (data) {
+          // Parse the stored plan data
+          const planData = data.plan_data as unknown as StudyPlanData;
+          setPlan(planData);
+          setExamDate(data.exam_date);
+          setHoursPerWeek(data.hours_per_week);
         }
       } catch (e) {
         console.error('Failed to load study plan:', e);
+      } finally {
+        setIsLoading(false);
       }
-    }
-  }, [userId]);
-
-  // Save plan when generated
-  const savePlan = (newPlan: StudyPlan) => {
-    const stored: StoredPlan = {
-      plan: newPlan,
-      examDate,
-      hoursPerWeek,
-      createdAt: new Date().toISOString(),
     };
-    localStorage.setItem(`${STORAGE_KEY}-${userId || 'default'}`, JSON.stringify(stored));
+
+    loadPlan();
+  }, [user?.id]);
+
+  // Save plan to database
+  const savePlanToDb = async (newPlan: StudyPlan) => {
+    if (!user?.id) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await saveStudyPlan(
+        user.id,
+        examDate,
+        hoursPerWeek,
+        newPlan as StudyPlanData
+      );
+      
+      if (error) {
+        console.error('Failed to save study plan:', error);
+        alert('Failed to save study plan. Please try again.');
+      }
+    } catch (e) {
+      console.error('Failed to save study plan:', e);
+      alert('Failed to save study plan. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
+    if (!user?.id) {
+      alert('Please sign in to save your study plan');
+      return;
+    }
+
     if (!examDate) {
       alert('Please select an exam date');
       return;
@@ -76,7 +103,7 @@ export function StudyPlanGenerator({ topics, currentAccuracy, userId }: StudyPla
 
     const studyPlan = generateStudyPlan(topics, targetDate, hoursPerWeek);
     setPlan(studyPlan);
-    savePlan(studyPlan);
+    await savePlanToDb(studyPlan);
     setIsEditing(false);
   };
 
@@ -125,8 +152,16 @@ export function StudyPlanGenerator({ topics, currentAccuracy, userId }: StudyPla
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Loading state */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <span className="ml-2 text-muted-foreground">Loading your study plan...</span>
+          </div>
+        )}
+
         {/* Show inputs if no plan or editing */}
-        {(!plan || isEditing) && (
+        {!isLoading && (!plan || isEditing) && (
           <>
             {/* Input Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,29 +206,48 @@ export function StudyPlanGenerator({ topics, currentAccuracy, userId }: StudyPla
             )}
 
             <div className="flex gap-2">
-              <Button onClick={handleGenerate} className="flex-1" size="lg">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                {plan ? 'Regenerate Plan' : 'Generate Personalized Study Plan'}
+              <Button 
+                onClick={handleGenerate} 
+                className="flex-1" 
+                size="lg"
+                disabled={isSaving || !user?.id}
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    {plan ? 'Regenerate Plan' : 'Generate Personalized Study Plan'}
+                  </>
+                )}
               </Button>
               {isEditing && (
-                <Button variant="outline" onClick={handleCancelEdit} size="lg">
+                <Button variant="outline" onClick={handleCancelEdit} size="lg" disabled={isSaving}>
                   Cancel
                 </Button>
               )}
             </div>
+            {!user?.id && (
+              <p className="text-sm text-destructive text-center">
+                Please sign in to save your study plan
+              </p>
+            )}
           </>
         )}
 
         {/* Show modify button when plan exists and not editing */}
-        {plan && !isEditing && (
-          <Button variant="outline" onClick={handleModify} className="w-full" size="lg">
+        {!isLoading && plan && !isEditing && (
+          <Button variant="outline" onClick={handleModify} className="w-full" size="lg" disabled={isSaving}>
             <Edit3 className="h-4 w-4 mr-2" />
             Modify Plan Settings
           </Button>
         )}
 
         {/* Plan Display */}
-        {plan && (
+        {!isLoading && plan && (
           <div className="space-y-6 mt-8 pt-6 border-t">
             {/* Summary */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

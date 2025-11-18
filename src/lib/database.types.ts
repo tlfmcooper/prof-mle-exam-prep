@@ -221,29 +221,29 @@ export type Database = {
         Row: {
           id: string
           user_id: string
-          topic_id: string
-          target_date: string
-          target_mastery_percentage: number
-          status: 'active' | 'completed' | 'paused'
+          exam_date: string
+          hours_per_week: number
+          plan_data: Json
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
           user_id: string
-          topic_id: string
-          target_date: string
-          target_mastery_percentage: number
-          status: 'active' | 'completed' | 'paused'
+          exam_date: string
+          hours_per_week?: number
+          plan_data: Json
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          topic_id?: string
-          target_date?: string
-          target_mastery_percentage?: number
-          status?: 'active' | 'completed' | 'paused'
+          exam_date?: string
+          hours_per_week?: number
+          plan_data?: Json
           created_at?: string
+          updated_at?: string
         }
       }
     }
