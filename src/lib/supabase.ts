@@ -76,34 +76,34 @@ export async function saveStudyPlan(
 
     if (existing) {
       // Update existing plan
-      const { data, error } = await supabase
-        .from('study_plans')
+      const { data, error } = await (supabase
+        .from('study_plans') as any)
         .update({
           exam_date: examDate,
           hours_per_week: hoursPerWeek,
-          plan_data: planData as any,
+          plan_data: planData,
         })
         .eq('user_id', userId)
         .select()
         .single();
 
       if (error) throw error;
-      return { data, error: null };
+      return { data: data as StudyPlan, error: null };
     } else {
       // Insert new plan
-      const { data, error } = await supabase
-        .from('study_plans')
+      const { data, error } = await (supabase
+        .from('study_plans') as any)
         .insert({
           user_id: userId,
           exam_date: examDate,
           hours_per_week: hoursPerWeek,
-          plan_data: planData as any,
+          plan_data: planData,
         })
         .select()
         .single();
 
       if (error) throw error;
-      return { data, error: null };
+      return { data: data as StudyPlan, error: null };
     }
   } catch (error) {
     console.error('Error saving study plan:', error);
@@ -132,14 +132,16 @@ export async function loadStudyPlan(
       throw error;
     }
 
+    const typedData = data as StudyPlan;
+
     // Check if plan is still valid (exam date not passed)
-    if (data && new Date(data.exam_date) <= new Date()) {
+    if (typedData && new Date(typedData.exam_date) <= new Date()) {
       // Delete expired plan
       await deleteStudyPlan(userId);
       return { data: null, error: null };
     }
 
-    return { data, error: null };
+    return { data: typedData, error: null };
   } catch (error) {
     console.error('Error loading study plan:', error);
     return { data: null, error: error as Error };
