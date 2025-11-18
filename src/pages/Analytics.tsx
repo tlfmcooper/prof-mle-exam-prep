@@ -310,6 +310,7 @@ export default function Analytics() {
         <StudyPlanGenerator
           topics={analytics.by_topic}
           currentAccuracy={analytics.overall.overall_accuracy}
+          userId={user?.id}
         />
 
         {/* Exam Prediction Details */}

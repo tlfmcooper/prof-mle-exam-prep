@@ -44,13 +44,13 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
   const renderLegend = (props: any) => {
     const { payload } = props;
     return (
-      <div className="flex flex-wrap justify-center gap-3 px-4 mt-4">
+      <div className="flex flex-col items-center gap-2 px-4 pt-2">
         {payload.map((entry: any, index: number) => {
           const item = data.find((d) => d.name === entry.value);
           return (
             <div key={`legend-${index}`} className="flex items-center gap-2">
               <div
-                className="w-3 h-3 rounded-sm"
+                className="w-3 h-3 rounded-sm flex-shrink-0"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-xs text-foreground">
@@ -64,12 +64,12 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
   };
 
   return (
-    <ResponsiveContainer width="100%" height={450} className="min-h-[450px]">
+    <ResponsiveContainer width="100%" height={500} className="min-h-[500px]">
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="40%"
+          cy="30%"
           labelLine={false}
           label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
           outerRadius={80}
@@ -104,7 +104,7 @@ export function TimeDistributionChart({ topics, totalTime }: TimeDistributionCha
         />
         <Legend
           verticalAlign="bottom"
-          height={120}
+          height={180}
           content={renderLegend}
         />
       </PieChart>

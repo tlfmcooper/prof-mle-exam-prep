@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DatePicker } from '@/components/ui/date-picker';
@@ -7,17 +7,60 @@ import { Badge } from '@/components/ui/badge';
 import { generateStudyPlan, estimateStudyHours } from '@/lib/studyPlan';
 import { StudyPlan } from '@/lib/types/analytics';
 import { TopicPerformance } from '@/lib/types/analytics';
-import { Calendar, Clock, Target, TrendingUp } from 'lucide-react';
+import { Calendar, Clock, Target, TrendingUp, RefreshCw, Edit3 } from 'lucide-react';
 
 interface StudyPlanGeneratorProps {
   topics: TopicPerformance[];
   currentAccuracy: number;
+  userId?: string;
 }
 
-export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGeneratorProps) {
+const STORAGE_KEY = 'mle-study-plan';
+
+interface StoredPlan {
+  plan: StudyPlan;
+  examDate: string;
+  hoursPerWeek: number;
+  createdAt: string;
+}
+
+export function StudyPlanGenerator({ topics, currentAccuracy, userId }: StudyPlanGeneratorProps) {
   const [examDate, setExamDate] = useState('');
   const [hoursPerWeek, setHoursPerWeek] = useState(10);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Load saved plan on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(`${STORAGE_KEY}-${userId || 'default'}`);
+    if (stored) {
+      try {
+        const parsed: StoredPlan = JSON.parse(stored);
+        // Check if plan is still valid (exam date not passed)
+        if (new Date(parsed.examDate) > new Date()) {
+          setPlan(parsed.plan);
+          setExamDate(parsed.examDate);
+          setHoursPerWeek(parsed.hoursPerWeek);
+        } else {
+          // Clear expired plan
+          localStorage.removeItem(`${STORAGE_KEY}-${userId || 'default'}`);
+        }
+      } catch (e) {
+        console.error('Failed to load study plan:', e);
+      }
+    }
+  }, [userId]);
+
+  // Save plan when generated
+  const savePlan = (newPlan: StudyPlan) => {
+    const stored: StoredPlan = {
+      plan: newPlan,
+      examDate,
+      hoursPerWeek,
+      createdAt: new Date().toISOString(),
+    };
+    localStorage.setItem(`${STORAGE_KEY}-${userId || 'default'}`, JSON.stringify(stored));
+  };
 
   const handleGenerate = () => {
     if (!examDate) {
@@ -33,6 +76,16 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
 
     const studyPlan = generateStudyPlan(topics, targetDate, hoursPerWeek);
     setPlan(studyPlan);
+    savePlan(studyPlan);
+    setIsEditing(false);
+  };
+
+  const handleModify = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
   };
 
   const getPriorityColor = (priority: 'high' | 'medium' | 'low') => {
@@ -72,51 +125,72 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Input Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Target Exam Date
-            </label>
-            <DatePicker
-              value={examDate}
-              onChange={(e) => setExamDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-              className="w-full"
-            />
-          </div>
+        {/* Show inputs if no plan or editing */}
+        {(!plan || isEditing) && (
+          <>
+            {/* Input Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Target Exam Date
+                </label>
+                <DatePicker
+                  value={examDate}
+                  onChange={(e) => setExamDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Study Hours per Week
-            </label>
-            <Input
-              type="number"
-              value={hoursPerWeek}
-              onChange={(e) => setHoursPerWeek(Math.max(1, Number(e.target.value)))}
-              min={1}
-              max={40}
-              className="w-full"
-            />
-          </div>
-        </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Study Hours per Week
+                </label>
+                <Input
+                  type="number"
+                  value={hoursPerWeek}
+                  onChange={(e) => setHoursPerWeek(Math.max(1, Number(e.target.value)))}
+                  min={1}
+                  max={40}
+                  className="w-full"
+                />
+              </div>
+            </div>
 
-        {/* Estimate hint */}
-        {currentAccuracy < 80 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
-            <p className="text-blue-900">
-              <TrendingUp className="inline h-4 w-4 mr-1" />
-              Based on your current accuracy ({currentAccuracy.toFixed(1)}%), you may need
-              approximately <strong>{estimatedHoursTo80} hours</strong> to reach 80% readiness.
-            </p>
-          </div>
+            {/* Estimate hint */}
+            {currentAccuracy < 80 && (
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm">
+                <p className="text-blue-900 dark:text-blue-100">
+                  <TrendingUp className="inline h-4 w-4 mr-1" />
+                  Based on your current accuracy ({currentAccuracy.toFixed(1)}%), you may need
+                  approximately <strong>{estimatedHoursTo80} hours</strong> to reach 80% readiness.
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button onClick={handleGenerate} className="flex-1" size="lg">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                {plan ? 'Regenerate Plan' : 'Generate Personalized Study Plan'}
+              </Button>
+              {isEditing && (
+                <Button variant="outline" onClick={handleCancelEdit} size="lg">
+                  Cancel
+                </Button>
+              )}
+            </div>
+          </>
         )}
 
-        <Button onClick={handleGenerate} className="w-full" size="lg">
-          Generate Personalized Study Plan
-        </Button>
+        {/* Show modify button when plan exists and not editing */}
+        {plan && !isEditing && (
+          <Button variant="outline" onClick={handleModify} className="w-full" size="lg">
+            <Edit3 className="h-4 w-4 mr-2" />
+            Modify Plan Settings
+          </Button>
+        )}
 
         {/* Plan Display */}
         {plan && (
