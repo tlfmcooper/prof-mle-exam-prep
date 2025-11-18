@@ -118,8 +118,8 @@ export async function loadStudyPlan(
   userId: string
 ): Promise<{ data: StudyPlan | null; error: Error | null }> {
   try {
-    const { data, error } = await supabase
-      .from('study_plans')
+    const { data, error } = await (supabase
+      .from('study_plans') as any)
       .select('*')
       .eq('user_id', userId)
       .single();
@@ -155,8 +155,8 @@ export async function deleteStudyPlan(
   userId: string
 ): Promise<{ error: Error | null }> {
   try {
-    const { error } = await supabase
-      .from('study_plans')
+    const { error } = await (supabase
+      .from('study_plans') as any)
       .delete()
       .eq('user_id', userId);
 
