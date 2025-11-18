@@ -6,44 +6,115 @@ export function useQuestions(filters?: QuestionFilters) {
   return useQuery({
     queryKey: ['questions', filters],
     queryFn: async () => {
-      let query = supabase
+      const totalQuestions = filters?.limit || 50;
+
+      // Get all main topics with their weights
+      const { data: topics, error: topicsError } = await (supabase
+        .from('topics')
+        .select('id, name, exam_weight')
+        .is('parent_topic_id', null)
+        .order('exam_weight', { ascending: false }) as any);
+
+      if (topicsError) throw topicsError;
+
+      // Get all questions with their topic associations
+      let questionsQuery = supabase
         .from('questions')
         .select(`
           *,
-          question_topics (
-            topic:topics (*)
+          question_topics!inner (
+            topic:topics!inner (
+              id,
+              name,
+              parent_topic_id
+            )
           )
         `);
 
       if (filters?.difficulty) {
-        query = query.eq('difficulty', filters.difficulty);
+        questionsQuery = questionsQuery.eq('difficulty', filters.difficulty);
       }
 
       if (filters?.source) {
-        query = query.eq('source', filters.source);
+        questionsQuery = questionsQuery.eq('source', filters.source);
       }
 
-      if (filters?.topicIds?.length) {
-        query = query.in('question_topics.topic_id', filters.topicIds);
+      const { data: allQuestions, error: questionsError } = await (questionsQuery as any);
+
+      if (questionsError) throw questionsError;
+      if (!allQuestions || allQuestions.length === 0) return [];
+
+      // If no topics or weights, fall back to random selection
+      if (!topics || topics.length === 0) {
+        const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, totalQuestions).map((q: any) => ({
+          ...q,
+          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options || '[]'),
+          topics: q.question_topics?.map((qt: any) => qt.topic) || []
+        })) as Question[];
       }
 
-      if (filters?.limit) {
-        query = query.limit(filters.limit);
+      // Group questions by main topic
+      const questionsByTopic = new Map<string, any[]>();
+
+      topics.forEach((topic: any) => {
+        const topicQuestions = allQuestions.filter((q: any) => {
+          const questionTopics = q.question_topics || [];
+          return questionTopics.some((qt: any) => {
+            const qTopic = qt.topic;
+            return qTopic.id === topic.id || qTopic.parent_topic_id === topic.id;
+          });
+        });
+
+        // Remove duplicates
+        const uniqueQuestions = Array.from(
+          new Map(topicQuestions.map((q: any) => [q.id, q])).values()
+        );
+
+        questionsByTopic.set(topic.id, uniqueQuestions);
+      });
+
+      // Calculate number of questions per topic based on weight
+      const selectedQuestions: any[] = [];
+      const totalWeight = topics.reduce((sum: number, t: any) => sum + (t.exam_weight || 0), 0);
+
+      topics.forEach((topic: any) => {
+        const weight = topic.exam_weight || 0;
+        const questionsForTopic = Math.round((weight / totalWeight) * totalQuestions);
+        const availableQuestions = questionsByTopic.get(topic.id) || [];
+
+        // Randomly select questions from this topic
+        const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+        const selected = shuffled.slice(0, Math.min(questionsForTopic, shuffled.length));
+
+        selectedQuestions.push(...selected);
+      });
+
+      // If we don't have enough questions, add more randomly
+      if (selectedQuestions.length < totalQuestions) {
+        const remaining = totalQuestions - selectedQuestions.length;
+        const allAvailable = allQuestions.filter(
+          (q: any) => !selectedQuestions.find((sq) => sq.id === q.id)
+        );
+        const shuffled = [...allAvailable].sort(() => Math.random() - 0.5);
+        selectedQuestions.push(...shuffled.slice(0, remaining));
       }
 
-      const { data, error } = await query;
+      // Shuffle final selection and transform data
+      const shuffledQuestions = selectedQuestions
+        .sort(() => Math.random() - 0.5)
+        .slice(0, totalQuestions)
+        .map((q: any) => ({
+          ...q,
+          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options || '[]'),
+          topics: q.question_topics?.map((qt: any) => qt.topic) || [],
+        }));
 
-      if (error) throw error;
-
-      // Transform the data to match our Question type
-      return (data || []).map((q: any) => ({
-        ...q,
-        options: Array.isArray(q.options) ? q.options : JSON.parse(q.options || '[]'),
-        topics: q.question_topics?.map((qt: any) => qt.topic) || []
-      })) as Question[];
+      return shuffledQuestions as Question[];
     },
     retry: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Don't cache - we want fresh random selection each time
+    gcTime: 0,
   });
 }
 

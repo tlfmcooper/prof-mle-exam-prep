@@ -7,13 +7,57 @@ import { useExamStore } from '@/stores/examStore';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { QuestionCard } from '@/components/exam/QuestionCard';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { checkAnswer } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 
 export default function Practice() {
   const { user } = useAuth();
-  const { data: questions, isLoading } = useQuestions({ limit: 15 });
+  const [questionCount, setQuestionCount] = useState<number>(10);
+  const [customCount, setCustomCount] = useState<string>('');
+  const [isConfigured, setIsConfigured] = useState(false);
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
+
+  const { data: questions, isLoading, refetch } = useQuestions({ limit: questionCount });
   const submitAttempt = useSubmitAttempt();
+
+  // Get total questions count on mount
+  useEffect(() => {
+    async function fetchTotal() {
+      const { count } = await supabase
+        .from('questions')
+        .select('*', { count: 'exact', head: true });
+      setTotalQuestions(count || 0);
+    }
+    fetchTotal();
+  }, []);
+
+  const presetCounts = [5, 10, 20, 50];
+
+  const handlePresetSelect = (count: number) => {
+    setQuestionCount(count);
+    setCustomCount('');
+  };
+
+  const handleCustomChange = (value: string) => {
+    setCustomCount(value);
+    const num = parseInt(value);
+    if (num >= 1 && num <= totalQuestions) {
+      setQuestionCount(num);
+    }
+  };
+
+  const handleStartPractice = () => {
+    reset(); // Clear any previous session
+    setIsConfigured(true);
+    refetch();
+  };
+
+  const handleReset = () => {
+    reset();
+    setIsConfigured(false);
+  };
 
   const {
     currentQuestions,
@@ -29,13 +73,13 @@ export default function Practice() {
 
   const [startTime, setStartTime] = useState<Date | null>(null);
 
-  // Initialize session when questions load
+  // Initialize session when questions load and configured
   useEffect(() => {
-    if (questions && questions.length > 0 && currentQuestions.length === 0) {
+    if (isConfigured && questions && questions.length > 0 && currentQuestions.length === 0) {
       startSession(questions, 'practice');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questions?.length, currentQuestions.length]);
+  }, [questions?.length, currentQuestions.length, isConfigured]);
 
   const currentQuestion = currentQuestions[currentQuestionIndex];
 
@@ -102,12 +146,80 @@ export default function Practice() {
     {
       key: 'r',
       description: 'Reset practice session',
-      action: reset,
+      action: handleReset,
       preventDefault: true,
     },
-  ], [handleNext, handlePrevious, toggleExplanation, reset]);
+  ], [handleNext, handlePrevious, toggleExplanation, handleReset]);
 
   useKeyboardShortcuts({ shortcuts });
+
+  // Show configuration screen if not configured
+  if (!isConfigured) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-md w-full space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Configure Practice Session</h1>
+            <p className="mt-2 text-muted-foreground">
+              Select the number of questions for your practice set. Questions will be
+              proportionally distributed across all domains.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <label className="text-sm font-medium text-foreground">Number of Questions</label>
+            <div className="grid grid-cols-4 gap-2">
+              {presetCounts.map((count) => (
+                <button
+                  key={count}
+                  onClick={() => handlePresetSelect(count)}
+                  className={`py-3 px-4 rounded-lg border-2 text-sm font-medium transition-all ${
+                    questionCount === count && !customCount
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:border-primary/50 text-foreground'
+                  }`}
+                >
+                  {count}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Input
+                type="number"
+                placeholder={`Custom (1-${totalQuestions || 500})`}
+                value={customCount}
+                onChange={(e) => handleCustomChange(e.target.value)}
+                min={1}
+                max={totalQuestions || 500}
+                className="flex-1"
+              />
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                or enter a custom number
+              </span>
+            </div>
+
+            {totalQuestions > 0 && (
+              <p className="text-xs text-muted-foreground">
+                Total questions available: {totalQuestions}
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-3">
+            <Link to="/dashboard" className="flex-1">
+              <Button variant="outline" className="w-full">
+                Cancel
+              </Button>
+            </Link>
+            <Button onClick={handleStartPractice} className="flex-1">
+              Start Practice
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -167,7 +279,7 @@ export default function Practice() {
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <KeyboardShortcutsHelp shortcuts={shortcuts} />
-              <Button variant="outline" size="sm" onClick={reset}>
+              <Button variant="outline" size="sm" onClick={handleReset}>
                 Reset
               </Button>
             </div>

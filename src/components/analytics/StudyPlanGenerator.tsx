@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { generateStudyPlan, estimateStudyHours } from '@/lib/studyPlan';
@@ -78,8 +79,7 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
               <Calendar className="h-4 w-4" />
               Target Exam Date
             </label>
-            <Input
-              type="date"
+            <DatePicker
               value={examDate}
               onChange={(e) => setExamDate(e.target.value)}
               min={new Date().toISOString().split('T')[0]}

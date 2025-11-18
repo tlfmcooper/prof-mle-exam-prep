@@ -83,16 +83,16 @@ export function QuestionCard({
 
           if (showExplanation) {
             if (isCorrectOption) {
-              optionStyle += ' border-green-500 bg-green-50';
+              optionStyle += ' border-green-500 bg-green-500/20 text-foreground';
             } else if (isSelected && !isCorrectOption) {
-              optionStyle += ' border-red-500 bg-red-50';
+              optionStyle += ' border-red-500 bg-red-500/20 text-foreground';
             } else {
-              optionStyle += ' border-gray-200';
+              optionStyle += ' border-border text-foreground';
             }
           } else {
             optionStyle += isSelected
-              ? ' border-primary bg-primary/10'
-              : ' border-gray-200 hover:border-primary/50';
+              ? ' border-primary bg-primary/10 text-foreground'
+              : ' border-border hover:border-primary/50 text-foreground';
           }
 
           return (
