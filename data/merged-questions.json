@@ -1,5 +1,711 @@
 [
   {
+    "id": "q001",
+    "question_number": 1,
+    "question_text": "Your organization's marketing team wants to send biweekly scheduled emails to customers that are expected to spend above a variable threshold. This is the first ML use case for the marketing team, and you have been tasked with the implementation. After setting up a new Google Cloud project, you use Vertex AI Workbench to develop model training and batch inference with an XGBoost model on the transactional data stored in Cloud Storage. You want to automate the end-to-end pipeline that will securely provide the predictions to the marketing team, while minimizing cost and code maintenance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a scheduled pipeline on Vertex AI Pipelines that accesses the data from Cloud Storage, uses Vertex AI to perform training and batch prediction, and outputs a file in a Cloud Storage bucket that contains a list of all customer emails and expected spending.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Create a scheduled pipeline on Cloud Composer that accesses the data from Cloud Storage, copies the data to BigQuery, uses BigQuery ML to perform training and batch prediction, and outputs a table in BigQuery with customer emails and expected spending.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a scheduled notebook on Vertex AI Workbench that accesses the data from Cloud Storage, performs training and batch prediction on the managed notebook instance, and outputs a file in a Cloud Storage bucket that contains a list of all customer emails and expected spending.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a scheduled pipeline on Cloud Composer that accesses the data from Cloud Storage, uses Vertex AI to perform training and batch prediction, and sends an email to the marketing team's Gmail group email with an attachment that contains an encrypted list of all customer emails and expected spending.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI Pipelines and Cloud Storage are cost-effective and secure solutions. The solution requires the least number of code interactions because the marketing team can update the pipeline and schedule parameters from the Google Cloud console. B is not correct because Cloud Composer is not a cost-efficient solution for one pipeline because its environment is always active. In addition, using BigQuery is not the most cost-effective solution. C is not correct because the marketing team would have to enter the Vertex AI Workbench instance to update a pipeline parameter, which does not minimize code interactions. D is not correct because Cloud Composer is not a cost-efficient solution for one pipeline because its environment is always active. Also, using email to send personally identifiable information (PII) is not a recommended approach.",
+    "difficulty": "medium",
+    "topics": [
+      "MLOps",
+      "Vertex AI Pipelines",
+      "Automation",
+      "Batch Prediction"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 3,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q002",
+    "question_number": 2,
+    "question_text": "You have developed a very large network in TensorFlow Keras that is expected to train for multiple days. The model uses only built-in TensorFlow operations to perform training with high-precision arithmetic. You want to update the code to run distributed training using tf.distribute.Strategy and configure a corresponding machine instance in Compute Engine to minimize training time. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Select an instance with an attached GPU, and gradually scale up the machine type until the optimal execution time is reached. Add MirroredStrategy to the code, and create the model in the strategy's scope with batch size dependent on the number of replicas.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Create an instance group with one instance with attached GPU, and gradually scale up the machine type until the optimal execution time is reached. Add TF_CONFIG and MultiWorkerMirroredStrategy to the code, create the model in the strategy's scope, and set up data autosharding.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Create a TPU virtual machine, and gradually scale up the machine type until the optimal execution time is reached. Add TPU initialization at the start of the program, define a distributed TPUStrategy, and create the model in the strategy's scope with batch size and training steps dependent on the number of TPUs.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Create a TPU node, and gradually scale up the machine type until the optimal execution time is reached. Add TPU initialization at the start of the program, define a distributed TPUStrategy, and create the model in the strategy's scope with batch size and training steps dependent on the number of TPUs.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "B"
+    ],
+    "explanation": "B is correct because GPUs are the correct hardware for deep learning training with high-precision training, and distributing training with multiple instances will allow maximum flexibility in fine-tuning the accelerator selection to minimize execution time. Note that one worker could still be the best setting if the overhead of synchronizing the gradients across machines is too high, in which case this approach will be equivalent to MirroredStrategy. A is not correct because it is suboptimal in minimizing execution time for model training. MirroredStrategy only supports multiple GPUs on one instance, which may not be as performant as running on multiple instances. C and D are not correct because TPUs are not recommended for workloads that require high-precision arithmetic, and are recommended for models that train for weeks or months. Also, TPU nodes are not recommended unless required by the application.",
+    "difficulty": "hard",
+    "topics": [
+      "Distributed Training",
+      "TensorFlow",
+      "GPU",
+      "tf.distribute.Strategy"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 5,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q003",
+    "question_number": 3,
+    "question_text": "You developed a tree model based on an extensive feature set of user behavioral data. The model has been in production for 6 months. New regulations were just introduced that require anonymizing personally identifiable information (PII), which you have identified in your feature set using the Cloud Data Loss Prevention API. You want to update your model pipeline to adhere to the new regulations while minimizing a reduction in model performance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Redact the features containing PII data, and train the model from scratch.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Mask the features containing PII data, and tune the model from the last checkpoint.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use key-based hashes to tokenize the features containing PII data, and train the model from scratch.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Use deterministic encryption to tokenize the features containing PII data, and tune the model from the last checkpoint.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "C"
+    ],
+    "explanation": "C is correct because hashing is an irreversible transformation that ensures anonymization and does not lead to an expected drop in model performance because you keep the same feature set while enforcing referential integrity. A is not correct because removing features from the model does not keep referential integrity by maintaining the original relationship between records, and is likely to cause a drop in performance. B is not correct because masking does not enforce referential integrity, and a drop in model performance may happen. Also, tuning the existing model is not recommended because the model training on the original dataset may have memorized sensitive information. D is not correct because deterministic encryption is reversible, and anonymization requires irreversibility. Also, tuning the existing model is not recommended because the model training on the original dataset may have memorized sensitive information.",
+    "difficulty": "medium",
+    "topics": [
+      "Data Privacy",
+      "PII",
+      "Data Preparation",
+      "Cloud DLP",
+      "Anonymization"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 7,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q004",
+    "question_number": 4,
+    "question_text": "You need to train an object detection model to identify bounding boxes around Post-it Notes® in an image. Post-it Notes can have a variety of background colors and shapes. You have a dataset with 1000 images with a maximum size of 1.4MB and a CSV file containing annotations stored in Cloud Storage. You want to select a training method that reliably detects Post-it Notes of any relative size in the image and that minimizes the time to train a model. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use the Cloud Vision API in Vertex AI with OBJECT_LOCALIZATION type, and filter the detected objects that match the Post-it Note category only.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Upload your dataset into Vertex AI. Use Vertex AI AutoML Vision Object Detection with accuracy as the optimization metric, early stopping enabled, and no training budget specified.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Write a Python training application that trains a custom vision model on the training set. Autopackage the application, and configure a custom training job in Vertex AI.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Write a Python training application that performs transfer learning on a pre-trained neural network. Autopackage the application, and configure a custom training job in Vertex AI.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "B"
+    ],
+    "explanation": "B is correct because AutoML is a codeless solution that minimizes time to train and develop the model, and it is capable of detecting bounding boxes up to one percent the length of a side of an image. A is not correct because the object detection capability of the Cloud Vision API confidently detects large objects within the image and is not the best option to reliably detect sticky notes of any relative size in the image. C is not correct because creating a custom training job requires more development time than using AutoML does. The extra flexibility of custom training is not required because AutoML achieves state-of-the-art performance even on tiny objects (8-32 pixels). Additionally, training a model from scratch is not expected to be as performant as transfer learning. D is not correct because creating a custom training job requires more development time than using AutoML does. The extra flexibility of custom training is not required because AutoML achieves state-of-the-art performance even on tiny objects (8-32 pixels).",
+    "difficulty": "medium",
+    "topics": [
+      "AutoML",
+      "Object Detection",
+      "Computer Vision",
+      "Vertex AI"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 9,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q005",
+    "question_number": 5,
+    "question_text": "You used Vertex AI Workbench notebooks to build a model in TensorFlow. The notebook i) loads data from Cloud Storage, ii) uses TensorFlow Transform to pre-process data, iii) uses built-in TensorFlow operators to define a sequential Keras model, iv) trains and evaluates the model with model.fit() on the notebook instance, and v) saves the trained model to Cloud Storage for serving. You want to orchestrate the model retraining pipeline to run on a weekly schedule while minimizing cost and implementation effort. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add relevant parameters to the notebook cells and set a recurring run in Vertex AI Workbench.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use TensorFlow Extended (TFX) with Google Cloud executors to define your pipeline, and automate the pipeline to run on Cloud Composer.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Kubeflow Pipelines SDK with Google Cloud executors to define your pipeline, and use Vertex AI pipelines to automate the pipeline to run.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Separate each cell in the notebook into a containerised application and use Cloud Workflows to launch each application.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "C"
+    ],
+    "explanation": "C is correct because using the Kubeflow Pipelines SDK is the best practice to orchestrate AI pipelines with modular steps. A is not correct because Vertex AI Workbench does not provide alerts, and you would have to log in every week to check the pipeline run status. This does not minimize monitoring steps. B is not correct because Cloud Composer does not provide ML-specific monitoring capabilities. Also, unless many pipelines are hosted in Cloud Composer, this solution is not the most cost-efficient. D is not correct because this approach requires more effort and does not follow best practices given that Vertex AI pipelines is the more suitable product to run modular containerised AI pipeline steps.",
+    "difficulty": "medium",
+    "topics": [
+      "MLOps",
+      "Vertex AI Pipelines",
+      "Kubeflow",
+      "Orchestration"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 11,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q006",
+    "question_number": 6,
+    "question_text": "You need to develop an online model prediction service that accesses pre-computed near-real-time features and returns a customer churn probability value. The features are saved in BigQuery and updated hourly using a scheduled query. You want this service to be low latency and scalable and require minimal maintenance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "1. Configure Vertex AI Feature Store to automatically import features from BigQuery, and serve them to the model. 2. Deploy the prediction model as a custom Vertex AI endpoint, and enable automatic scaling.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "1. Configure a Cloud Function that exports features from BigQuery to Memorystore. 2. Use a custom container on Google Kubernetes Engine to deploy a service that performs feature lookup from Memorystore and performs inference with an in-memory model.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "1. Configure a Cloud Function that exports features from BigQuery to Vertex AI Feature Store. 2. Use the online service API from Vertex AI Feature Store to perform feature lookup. Deploy the model as a custom prediction endpoint in Vertex AI, and enable automatic scaling.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "1. Configure a Cloud Function that exports features from BigQuery to Vertex AI Feature Store. 2. Use a custom container on Google Kubernetes Engine to deploy a service that performs feature lookup from Vertex AI Feature Store's online serving API and performs inference with an in-memory model.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because using Vertex AI Feature Store with BigQuery prioritizes low latency, scalability, requires minimal maintenance, and facilitates integration with other Vertex AI services as a fully managed solution. B is not correct because feature lookup and model inference can be performed in Cloud Function, and using Google Kubernetes Engine increases maintenance. C is not correct because Vertex AI Feature Store is not as low-latency as Memorystore. D is not correct because feature lookup and model inference can be performed in Cloud Function, and using Google Kubernetes Engine increases maintenance. Also, Vertex AI Feature Store is not as low-latency as Memorystore.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Serving",
+      "Vertex AI Feature Store",
+      "Low Latency",
+      "Online Prediction"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 13,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q007",
+    "question_number": 7,
+    "question_text": "You are logged into the Vertex AI Pipeline UI and noticed that an automated production TensorFlow training pipeline finished three hours earlier than a typical run. You do not have access to production data for security reasons, but you have verified that no alert was logged in any of the ML system's monitoring systems and that the pipeline code has not been updated recently. You want to assure the quality of the pipeline results as quickly as possible so you can determine whether to deploy the trained model. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Vertex AI TensorBoard to check whether the training metrics converge to typical values. Verify pipeline input configuration and steps have the expected values.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Upgrade to the latest version of the Vertex SDK and re-run the pipeline.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Determine the trained model's location from the pipeline's metadata in Vertex ML Metadata, and compare the trained model's size to the previous model.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Request access to production systems. Get the training data's location from the pipeline's metadata in Vertex ML Metadata, and compare data volumes of the current run to the previous run.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because TensorBoard provides a compact and complete overview of training metrics such as loss and accuracy over time. If the training converges with the model's expected accuracy, the model can be deployed. B is not correct because checking input configuration is a good test, but it is not sufficient to ensure that model performance is acceptable. You can access logs and outputs for each pipeline step to review model performance, but it would involve more steps than using TensorBoard. C is not correct because model size is a good indicator of health but does not provide a complete overview to make sure that the model can be safely deployed. Note that the pipeline's metadata can also be accessed directly from Vertex AI Pipelines. D is not correct because data is the most probable cause of this behavior, but it is not the only possible cause. Also, access requests could take a long time and are not the most secure option. Note that the pipeline's metadata can also be accessed directly from Vertex AI Pipelines.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Monitoring",
+      "TensorBoard",
+      "Vertex AI",
+      "Pipeline Quality"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 15,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q008",
+    "question_number": 8,
+    "question_text": "You recently developed a custom ML model that was trained in Vertex AI on a post-processed training dataset stored in BigQuery. You used a Cloud Run container to deploy the prediction service. The service performs feature lookup and pre-processing and sends a prediction request to a model endpoint in Vertex AI. You want to configure a comprehensive monitoring solution for training-serving skew that requires minimal maintenance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Create a Model Monitoring job for the Vertex AI endpoint that uses the training data in BigQuery to perform training-serving skew detection and uses email to send alerts. When an alert is received, use the console to diagnose the issue.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Update the model hosted in Vertex AI to enable request-response logging. Create a Data Studio dashboard that compares training data and logged data for potential training-serving skew and uses email to send a daily scheduled report.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Create a Model Monitoring job for the Vertex AI endpoint that uses the training data in BigQuery to perform training-serving skew detection and uses Cloud Logging to send alerts. Set up a Cloud Function to initiate model retraining that is triggered when an alert is logged.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Update the model hosted in Vertex AI to enable request-response logging. Schedule a daily DataFlow Flex job that uses Tensorflow Data Validation to detect training-serving skew and uses Cloud Logging to send alerts. Set up a Cloud Function to initiate model retraining that is triggered when an alert is logged.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because Vertex AI Model Monitoring is a fully managed solution for monitoring training-serving skew that, by definition, requires minimal maintenance. Using the console for diagnostics is recommended for a comprehensive monitoring solution because there could be multiple causes for the skew that require manual review. B is not correct because this solution does not minimize maintenance. It involves multiple custom components that require additional updates for any schema change. C is not correct because a model retrain does not necessarily fix skew. For example, differences in pre-processing logic between training and prediction can also cause skew. D is not correct because this solution does not minimize maintenance. It involves multiple components that require additional updates for any schema change. Also, a model retrain does not necessarily fix skew. For example, differences in pre-processing logic between training and prediction can also cause skew.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Monitoring",
+      "Training-Serving Skew",
+      "Vertex AI",
+      "MLOps"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 17,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q009",
+    "question_number": 9,
+    "question_text": "You recently developed a classification model that predicts which customers will be repeat customers. Before deploying the model, you perform post-training analysis on multiple data slices and discover that the model is under-predicting for users who are more than 60 years old. You want to remove age bias while maintaining similar offline performance. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Perform correlation analysis on the training feature set against the age column, and remove features that are highly correlated with age from the training and evaluation sets.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Review the data distribution for each feature against the bucketized age column for the training and evaluation sets, and introduce preprocessing to even irregular feature distributions.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Configure the model to support explainability, and modify the input-baselines to include min and max age ranges.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Apply a calibration layer at post-processing that matches the prediction distributions of users below and above 60 years old.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "B"
+    ],
+    "explanation": "B is correct because this approach compensates for bias directly in the data by enhancing the data distribution of users above 60 years old. Some useful preprocessing steps could be filling null values, bucketizing, clipping outliers, sampling, or even collecting new data. A is not correct because this approach could lead to large drops in offline performance. C is not correct because modifying input baselines will only adjust explainability of model features and not offline model performance. D is not correct because this approach could add unconscious or implicit bias to the label. This approach is not recommended because it is a brittle solution that fixes the symptom rather than the cause.",
+    "difficulty": "medium",
+    "topics": [
+      "Bias & Fairness",
+      "Responsible AI",
+      "Data Preparation",
+      "Model Bias"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 19,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q010",
+    "question_number": 10,
+    "question_text": "You downloaded a TensorFlow language model pre-trained on a proprietary dataset by another company, and you tuned the model with Vertex AI Training by replacing the last layer with a custom dense layer. The model achieves the expected offline accuracy; however, it exceeds the required online prediction latency by 20ms. You want to reduce latency while minimizing the offline performance drop and modifications to the model before deploying the model to production. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Apply post-training quantization on the tuned model, and serve the quantized model.",
+        "is_correct": true
+      },
+      {
+        "id": "B",
+        "text": "Apply knowledge distillation to train a new, smaller 'student' model that mimics the behavior of the larger, fine-tuned model.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use pruning to tune the pre-trained model on your dataset, and serve the pruned model after stripping it of training variables.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use clustering to tune the pre-trained model on your dataset, and serve the clustered model after stripping it of training variables.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "A"
+    ],
+    "explanation": "A is correct because post-training quantization is the recommended option for reducing model latency when re-training is not possible. Post-training quantization can minimally decrease model performance. B is not correct because tuning the whole model on the custom dataset only will cause a drop in offline performance. C is not correct because tuning the whole model on the custom dataset only will cause a drop in offline performance. Also, pruning helps in compressing model size, but it is expected to provide less latency improvements than quantization. D is not correct because tuning the whole model on the custom dataset only will cause a drop in offline performance. Also, clustering helps in compressing model size, but it does not reduce latency.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Optimization",
+      "Latency Reduction",
+      "Quantization",
+      "TensorFlow"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 20,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q011",
+    "question_number": 11,
+    "question_text": "You have a dataset that is split into training, validation, and test sets. All the sets have similar distributions. You have sub-selected the most relevant features and trained a neural network. TensorBoard plots show the training loss oscillating around 0.9, with the validation loss higher than the training loss by 0.3. You want to update the training regime to maximize the convergence of both losses and reduce overfitting. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Decrease the learning rate to fix the validation loss, and increase the number of training epochs to improve the convergence of both losses.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Decrease the learning rate to fix the validation loss, and increase the number and dimension of the layers in the network to improve the convergence of both losses.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Introduce L1 regularization to fix the validation loss, and increase the learning rate and the number of training epochs to improve the convergence of both losses.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Introduce L2 regularization to fix the validation loss.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer_ids": [
+      "D"
+    ],
+    "explanation": "D is correct because L2 regularization prevents overfitting. Increasing the model's complexity boosts the predictive ability of the model, which is expected to optimize loss convergence when underfitting. A is not correct because changing the learning rate does not reduce overfitting. Increasing the number of training epochs is not expected to improve the losses significantly. B is not correct because changing the learning rate does not reduce overfitting. C is not correct because increasing the number of training epochs is not expected to improve the losses significantly, and increasing the learning rate could also make the model training unstable. L1 regularization could be used to stabilize the learning, but it is not expected to be particularly helpful because only the most relevant features have been used for training.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Training",
+      "Regularization",
+      "Overfitting",
+      "Neural Networks"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 21,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q012",
+    "question_number": 12,
+    "question_text": "You recently used Vertex AI Prediction to deploy a custom-trained model in production. The automated re-training pipeline made available a new model version that passed all unit and infrastructure tests. You want to define a rollout strategy for the new model version that guarantees an optimal user experience with zero downtime. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Release the new model version in the same Vertex AI endpoint. Use traffic splitting in Vertex AI Prediction to route a small random subset of requests to the new version and, if the new version is successful, gradually route the remaining traffic to it.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Release the new model version in a new Vertex AI endpoint. Update the application to send all requests to both Vertex AI endpoints, and log the predictions from the new endpoint. If the new version is successful, route all traffic to the new application.",
+        "is_correct": true
+      },
+      {
+        "id": "C",
+        "text": "Deploy the current model version with an Istio resource in Google Kubernetes Engine, and route production traffic to it. Deploy the new model version, and use Istio to route a small random subset of traffic to it. If the new version is successful, gradually route the remaining traffic to it.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Install Seldon Core and deploy an Istio resource in Google Kubernetes Engine. Deploy the current model version and the new model version using the multi-armed bandit algorithm in Seldon to dynamically route requests between the two versions before eventually routing all traffic over to the best-performing version.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "B"
+    ],
+    "explanation": "B is correct because shadow deployments minimize the risk of affecting user experience while ensuring zero downtime. A is not correct because canary deployments may affect user experience, even if on a small subset of users. C is not correct because canary deployments may affect user experience, even if on a small subset of users. This approach is a less managed alternative to response A and could cause downtime when moving between services. D is not correct because the multi-armed bandit approach may affect user experience, even if on a small subset of users. This approach could cause downtime when moving between services.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Deployment",
+      "Shadow Deployment",
+      "MLOps",
+      "Zero Downtime"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 23,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q013",
+    "question_number": 13,
+    "question_text": "You work as an analyst at a large banking firm. You are developing a robust, scalable ML pipeline to train several regression and classification models. Your primary focus for the pipeline is model interpretability. You want to productionize the pipeline as quickly as possible. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use Tabular Workflow for Wide & Deep through Vertex AI Pipelines to jointly train wide linear models and deep neural networks.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Use Cloud Composer to build the training pipelines for custom deep learning-based models.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use Google Kubernetes Engine to build a custom training pipeline for XGBoost-based models.",
+        "is_correct": false
+      },
+      {
+        "id": "D",
+        "text": "Use Tabular Workflow for TabNet through Vertex AI Pipelines to train attention-based models.",
+        "is_correct": true
+      }
+    ],
+    "correct_answer_ids": [
+      "D"
+    ],
+    "explanation": "D is correct because TabNet uses sequential attention that promotes model interpretability and Tabular Workflows is a set of integrated, fully managed, and scalable pipelines for end-to-end ML with tabular data for regression and classification. A is not correct because though Tabular Workflows for Wide & Deep is capable of handling classification and regression pipelines, it's optimized for memorization and generalization, and in general deep learning-based models are not preferred for interpretability. B is not correct because Cloud Composer is not the right tool to build an ML pipeline quickly, and in general deep learning-based models are not preferred for interpretability. C is not correct because building a pipeline on Google Kubernetes Engine would take a long time.",
+    "difficulty": "medium",
+    "topics": [
+      "Model Interpretability",
+      "Tabular Workflows",
+      "TabNet",
+      "Vertex AI"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 25,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q014",
+    "question_number": 14,
+    "question_text": "You are developing a custom image classification model in Python. You plan to run your training application on Vertex AI. Your input dataset contains several hundred thousand small images. You need to determine how to store and access the images for training. You want to maximize data throughput and minimize training time while reducing the amount of additional code. What should you do?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Store image files in Cloud Storage, and access them directly.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Store image files in Cloud Storage, and access them by using serialized records.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Store image files in Cloud Filestore, and access them by using serialized records.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Store image files in Cloud Filestore, and access them directly by using an NFS mount point.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "C"
+    ],
+    "explanation": "C is correct because Filestore is faster than Cloud Storage for accessing files, and serialized records are faster for feeding training pipelines than individual files. A is not correct because Cloud Storage is not optimized for accessing lots of small files, as there is overhead in establishing the connections to retrieve each file. B is not correct because although accessing a large archive via serialized records (TFRecords, WebDatasets) is faster than small files, it's still slower than using Filestore. D is not correct because although Filestore is faster than Cloud Storage for accessing files, serialized records are still faster than individual file I/O.",
+    "difficulty": "medium",
+    "topics": [
+      "Data Storage",
+      "Training Performance",
+      "Cloud Filestore",
+      "Data Throughput"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 26,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
+    "id": "q015",
+    "question_number": 15,
+    "question_text": "Your company manages an ecommerce website. You developed an ML model that recommends additional products to users in near real time based on items currently in the user's cart. The workflow will include the following processes: 1. The website will send a Pub/Sub message with the relevant data, and then receive a message with the prediction from Pub/Sub. 2. Predictions will be stored in BigQuery. 3. The model will be stored in a Cloud Storage bucket and will be updated frequently. You want to minimize prediction latency and the effort required to update the model. How should you reconfigure the architecture?",
+    "question_type": "multiple_choice",
+    "options": [
+      {
+        "id": "A",
+        "text": "Write a Cloud Function that loads the model into memory for prediction. Configure the function to be triggered when messages are sent to Pub/Sub.",
+        "is_correct": false
+      },
+      {
+        "id": "B",
+        "text": "Expose the model as a Vertex AI endpoint. Write a custom DoFn in a Dataflow job that calls the endpoint for prediction.",
+        "is_correct": false
+      },
+      {
+        "id": "C",
+        "text": "Use the RunInference API with WatchFilePattern in a Dataflow job that wraps around the model and serves predictions.",
+        "is_correct": true
+      },
+      {
+        "id": "D",
+        "text": "Create a pipeline in Vertex AI Pipelines that performs preprocessing, prediction, and postprocessing. Configure the pipeline to be triggered by a Cloud Function when messages are sent to Pub/Sub.",
+        "is_correct": false
+      }
+    ],
+    "correct_answer_ids": [
+      "C"
+    ],
+    "explanation": "C is correct because the RunInference API with a locally loaded model minimizes the prediction latency and makes model updates seamless. A is not correct because Cloud Functions will run into limitations based on request rate and model size. B is not correct because exposing the model as an endpoint adds to the total latency. D is not correct because provisioning Vertex AI Pipelines adds to the total latency.",
+    "difficulty": "hard",
+    "topics": [
+      "Real-time Inference",
+      "Dataflow",
+      "RunInference API",
+      "Low Latency"
+    ],
+    "source": {
+      "pdf_name": "Professional Machine Learning Engineer Sample Questions.pdf",
+      "page_number": 27,
+      "section": "Sample Questions",
+      "extraction_date": "2025-11-15",
+      "extraction_method": "manual"
+    },
+    "created_at": "2025-11-15T00:00:00Z"
+  },
+  {
     "id": "q021",
     "question_number": 21,
     "question_text": "Your insurance company wants to predict whether a customer will renew their policy based on historical data including age, policy type, claims history, and payment patterns. The outcome is binary (renew or not renew). You need to build a classification model using BigQuery ML. What should you do?",

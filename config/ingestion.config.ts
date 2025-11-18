@@ -44,7 +44,6 @@ export const ingestionConfig: IngestionConfig = {
   // Source files - use relative paths from project root
   sourceDir: './miscellaneous_files',
   excludeFiles: [
-    'batch_1_0.json',  // Already in database
     'analytics.jpg',
     'claude_code_skill.txt',
     'GENERATION_PROGRESS.md',

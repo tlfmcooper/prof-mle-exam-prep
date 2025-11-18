@@ -114,9 +114,10 @@ async function insertBatch(
 ): Promise<{ success: boolean; inserted: number; error?: any }> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
+      // Use upsert to make ingestion idempotent
       const { error, count } = await supabase
         .from('questions')
-        .insert(questions);
+        .upsert(questions, { onConflict: 'id' });
 
       if (error) throw error;
 
@@ -293,5 +294,7 @@ async function main() {
 
 export { ingestQuestions, transformQuestion };
 
-// Run main
-main();
+// Run main only if this file is executed directly
+if (process.argv[1]?.includes('ingest-to-supabase')) {
+  main();
+}

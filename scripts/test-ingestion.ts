@@ -130,5 +130,7 @@ async function main() {
 
 export { testIngestion };
 
-// Run main
-main();
+// Run main only if this file is executed directly
+if (process.argv[1]?.includes('test-ingestion')) {
+  main();
+}

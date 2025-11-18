@@ -300,5 +300,7 @@ async function main() {
 
 export { mergeQuestions, deduplicateById, deduplicateByHash };
 
-// Run main if this is the entry point
-main();
+// Run main only if this file is executed directly
+if (process.argv[1]?.includes('merge-questions')) {
+  main();
+}

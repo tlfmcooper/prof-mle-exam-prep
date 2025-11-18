@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-11-18T03:04:56.558Z",
+  "dryRun": false,
+  "merge": {
+    "totalFiles": 21,
+    "filesProcessed": 21,
+    "filesSkipped": 3,
+    "totalQuestions": 591,
+    "uniqueQuestions": 587,
+    "duplicatesRemoved": 4,
+    "questionsPerFile": {
+      "batch_1_0.json": 15,
+      "batch_1_1_questions.json": 27,
+      "batch_1_2_questions.json": 31,
+      "batch_1_3_questions.json": 24,
+      "batch_2_1.json": 28,
+      "batch_2_2.json": 28,
+      "batch_3-1.json": 27,
+      "batch_3-2.json": 27,
+      "batch_3-3.json": 27,
+      "batch_3-4.json": 27,
+      "batch_4-1.json": 30,
+      "batch_4-2.json": 30,
+      "batch_4-3.json": 30,
+      "batch_4-4.json": 30,
+      "batch_5-1.json": 33,
+      "batch_5-2.json": 33,
+      "batch_5-3.json": 33,
+      "batch_5-4.json": 33,
+      "batch_6-1.json": 26,
+      "batch_6-2.json": 26,
+      "batch_6-3.json": 26
+    },
+    "errors": []
+  },
+  "validation": {
+    "validQuestions": 587,
+    "invalidQuestions": 0,
+    "errorCount": 0,
+    "warningCount": 0,
+    "errors": [],
+    "warnings": []
+  },
+  "ingestion": {
+    "totalQuestions": 587,
+    "inserted": 587,
+    "failed": 0,
+    "errors": [],
+    "duration": 2906
+  },
+  "duration": 2989,
+  "success": true
+}

@@ -386,5 +386,7 @@ async function main() {
 
 export { validateQuestions, validateQuestion };
 
-// Run main
-main();
+// Run main only if this file is executed directly
+if (process.argv[1]?.includes('validate-questions')) {
+  main();
+}
