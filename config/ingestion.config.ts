@@ -42,17 +42,17 @@ export interface IngestionConfig {
  */
 export const ingestionConfig: IngestionConfig = {
   // Source files - use relative paths from project root
-  sourceDir: './miscellaneous_files',
+  sourceDir: './qdb',
   excludeFiles: [
     'analytics.jpg',
     'claude_code_skill.txt',
     'GENERATION_PROGRESS.md',
   ],
-  filePattern: /^batch_.*\.json$/,
+  filePattern: /.*_batch.json$/,
   recursive: false,
 
   // Output
-  outputFile: './data/merged-questions.json',
+  outputFile: './data/improved-questions.json',
   saveReport: true,
   reportPath: './data/ingestion-report.json',
 
