@@ -33,7 +33,7 @@ function displayStepHeader(stepNumber: number, totalSteps: number, title: string
 /**
  * Run the complete ingestion pipeline
  */
-async function runPipeline(dryRun: boolean = false): Promise<PipelineResult> {
+async function runPipeline(dryRun: boolean = false, questionsFile?: string): Promise<PipelineResult> {
   const startTime = Date.now();
 
   console.log(chalk.bold.cyan('\n╔═══════════════════════════════════════════════════════════╗'));
@@ -42,6 +42,10 @@ async function runPipeline(dryRun: boolean = false): Promise<PipelineResult> {
 
   if (dryRun) {
     console.log(chalk.yellow.bold('  🔍 DRY RUN MODE - No data will be inserted to database\n'));
+  }
+
+  if (questionsFile) {
+    console.log(chalk.cyan(`  📁 Using questions file: ${questionsFile}\n`));
   }
 
   const result: PipelineResult = {
@@ -81,7 +85,7 @@ async function runPipeline(dryRun: boolean = false): Promise<PipelineResult> {
     // STEP 3: Ingest to Supabase
     displayStepHeader(3, 3, 'Ingest to Supabase');
 
-    const ingestionResult = await ingestQuestions(dryRun);
+    const ingestionResult = await ingestQuestions(dryRun, questionsFile);
 
     result.ingestion = ingestionResult;
 
@@ -119,6 +123,7 @@ async function runPipeline(dryRun: boolean = false): Promise<PipelineResult> {
       const reportData = {
         timestamp: new Date().toISOString(),
         dryRun,
+        questionsFile: questionsFile || ingestionConfig.outputFile,
         merge: mergeResult,
         validation: {
           validQuestions: validationResult.validQuestions,
@@ -176,6 +181,7 @@ async function main() {
     .version('1.0.0')
     .option('-d, --dry-run', 'Run without inserting data (validation only)', false)
     .option('-v, --verbose', 'Show verbose output', false)
+    .option('-q, --questions-file <path>', 'Path to questions JSON file')
     .parse();
 
   const options = program.opts();
@@ -186,7 +192,7 @@ async function main() {
   }
 
   try {
-    const result = await runPipeline(options.dryRun);
+    const result = await runPipeline(options.dryRun, options.questionsFile);
 
     if (result.success) {
       process.exit(0);

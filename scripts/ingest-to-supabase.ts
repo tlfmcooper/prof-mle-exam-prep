@@ -139,10 +139,18 @@ async function insertBatch(
 /**
  * Ingest questions to Supabase
  */
-async function ingestQuestions(dryRun: boolean = false): Promise<IngestionResult> {
+async function ingestQuestions(dryRun: boolean = false, questionsFile?: string): Promise<IngestionResult> {
   console.log(chalk.bold.magenta('\n╔════════════════════════════════════════════════════════╗'));
   console.log(chalk.bold.magenta('║            Ingest to Supabase                          ║'));
   console.log(chalk.bold.magenta('╚════════════════════════════════════════════════════════╝\n'));
+
+  // Determine which file to use
+  const filePath = questionsFile || ingestionConfig.outputFile;
+  
+  if (!questionsFile) {
+    console.log(chalk.yellow('⚠️  Using config file for questions path (deprecated).'));
+    console.log(chalk.yellow('   Use --questions-file flag instead: --questions-file=./data/improved-questions.json\n'));
+  }
 
   const startTime = Date.now();
   const spinner = ora('Reading questions...').start();
@@ -156,13 +164,14 @@ async function ingestQuestions(dryRun: boolean = false): Promise<IngestionResult
   };
 
   try {
-    // Read merged questions
-    const content = readFileSync(ingestionConfig.outputFile, 'utf-8');
+    // Read questions file
+    spinner.text = `Reading ${filePath}...`;
+    const content = readFileSync(filePath, 'utf-8');
     const batchQuestions: BatchQuestion[] = JSON.parse(content);
 
     result.totalQuestions = batchQuestions.length;
 
-    spinner.succeed(`Loaded ${batchQuestions.length} questions`);
+    spinner.succeed(`Loaded ${batchQuestions.length} questions from ${filePath}`);
 
     // Transform to database format
     spinner.start('Transforming questions...');
@@ -275,12 +284,13 @@ async function main() {
     .name('ingest-to-supabase')
     .description('Ingest questions into Supabase database')
     .option('-d, --dry-run', 'Test without inserting data', false)
+    .option('-q, --questions-file <path>', 'Path to questions JSON file')
     .parse();
 
   const options = program.opts();
 
   try {
-    const result = await ingestQuestions(options.dryRun);
+    const result = await ingestQuestions(options.dryRun, options.questionsFile);
 
     if (result.failed === 0) {
       process.exit(0);

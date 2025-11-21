@@ -41,19 +41,27 @@ function getSupabaseClient() {
   return createClient<Database>(supabaseUrl, supabaseKey);
 }
 
-async function main() {
+async function ingestTopics(topicsFile?: string) {
   console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════════════╗'));
   console.log(chalk.bold.cyan('║            Ingest Topics to Supabase                   ║'));
   console.log(chalk.bold.cyan('╚════════════════════════════════════════════════════════╝\n'));
 
-  const spinner = ora('Reading topics.json...').start();
+  // Determine which file to use
+  const filePath = topicsFile || './data/topics.json';
+  
+  if (!topicsFile) {
+    console.log(chalk.yellow('⚠️  Using default topics path (deprecated).'));
+    console.log(chalk.yellow('   Use --topics-file flag instead: --topics-file=./data/topics.json\n'));
+  }
+
+  const spinner = ora(`Reading ${filePath}...`).start();
 
   try {
     // Read topics file
-    const content = readFileSync('./data/topics.json', 'utf-8');
+    const content = readFileSync(filePath, 'utf-8');
     const topicsData: TopicsFile = JSON.parse(content);
 
-    spinner.succeed(`Loaded ${topicsData.topics.length} topics`);
+    spinner.succeed(`Loaded ${topicsData.topics.length} topics from ${filePath}`);
 
     // Get Supabase client
     spinner.start('Connecting to Supabase...');
@@ -215,4 +223,24 @@ async function main() {
   }
 }
 
+/**
+ * Main execution
+ */
+async function main() {
+  const program = new Command();
+
+  program
+    .name('ingest-topics')
+    .description('Ingest topics and topic-question mappings into Supabase database')
+    .option('-t, --topics-file <path>', 'Path to topics JSON file')
+    .parse();
+
+  const options = program.opts();
+
+  await ingestTopics(options.topicsFile);
+}
+
+export { ingestTopics };
+
+// Run main
 main();

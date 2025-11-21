@@ -14,14 +14,14 @@
     "type-check": "tsc --noEmit",
     "merge-questions": "tsx scripts/merge-questions.ts",
     "validate-questions": "tsx scripts/validate-questions.ts",
-    "ingest-questions": "tsx scripts/ingest-to-supabase.ts",
-    "ingest-topics": "tsx scripts/ingest-topics.ts",
-    "ingest-all": "tsx scripts/ingest-all.ts",
-    "ingest-all:dry-run": "tsx scripts/ingest-all.ts --dry-run",
+    "ingest-questions": "tsx scripts/ingest-to-supabase.ts --questions-file=./data/improved-questions.json",
+    "ingest-topics": "tsx scripts/ingest-topics.ts --topics-file=./data/topics.json",
+    "ingest-all": "tsx scripts/ingest-all.ts --questions-file=./data/improved-questions.json",
+    "ingest-all:dry-run": "tsx scripts/ingest-all.ts --dry-run --questions-file=./data/improved-questions.json",
     "test-ingestion": "tsx scripts/test-ingestion.ts",
     "migrate": "tsx scripts/run-migration.ts",
     "check-plans": "tsx scripts/check-study-plans.ts",
-    "compare-questions": "tsx scripts/compare-questions.ts"
+    "compare-questions": "tsx scripts/compare-questions.ts --file1=./data/merged-questions.json --file2=./data/improved-questions.json"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
