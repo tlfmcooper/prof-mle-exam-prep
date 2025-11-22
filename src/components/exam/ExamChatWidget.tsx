@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Send, MessageCircle, Settings, ExternalLink, Loader2, Maximize2, Minimize2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApiKey } from '@/hooks/useApiKey';
@@ -209,7 +211,21 @@ export function ExamChatWidget({
                   : 'bg-muted text-foreground'
               }`}
             >
-              <div className="markdown-body" dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
+              <div className="markdown-body text-sm">
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline" />,
+                    p: ({node, ...props}) => <p {...props} className="mb-2 last:mb-0" />,
+                    ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 mb-2" />,
+                    ol: ({node, ...props}) => <ol {...props} className="list-decimal pl-4 mb-2" />,
+                    li: ({node, ...props}) => <li {...props} className="mb-1" />,
+                    code: ({node, ...props}) => <code {...props} className="bg-black/10 rounded px-1 py-0.5" />,
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         ))}
