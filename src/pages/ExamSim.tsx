@@ -9,6 +9,7 @@ import { QuestionCard } from '@/components/exam/QuestionCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
+import { ExamChatWidget } from '@/components/exam/ExamChatWidget';
 import { checkAnswer } from '@/lib/utils';
 
 const EXAM_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
@@ -307,13 +308,42 @@ export default function ExamSim() {
     );
   }
 
+  // Chat state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeChatQuestionId, setActiveChatQuestionId] = useState<string | null>(null);
+
+  const handleOpenChat = (questionId: string) => {
+    setActiveChatQuestionId(questionId);
+    setIsChatOpen(true);
+  };
+
   // Results screen
   if (hasEnded && results) {
     const passScore = 70;
     const passed = results.score >= passScore;
 
+    const activeChatQuestion = activeChatQuestionId 
+      ? questions.find(q => q.id === activeChatQuestionId) 
+      : null;
+    
+    const activeUserAnswer = activeChatQuestionId
+      ? answers[activeChatQuestionId]
+      : undefined;
+
+    const activeCorrectAnswer = activeChatQuestion
+      ? activeChatQuestion.options.filter(o => o.is_correct).map(o => o.text)
+      : undefined;
+
     return (
       <div className="min-h-screen bg-background p-4">
+        <ExamChatWidget
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          activeQuestion={activeChatQuestion}
+          userAnswer={activeUserAnswer}
+          correctAnswer={activeCorrectAnswer}
+        />
+
         <div className="max-w-4xl mx-auto">
           <Card className="mb-6">
             <CardHeader>
@@ -379,6 +409,7 @@ export default function ExamSim() {
                   attempted_at: new Date().toISOString(),
                 }}
                 questionNumber={index + 1}
+                onAskAI={() => handleOpenChat(item.question.id)}
               />
             ))}
           </div>

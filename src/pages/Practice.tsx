@@ -6,8 +6,10 @@ import { useSubmitAttempt } from '@/hooks/useAttempts';
 import { useExamStore } from '@/stores/examStore';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { QuestionCard } from '@/components/exam/QuestionCard';
+import { ExamChatWidget } from '@/components/exam/ExamChatWidget';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { checkAnswer } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
@@ -18,6 +20,11 @@ export default function Practice() {
   const [customCount, setCustomCount] = useState<string>('');
   const [isConfigured, setIsConfigured] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
+  const [isFinished, setIsFinished] = useState(false);
+
+  // Chat state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeChatQuestionId, setActiveChatQuestionId] = useState<string | null>(null);
 
   const { data: questions, isLoading, refetch } = useQuestions({ limit: questionCount });
   const submitAttempt = useSubmitAttempt();
@@ -51,12 +58,14 @@ export default function Practice() {
   const handleStartPractice = () => {
     reset(); // Clear any previous session
     setIsConfigured(true);
+    setIsFinished(false);
     refetch();
   };
 
   const handleReset = () => {
     reset();
     setIsConfigured(false);
+    setIsFinished(false);
   };
 
   const {
@@ -69,6 +78,7 @@ export default function Practice() {
     showExplanation,
     toggleExplanation,
     reset,
+    answers,
   } = useExamStore();
 
   const [startTime, setStartTime] = useState<Date | null>(null);
@@ -114,13 +124,22 @@ export default function Practice() {
   };
 
   const handleNext = () => {
-    nextQuestion();
-    setStartTime(new Date());
+    if (currentQuestionIndex === currentQuestions.length - 1) {
+      setIsFinished(true);
+    } else {
+      nextQuestion();
+      setStartTime(new Date());
+    }
   };
 
   const handlePrevious = () => {
     previousQuestion();
     setStartTime(new Date());
+  };
+
+  const handleOpenChat = (questionId: string) => {
+    setActiveChatQuestionId(questionId);
+    setIsChatOpen(true);
   };
 
   // Keyboard shortcuts
@@ -261,8 +280,105 @@ export default function Practice() {
     );
   }
 
+  const activeChatQuestion = activeChatQuestionId 
+    ? currentQuestions.find(q => q.id === activeChatQuestionId) 
+    : null;
+  
+  const activeUserAnswer = activeChatQuestionId
+    ? answers[activeChatQuestionId]
+    : undefined;
+
+  const activeCorrectAnswer = activeChatQuestion
+    ? activeChatQuestion.options.filter(o => o.is_correct).map(o => o.text)
+    : undefined;
+
+  // Summary View
+  if (isFinished) {
+    const totalCorrect = currentQuestions.filter(q => {
+      const selected = answers[q.id] || [];
+      const correct = q.options.filter(o => o.is_correct).map(o => o.id);
+      return checkAnswer(selected, correct);
+    }).length;
+
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <ExamChatWidget
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          activeQuestion={activeChatQuestion}
+          userAnswer={activeUserAnswer}
+          correctAnswer={activeCorrectAnswer}
+        />
+
+        <div className="max-w-4xl mx-auto">
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-2xl">Practice Session Complete</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-3xl font-bold">
+                    {Math.round((totalCorrect / currentQuestions.length) * 100)}%
+                  </p>
+                  <p className="text-sm text-muted-foreground">Score</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold">{totalCorrect}/{currentQuestions.length}</p>
+                  <p className="text-sm text-muted-foreground">Correct Answers</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <Link to="/dashboard" className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    Back to Dashboard
+                  </Button>
+                </Link>
+                <Button onClick={handleStartPractice} className="flex-1">
+                  Start New Session
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-8">
+            {currentQuestions.map((q, idx) => (
+              <QuestionCard
+                key={q.id}
+                question={q}
+                onAnswer={() => Promise.resolve()}
+                showExplanation={true}
+                previousAttempt={{
+                  id: '',
+                  user_id: user?.id || '',
+                  question_id: q.id,
+                  selected_options: answers[q.id] || [],
+                  is_correct: false, // Not used for display logic here
+                  time_spent_seconds: 0,
+                  confidence_level: 3,
+                  attempted_at: new Date().toISOString(),
+                }}
+                questionNumber={idx + 1}
+                onAskAI={() => handleOpenChat(q.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <ExamChatWidget
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        activeQuestion={activeChatQuestion}
+        userAnswer={activeUserAnswer}
+        correctAnswer={activeCorrectAnswer}
+      />
+
       {/* Header */}
       <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -294,6 +410,7 @@ export default function Practice() {
           onAnswer={handleAnswer}
           showExplanation={showExplanation}
           questionNumber={currentQuestionIndex + 1}
+          onAskAI={showExplanation ? () => handleOpenChat(currentQuestion.id) : undefined}
         />
 
         {/* Navigation */}
@@ -321,9 +438,8 @@ export default function Practice() {
 
           <Button
             onClick={handleNext}
-            disabled={currentQuestionIndex === currentQuestions.length - 1}
           >
-            Next
+            {currentQuestionIndex === currentQuestions.length - 1 ? 'Finish' : 'Next'}
           </Button>
         </div>
 

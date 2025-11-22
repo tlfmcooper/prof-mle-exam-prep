@@ -10,6 +10,7 @@ interface QuestionCardProps {
   showExplanation?: boolean;
   previousAttempt?: UserAttempt;
   questionNumber?: number;
+  onAskAI?: () => void;
 }
 
 export function QuestionCard({
@@ -18,6 +19,7 @@ export function QuestionCard({
   showExplanation = false,
   previousAttempt,
   questionNumber,
+  onAskAI,
 }: QuestionCardProps) {
   const [selected, setSelected] = useState<string[]>(previousAttempt?.selected_options || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,11 +60,26 @@ export function QuestionCard({
           {questionNumber && (
             <span className="text-sm text-muted-foreground">Question {questionNumber}</span>
           )}
-          {question.difficulty && (
-            <span className={`text-xs font-medium px-2 py-1 rounded ${getDifficultyColor(question.difficulty)}`}>
-              {question.difficulty.toUpperCase()}
-            </span>
-          )}
+          <div className="flex gap-2">
+            {onAskAI && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAskAI();
+                }}
+                className="h-7 text-xs border-primary/20 text-primary hover:bg-primary/5"
+              >
+                ✨ Ask AI Tutor
+              </Button>
+            )}
+            {question.difficulty && (
+              <span className={`text-xs font-medium px-2 py-1 rounded ${getDifficultyColor(question.difficulty)}`}>
+                {question.difficulty.toUpperCase()}
+              </span>
+            )}
+          </div>
         </div>
         <CardTitle className="text-lg font-medium mt-2">
           {question.question_text}
