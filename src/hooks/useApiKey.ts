@@ -4,11 +4,12 @@ const STORAGE_KEY = 'gemini_api_key';
 
 export function useApiKey() {
   const [apiKey, setApiKey] = useState<string | null>(() => {
-    // Check environment variable first
-    if (import.meta.env.VITE_GEMINI_API_KEY) {
-      return import.meta.env.VITE_GEMINI_API_KEY;
-    }
-    return localStorage.getItem(STORAGE_KEY);
+    // Check local storage first (allow override)
+    const localKey = localStorage.getItem(STORAGE_KEY);
+    if (localKey) return localKey;
+    
+    // Fallback to environment variable
+    return import.meta.env.VITE_GEMINI_API_KEY || null;
   });
 
   const saveApiKey = (key: string) => {
@@ -19,7 +20,7 @@ export function useApiKey() {
 
   const removeApiKey = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setApiKey(null);
+    setApiKey(import.meta.env.VITE_GEMINI_API_KEY || null);
   };
 
   return {

@@ -60,27 +60,12 @@ export function QuestionCard({
           {questionNumber && (
             <span className="text-sm text-muted-foreground">Question {questionNumber}</span>
           )}
-          <div className="flex gap-2">
-            {onAskAI && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAskAI();
-                }}
-                className="h-7 text-xs border-primary/20 text-primary hover:bg-primary/5"
-              >
-                ✨ Ask AI Tutor
-              </Button>
-            )}
-            {question.difficulty && (
-              <span className={`text-xs font-medium px-2 py-1 rounded ${getDifficultyColor(question.difficulty)}`}>
-                {question.difficulty.toUpperCase()}
-              </span>
-            )}
+          {question.difficulty && (
+            <span className={`text-xs font-medium px-2 py-1 rounded ${getDifficultyColor(question.difficulty)}`}>
+              {question.difficulty.toUpperCase()}
+            </span>
+          )}
           </div>
-        </div>
         <CardTitle className="text-lg font-medium mt-2">
           {question.question_text}
         </CardTitle>
@@ -169,6 +154,23 @@ export function QuestionCard({
             className="w-full"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Answer'}
+          </Button>
+        </CardFooter>
+      )}
+      
+      {/* Ask AI Button in Footer (Always visible if onAskAI provided) */}
+      {onAskAI && (
+        <CardFooter className={!showExplanation ? "pt-0" : ""}>
+           <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onAskAI();
+            }}
+            className="w-full border-primary/20 text-primary hover:bg-primary/5 gap-2"
+          >
+            ✨ Ask AI Tutor
           </Button>
         </CardFooter>
       )}

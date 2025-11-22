@@ -20,7 +20,7 @@ export async function generateGeminiResponse({
 }: GenerateResponseParams) {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash', // Or gemini-1.5-pro
+    model: 'gemini-3-pro-preview', // User requested specific model
     systemInstruction: systemInstruction,
     tools: [
       {

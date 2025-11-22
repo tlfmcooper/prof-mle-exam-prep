@@ -29,7 +29,7 @@ export function ExamChatWidget({
   userAnswer,
   correctAnswer,
 }: ExamChatWidgetProps) {
-  const { apiKey, saveApiKey, hasKey, isEnvKey } = useApiKey();
+  const { apiKey, saveApiKey, removeApiKey, hasKey, isEnvKey } = useApiKey();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -72,10 +72,13 @@ export function ExamChatWidget({
 
     try {
       // Construct history for API
-      const history = messages.map((m) => ({
-        role: m.role,
-        parts: [{ text: m.text }],
-      }));
+      // Filter out the initial greeting ('init') as Gemini expects history to start with 'user'
+      const history = messages
+        .filter(m => m.id !== 'init')
+        .map((m) => ({
+          role: m.role,
+          parts: [{ text: m.text }],
+        }));
 
       // System instruction with context
       let systemInstruction = `You are an expert Google Cloud Machine Learning Engineer Tutor. 
@@ -133,11 +136,11 @@ export function ExamChatWidget({
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed z-50 transition-all duration-300 shadow-2xl 
+    <div className={`fixed z-[100] transition-all duration-300 shadow-2xl flex flex-col border bg-card
       ${isExpanded 
-        ? 'inset-0 bg-background' 
-        : 'bottom-4 right-4 w-[400px] h-[600px] rounded-xl'
-      } flex flex-col border bg-card`}
+        ? 'inset-0 w-full h-full rounded-none' 
+        : 'bottom-0 right-0 w-full h-[80vh] rounded-t-xl sm:bottom-4 sm:right-4 sm:w-[400px] sm:h-[600px] sm:max-h-[80vh] sm:rounded-xl'
+      }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-primary/5">
@@ -151,11 +154,9 @@ export function ExamChatWidget({
           </div>
         </div>
         <div className="flex items-center gap-1">
-          {!isEnvKey && (
-            <Button variant="ghost" size="icon" onClick={() => setShowKeyInput(!showKeyInput)} title="API Key Settings">
-              <Settings className="w-4 h-4" />
-            </Button>
-          )}
+          <Button variant="ghost" size="icon" onClick={() => setShowKeyInput(!showKeyInput)} title="API Key Settings">
+            <Settings className="w-4 h-4" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)} className="hidden sm:flex">
             {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </Button>
@@ -166,10 +167,10 @@ export function ExamChatWidget({
       </div>
 
       {/* API Key Setup */}
-      {(!hasKey || showKeyInput) && !isEnvKey && (
+      {(showKeyInput || (!hasKey && !isEnvKey)) && (
         <div className="p-4 bg-muted/50 border-b">
           <p className="text-sm text-muted-foreground mb-2">
-            Enter your Gemini API Key to enable the AI Tutor.
+            {isEnvKey ? 'Override default API Key:' : 'Enter your Gemini API Key:'}
             <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="ml-1 text-primary hover:underline flex-inline items-center gap-1">
               Get one here <ExternalLink className="w-3 h-3 inline" />
             </a>
@@ -177,12 +178,19 @@ export function ExamChatWidget({
           <div className="flex gap-2">
             <Input
               type="password"
-              placeholder="Paste API Key"
+              placeholder={isEnvKey ? "Enter new key to override" : "Paste API Key"}
               value={tempKey}
               onChange={(e) => setTempKey(e.target.value)}
               className="flex-1"
             />
             <Button onClick={handleSaveKey}>Save</Button>
+            {isEnvKey && (
+               <Button variant="ghost" onClick={() => {
+                 removeApiKey(); // Clear override
+                 setShowKeyInput(false);
+                 setTempKey('');
+               }}>Reset</Button>
+            )}
           </div>
         </div>
       )}
