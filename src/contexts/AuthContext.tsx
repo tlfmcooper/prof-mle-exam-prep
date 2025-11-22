@@ -81,7 +81,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    return () => subscription.unsubscribe();
+    // Listen for visibility changes to re-validate session
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUser(session.user);
+          // Optional: Refresh profile if needed, but session check is most important
+        } else {
+          // If session is invalid but we thought we were logged in, this will trigger the auth state change listener
+          // or we can explicitly handle it here if needed.
+          // For now, getSession() is enough to refresh the token if it's close to expiry.
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
