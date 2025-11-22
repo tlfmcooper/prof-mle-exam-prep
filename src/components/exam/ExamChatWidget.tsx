@@ -141,7 +141,7 @@ export function ExamChatWidget({
     <div className={`fixed z-[100] transition-all duration-300 shadow-2xl flex flex-col border bg-card
       ${isExpanded 
         ? 'inset-0 w-full h-full rounded-none' 
-        : 'bottom-0 left-0 right-0 mx-auto w-full h-[80vh] rounded-t-xl sm:bottom-4 sm:w-[95%] sm:max-w-4xl sm:h-[600px] sm:max-h-[80vh] sm:rounded-xl'
+        : 'bottom-4 left-0 right-0 mx-auto h-[80vh] max-h-[600px] rounded-xl w-[calc(100%-2rem)] sm:w-[calc(100%-3rem)] max-w-[52rem]'
       }`}
     >
       {/* Header */}
