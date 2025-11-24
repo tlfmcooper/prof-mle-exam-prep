@@ -1,6 +1,11 @@
 #!/usr/bin/env tsx
 
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { config } from 'dotenv';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -137,6 +142,53 @@ async function insertBatch(
 }
 
 /**
+ * Helper to ingest topics for a batch of questions
+ */
+async function ingestBatchTopics(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  questions: BatchQuestion[],
+  topicNameMap: Map<string, string>
+): Promise<number> {
+  let mappingsCreated = 0;
+  const topicInserts: any[] = [];
+
+  for (const q of questions) {
+    if (!q.topics || q.topics.length === 0) continue;
+
+    // Deduplicate topics for this question
+    const uniqueTopics = [...new Set(q.topics)];
+
+    for (const topicName of uniqueTopics) {
+      const topicId = topicNameMap.get(topicName);
+      
+      if (topicId) {
+        topicInserts.push({
+          question_id: q.id,
+          topic_id: topicId
+        });
+      } else {
+        // Optional: Log warning for unknown topic
+        // console.warn(`Unknown topic: ${topicName} for question ${q.id}`);
+      }
+    }
+  }
+
+  if (topicInserts.length > 0) {
+    const { error, count } = await supabase
+      .from('question_topics')
+      .upsert(topicInserts, { onConflict: 'question_id,topic_id' });
+
+    if (!error) {
+      mappingsCreated = topicInserts.length;
+    } else {
+      console.error('Error inserting topic mappings:', error);
+    }
+  }
+
+  return mappingsCreated;
+}
+
+/**
  * Ingest questions to Supabase
  */
 async function ingestQuestions(dryRun: boolean = false, questionsFile?: string): Promise<IngestionResult> {
@@ -201,31 +253,77 @@ async function ingestQuestions(dryRun: boolean = false, questionsFile?: string):
 
     spinner.succeed('Connected to Supabase');
 
-    // Split into batches
-    const batches = batchArray(dbQuestions, ingestionConfig.batchSize);
+    // Fetch all topics to create a mapping
+    spinner.start('Fetching topics...');
+    const { data: topicsData, error: topicsError } = await supabase
+      .from('topics')
+      .select('id, name');
 
-    console.log(chalk.gray(`\nProcessing ${batches.length} batches of ${ingestionConfig.batchSize}\n`));
+    if (topicsError) {
+      throw new Error(`Failed to fetch topics: ${topicsError.message}`);
+    }
+
+    const topicNameMap = new Map<string, string>();
+    // Map both IDs and names to their IDs (prioritize ID for efficiency)
+    topicsData?.forEach(t => {
+      topicNameMap.set(t.id, t.id); // ID -> ID mapping (most common case)
+      topicNameMap.set(t.name, t.id); // Name -> ID mapping (fallback)
+      topicNameMap.set(t.id.toLowerCase(), t.id); // Lowercase ID for case-insensitivity
+      topicNameMap.set(t.name.toLowerCase(), t.id); // Lowercase name for case-insensitivity
+    });
+
+    // Load manual ID mapping if it exists
+    try {
+      const mappingPath = path.resolve(__dirname, '../data/topic-id-mapping.json');
+      if (existsSync(mappingPath)) {
+        const mapping = JSON.parse(readFileSync(mappingPath, 'utf-8'));
+        Object.entries(mapping).forEach(([key, value]) => {
+            topicNameMap.set(key, value as string);
+        });
+        spinner.succeed(`Loaded ${Object.keys(mapping).length} manual topic mappings`);
+      }
+    } catch (e) {
+      // Ignore if file doesn't exist or fails to load
+    }
+
+    spinner.succeed(`Loaded ${topicNameMap.size} topics for mapping`);
+
+    // Split into batches
+    // We need to keep the original batchQuestions to access the 'topics' field
+    const batchSize = ingestionConfig.batchSize;
+    const questionBatches = batchArray(batchQuestions, batchSize);
+    const dbBatches = batchArray(dbQuestions, batchSize);
+
+    console.log(chalk.gray(`\nProcessing ${dbBatches.length} batches of ${batchSize}\n`));
+
+    let totalTopicMappings = 0;
 
     // Process each batch
-    for (let i = 0; i < batches.length; i++) {
-      const batch = batches[i];
+    for (let i = 0; i < dbBatches.length; i++) {
+      const dbBatch = dbBatches[i];
+      const originalBatch = questionBatches[i];
       const batchNum = i + 1;
 
-      spinner.start(`Inserting batch ${batchNum}/${batches.length} (${batch.length} questions)...`);
+      spinner.start(`Inserting batch ${batchNum}/${dbBatches.length} (${dbBatch.length} questions)...`);
 
-      const batchResult = await insertBatch(supabase, batch);
+      const batchResult = await insertBatch(supabase, dbBatch);
 
       if (batchResult.success) {
         result.inserted += batchResult.inserted;
-        spinner.succeed(`Batch ${batchNum}/${batches.length} inserted (${batchResult.inserted} questions)`);
+        
+        // Insert topics for this batch
+        const mappings = await ingestBatchTopics(supabase, originalBatch, topicNameMap);
+        totalTopicMappings += mappings;
+
+        spinner.succeed(`Batch ${batchNum}/${dbBatches.length} inserted (${batchResult.inserted} questions, ${mappings} topic links)`);
       } else {
-        result.failed += batch.length;
-        spinner.fail(`Batch ${batchNum}/${batches.length} failed`);
+        result.failed += dbBatch.length;
+        spinner.fail(`Batch ${batchNum}/${dbBatches.length} failed`);
 
         console.log(chalk.red(`  Error: ${batchResult.error?.message || batchResult.error}`));
 
         // Record errors
-        batch.forEach(q => {
+        dbBatch.forEach(q => {
           result.errors.push({
             questionId: q.id || 'unknown',
             error: batchResult.error?.message || String(batchResult.error)
@@ -234,7 +332,7 @@ async function ingestQuestions(dryRun: boolean = false, questionsFile?: string):
       }
 
       // Small delay between batches
-      if (i < batches.length - 1) {
+      if (i < dbBatches.length - 1) {
         await sleep(100);
       }
     }
@@ -246,6 +344,7 @@ async function ingestQuestions(dryRun: boolean = false, questionsFile?: string):
     console.log(chalk.gray('─'.repeat(60)));
     console.log(`  ${chalk.cyan('Total Questions')}: ${result.totalQuestions}`);
     console.log(`  ${chalk.green('Inserted')}: ${result.inserted}`);
+    console.log(`  ${chalk.green('Topic Mappings')}: ${totalTopicMappings}`);
     console.log(`  ${result.failed > 0 ? chalk.red('Failed') : chalk.gray('Failed')}: ${result.failed}`);
     console.log(`  ${chalk.gray('Duration')}: ${(result.duration / 1000).toFixed(2)}s`);
     console.log(chalk.gray('─'.repeat(60)));
