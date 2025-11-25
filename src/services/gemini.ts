@@ -20,7 +20,7 @@ export async function generateGeminiResponse({
 }: GenerateResponseParams) {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: 'gemini-3-pro-preview', // User requested specific model
+    model: 'gemini-2.5-pro', // User specified model
     systemInstruction: systemInstruction,
     tools: [
       {
@@ -37,4 +37,34 @@ export async function generateGeminiResponse({
   const result = await chat.sendMessage(message);
   const response = await result.response;
   return response.text();
+}
+
+export async function* generateGeminiResponseStream({
+  apiKey,
+  history,
+  message,
+  systemInstruction,
+}: GenerateResponseParams) {
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-pro', // User specified model
+    systemInstruction: systemInstruction,
+    tools: [
+      {
+        // @ts-ignore - The SDK types might be slightly behind the feature
+        googleSearch: {},
+      },
+    ],
+  });
+
+  const chat = model.startChat({
+    history: history,
+  });
+
+  const result = await chat.sendMessageStream(message);
+  
+  for await (const chunk of result.stream) {
+    const chunkText = chunk.text();
+    yield chunkText;
+  }
 }

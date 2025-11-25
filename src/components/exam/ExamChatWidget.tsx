@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Send, MessageCircle, Settings, ExternalLink, Loader2, Maximize2, Minimize2 } from 'lucide-react';
+import { X, Send, MessageCircle, Settings, ExternalLink, Loader2, Maximize2, Minimize2, Mic, Square, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApiKey } from '@/hooks/useApiKey';
-import { generateGeminiResponse } from '@/services/gemini';
+import { generateGeminiResponseStream } from '@/services/gemini';
 import { Question } from '@/lib/types';
 
 interface Message {
@@ -35,10 +35,16 @@ export function ExamChatWidget({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [tempKey, setTempKey] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Scroll to bottom on new message
   useEffect(() => {
@@ -58,6 +64,103 @@ export function ExamChatWidget({
     }
   }, [isOpen, activeQuestion]);
 
+  // Cleanup speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
+    setIsStreaming(false);
+  };
+
+  const handleVoiceInput = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    if (!('webkitSpeechRecognition' in window)) {
+      alert('Voice input is not supported in this browser.');
+      return;
+    }
+
+    // @ts-ignore
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => prev + (prev ? ' ' : '') + transcript);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const stripMarkdown = (markdown: string): string => {
+    return markdown
+      // Remove headers
+      .replace(/#{1,6}\s*/g, '')
+      // Remove bold/italic
+      .replace(/(\*\*|__)(.*?)\1/g, '$2')
+      .replace(/(\*|_)(.*?)\1/g, '$2')
+      // Remove links but keep text
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+      // Remove inline code
+      .replace(/`([^`]+)`/g, '$1')
+      // Remove code blocks
+      .replace(/```[\s\S]*?```/g, '')
+      // Remove lists
+      .replace(/^\s*[-*+]\s+/gm, '')
+      .replace(/^\s*\d+\.\s+/gm, '')
+      // Remove blockquotes
+      .replace(/^\s*>\s+/gm, '')
+      // Clean up extra whitespace
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  };
+
+  const handleSpeak = (text: string, id: string) => {
+    if (speakingId === id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const plainText = stripMarkdown(text);
+    const utterance = new SpeechSynthesisUtterance(plainText);
+    utterance.onend = () => setSpeakingId(null);
+    setSpeakingId(id);
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleSend = async () => {
     if (!input.trim() || !apiKey) return;
 
@@ -71,10 +174,22 @@ export function ExamChatWidget({
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
+    setIsStreaming(true);
+    
+    // Create placeholder for model message
+    const modelMsgId = (Date.now() + 1).toString();
+    const modelMsg: Message = {
+      id: modelMsgId,
+      role: 'model',
+      text: '',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, modelMsg]);
+
+    abortControllerRef.current = new AbortController();
 
     try {
       // Construct history for API
-      // Filter out the initial greeting ('init') as Gemini expects history to start with 'user'
       const history = messages
         .filter(m => m.id !== 'init')
         .map((m) => ({
@@ -98,32 +213,40 @@ export function ExamChatWidget({
         `;
       }
 
-      const responseText = await generateGeminiResponse({
+      const stream = generateGeminiResponseStream({
         apiKey,
         history,
         message: userMsg.text,
         systemInstruction,
       });
 
-      const modelMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'model',
-        text: responseText,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, modelMsg]);
+      let fullText = '';
+      for await (const chunk of stream) {
+        if (abortControllerRef.current?.signal.aborted) {
+          break;
+        }
+        fullText += chunk;
+        setMessages((prev) => 
+          prev.map((m) => 
+            m.id === modelMsgId ? { ...m, text: fullText } : m
+          )
+        );
+      }
     } catch (error) {
       console.error('Gemini API Error:', error);
-      const errorMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'model',
-        text: 'Sorry, I encountered an error connecting to the AI Tutor. Please check your API key or try again later.',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      if (!abortControllerRef.current?.signal.aborted) {
+        const errorMsg: Message = {
+          id: (Date.now() + 2).toString(),
+          role: 'model',
+          text: 'Sorry, I encountered an error connecting to the AI Tutor. Please check your API key or try again later.',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMsg]);
+      }
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -205,7 +328,7 @@ export function ExamChatWidget({
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[85%] rounded-lg p-3 text-sm ${
+              className={`max-w-[85%] rounded-lg p-3 text-sm relative group ${
                 msg.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground'
@@ -226,6 +349,21 @@ export function ExamChatWidget({
                   {msg.text}
                 </ReactMarkdown>
               </div>
+              {msg.role === 'model' && !isLoading && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute -bottom-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
+                  onClick={() => handleSpeak(msg.text, msg.id)}
+                  title={speakingId === msg.id ? "Stop reading" : "Read aloud"}
+                >
+                  {speakingId === msg.id ? (
+                    <VolumeX className="w-4 h-4" />
+                  ) : (
+                    <Volume2 className="w-4 h-4" />
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         ))}
@@ -248,16 +386,33 @@ export function ExamChatWidget({
           }}
           className="flex gap-2"
         >
+          <Button 
+            type="button" 
+            variant="ghost" 
+            size="icon"
+            onClick={handleVoiceInput}
+            className={isListening ? "text-red-500 animate-pulse" : ""}
+            title="Voice Input"
+            disabled={!hasKey || isLoading}
+          >
+            <Mic className="w-4 h-4" />
+          </Button>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={hasKey ? "Ask a question..." : "Please set API key first"}
-            disabled={!hasKey || isLoading}
+            placeholder={isListening ? "Listening..." : (hasKey ? "Ask a question..." : "Please set API key first")}
+            disabled={!hasKey || (isLoading && !isStreaming)}
             className="flex-1"
           />
-          <Button type="submit" disabled={!hasKey || isLoading || !input.trim()}>
-            <Send className="w-4 h-4" />
-          </Button>
+          {isStreaming ? (
+            <Button type="button" variant="destructive" size="icon" onClick={handleStop} title="Stop Generation">
+              <Square className="w-4 h-4 fill-current" />
+            </Button>
+          ) : (
+            <Button type="submit" disabled={!hasKey || isLoading || !input.trim()}>
+              <Send className="w-4 h-4" />
+            </Button>
+          )}
         </form>
       </div>
     </div>
