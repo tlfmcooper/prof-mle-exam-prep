@@ -83,4 +83,34 @@
   .stagger-children > *:nth-child(6) { animation-delay: calc(var(--stagger-delay, 100ms) * 5); }
   .stagger-children > *:nth-child(7) { animation-delay: calc(var(--stagger-delay, 100ms) * 6); }
   .stagger-children > *:nth-child(8) { animation-delay: calc(var(--stagger-delay, 100ms) * 7); }
+
+  /* Prevent overflow on all text content */
+  .overflow-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  /* Markdown body styles for better mobile rendering */
+  .markdown-body {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .markdown-body code {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .markdown-body pre {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .markdown-body pre code {
+    white-space: pre;
+    overflow-wrap: normal;
+    word-wrap: normal;
+  }
 }

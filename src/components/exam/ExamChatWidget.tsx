@@ -328,13 +328,13 @@ export function ExamChatWidget({
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[85%] rounded-lg p-3 text-sm relative group ${
+              className={`max-w-[85%] rounded-lg p-3 text-sm relative group break-words ${
                 msg.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-foreground'
               }`}
             >
-              <div className="markdown-body text-sm">
+              <div className="markdown-body text-sm break-words overflow-auto">
                 <ReactMarkdown 
                   remarkPlugins={[remarkGfm]}
                   components={{

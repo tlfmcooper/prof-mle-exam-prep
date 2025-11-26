@@ -107,8 +107,8 @@ export function QuestionCard({
                 <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center font-semibold text-sm">
                   {option.id}
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm">{option.text}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm break-words overflow-wrap">{option.text}</p>
                   {showExplanation && isCorrectOption && (
                     <span className="text-xs text-green-600 font-medium mt-1 inline-block">
                       ✓ Correct Answer
