@@ -368,8 +368,8 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
                         </div>
                       </div>
                       <div className="text-sm">
-                        <span className="text-muted-foreground">Focus: </span>
-                        <span className="font-medium">{week.topics_to_focus.join(', ')}</span>
+                        <span className="font-medium">Focus: </span>
+                        <span>{week.topics_to_focus.join(', ')}</span>
                       </div>
                     </div>
                   );
