@@ -368,15 +368,13 @@ export function ExamChatWidget({
                 >
                   {msg.text}
                 </ReactMarkdown>
-                {isStreaming && index === messages.length - 1 && msg.role === 'model' && (
-                  <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse"></span>
-                )}
               </div>
-              {msg.role === 'model' && msg.text && (
+              {/* Audio button - shows on hover for completed messages */}
+              {msg.role === 'model' && msg.text && !(isStreaming && index === messages.length - 1) && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-background/95"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-7 w-7 bg-background/90 backdrop-blur-sm hover:bg-background shadow-sm"
                   onClick={() => handleSpeak(msg.text, msg.id)}
                   title={speakingId === msg.id ? "Stop reading" : "Read aloud"}
                 >
@@ -386,6 +384,12 @@ export function ExamChatWidget({
                     <Volume2 className="w-3.5 h-3.5" />
                   )}
                 </Button>
+              )}
+              {/* Typing indicator - shows while streaming the last message */}
+              {isStreaming && index === messages.length - 1 && msg.role === 'model' && (
+                <div className="inline-flex items-center ml-1">
+                  <span className="inline-block w-0.5 h-4 bg-primary animate-pulse"></span>
+                </div>
               )}
             </div>
           </div>
