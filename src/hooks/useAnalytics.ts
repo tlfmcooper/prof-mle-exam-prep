@@ -275,25 +275,52 @@ export function useExamPrediction(userId?: string) {
     queryFn: async () => {
       if (!analytics) return null;
 
-      const weightedScore = analytics.by_topic.reduce((total, topic) => {
+      // Calculate total weight to normalize the score
+      const totalWeight = analytics.by_topic.reduce((sum, topic) => {
+        return sum + (topic.exam_weight || 0.1);
+      }, 0);
+
+      // Calculate weighted sum of accuracies
+      const weightedSum = analytics.by_topic.reduce((total, topic) => {
         return total + topic.accuracy * (topic.exam_weight || 0.1);
       }, 0);
 
-      // Simple variance calculation (can be more sophisticated)
-      const variance = 5; // ±5%
+      // Normalize by total weight and clamp to [0, 100]
+      const normalizedScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
+      const predictedScore = Math.round(Math.min(100, Math.max(0, normalizedScore)));
+
+      // Calculate variance based on consistency across topics
+      // More variance if topic accuracies are inconsistent
+      const accuracies = analytics.by_topic.map(t => t.accuracy);
+      const avgAccuracy = accuracies.length > 0
+        ? accuracies.reduce((a, b) => a + b, 0) / accuracies.length
+        : 0;
+      const standardDeviation = accuracies.length > 0
+        ? Math.sqrt(
+            accuracies.reduce((sum, acc) => sum + Math.pow(acc - avgAccuracy, 2), 0) /
+            accuracies.length
+          )
+        : 0;
+
+      // Variance should be between 3% and 15% based on consistency
+      const variance = Math.min(15, Math.max(3, standardDeviation * 0.3));
+
+      // Calculate confidence interval, ensuring proper bounds
+      const minScore = Math.max(0, predictedScore - variance);
+      const maxScore = Math.min(100, predictedScore + variance);
       const confidence_interval: [number, number] = [
-        Math.max(0, weightedScore - variance),
-        Math.min(100, weightedScore + variance),
+        Math.round(minScore),
+        Math.round(maxScore),
       ];
 
       // Likelihood of passing (>70%)
       const passingThreshold = 70;
-      const likelihood_of_passing = weightedScore >= passingThreshold
-        ? Math.min(100, 50 + (weightedScore - passingThreshold) * 1.5)
-        : Math.max(0, (weightedScore / passingThreshold) * 50);
+      const likelihood_of_passing = predictedScore >= passingThreshold
+        ? Math.min(100, 50 + (predictedScore - passingThreshold) * 1.5)
+        : Math.max(0, (predictedScore / passingThreshold) * 50);
 
       return {
-        predicted_score: Math.round(weightedScore),
+        predicted_score: predictedScore,
         confidence_interval,
         likelihood_of_passing: Math.round(likelihood_of_passing),
       };
