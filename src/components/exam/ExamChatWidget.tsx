@@ -268,14 +268,17 @@ export function ExamChatWidget({
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-primary/5">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-primary/10 rounded-full">
+      <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-primary/20 rounded-full ring-2 ring-primary/30 shadow-lg">
             <MessageCircle className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold">Smart Tutor</h3>
-            <p className="text-xs text-muted-foreground">Powered by Gemini</p>
+            <h3 className="font-semibold text-base">Smart Tutor</h3>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              Powered by Gemini
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -293,12 +296,15 @@ export function ExamChatWidget({
 
       {/* API Key Setup */}
       {(showKeyInput || (!hasKey && !isEnvKey)) && (
-        <div className="p-4 bg-muted/50 border-b">
-          <p className="text-sm text-muted-foreground mb-2">
-            {isEnvKey ? 'Override default API Key:' : 'Enter your Gemini API Key:'}
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="ml-1 text-primary hover:underline flex-inline items-center gap-1">
-              Get one here <ExternalLink className="w-3 h-3 inline" />
-            </a>
+        <div className="p-4 bg-gradient-to-r from-amber-50/50 via-orange-50/50 to-amber-50/50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-amber-950/20 border-b border-amber-200/50 dark:border-amber-800/50">
+          <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+            <Settings className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <span>
+              {isEnvKey ? 'Override default API Key:' : 'Enter your Gemini API Key:'}
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="ml-1 text-primary hover:underline inline-flex items-center gap-1 font-medium">
+                Get one here <ExternalLink className="w-3 h-3" />
+              </a>
+            </span>
           </p>
           <div className="flex gap-2">
             <Input
@@ -306,12 +312,12 @@ export function ExamChatWidget({
               placeholder={isEnvKey ? "Enter new key to override" : "Paste API Key"}
               value={tempKey}
               onChange={(e) => setTempKey(e.target.value)}
-              className="flex-1"
+              className="flex-1 bg-background"
             />
-            <Button onClick={handleSaveKey}>Save</Button>
+            <Button onClick={handleSaveKey} className="min-w-[70px]">Save</Button>
             {isEnvKey && (
                <Button variant="ghost" onClick={() => {
-                 removeApiKey(); // Clear override
+                 removeApiKey();
                  setShowKeyInput(false);
                  setTempKey('');
                }}>Reset</Button>
@@ -321,21 +327,35 @@ export function ExamChatWidget({
       )}
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg) => (
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+        {messages.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center text-center p-8 animate-in fade-in duration-500">
+            <div className="p-4 bg-primary/10 rounded-full mb-4">
+              <MessageCircle className="w-12 h-12 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Welcome to Smart Tutor!</h3>
+            <p className="text-sm text-muted-foreground max-w-md">
+              {activeQuestion
+                ? "I'm here to help you understand this question. Ask me anything!"
+                : "I'm your AI tutor powered by Gemini. Ask me any questions about Machine Learning Engineering!"}
+            </p>
+          </div>
+        )}
+        {messages.map((msg, index) => (
           <div
             key={msg.id}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex animate-in fade-in slide-in-from-bottom-2 duration-300 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            style={{ animationDelay: `${index * 50}ms` }}
           >
             <div
-              className={`max-w-[85%] rounded-lg p-3 text-sm relative group break-words ${
+              className={`max-w-[85%] rounded-lg p-3.5 text-sm relative group break-words shadow-sm ${
                 msg.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-foreground'
+                  ? 'bg-primary text-primary-foreground rounded-br-sm'
+                  : 'bg-muted text-foreground rounded-bl-sm'
               }`}
             >
               <div className="markdown-body text-sm break-words overflow-auto">
-                <ReactMarkdown 
+                <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
                     a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline" />,
@@ -348,29 +368,33 @@ export function ExamChatWidget({
                 >
                   {msg.text}
                 </ReactMarkdown>
+                {isStreaming && index === messages.length - 1 && msg.role === 'model' && (
+                  <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse"></span>
+                )}
               </div>
-              {msg.role === 'model' && !isLoading && (
+              {msg.role === 'model' && msg.text && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute -bottom-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
+                  className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-background/95"
                   onClick={() => handleSpeak(msg.text, msg.id)}
                   title={speakingId === msg.id ? "Stop reading" : "Read aloud"}
                 >
                   {speakingId === msg.id ? (
-                    <VolumeX className="w-4 h-4" />
+                    <VolumeX className="w-3.5 h-3.5" />
                   ) : (
-                    <Volume2 className="w-4 h-4" />
+                    <Volume2 className="w-3.5 h-3.5" />
                   )}
                 </Button>
               )}
             </div>
           </div>
         ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-muted rounded-lg p-3">
-              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+        {isLoading && messages.length > 0 && !messages[messages.length - 1]?.text && (
+          <div className="flex justify-start animate-in fade-in slide-in-from-left-2 duration-300">
+            <div className="bg-muted rounded-lg p-3 flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <span className="text-xs text-muted-foreground">Thinking...</span>
             </div>
           </div>
         )}
@@ -378,38 +402,58 @@ export function ExamChatWidget({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t bg-background">
+      <div className="p-4 border-t bg-gradient-to-t from-background/95 to-background backdrop-blur-sm">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
           }}
-          className="flex gap-2"
+          className="flex gap-2 items-end"
         >
-          <Button 
-            type="button" 
-            variant="ghost" 
+          <Button
+            type="button"
+            variant="ghost"
             size="icon"
             onClick={handleVoiceInput}
-            className={isListening ? "text-red-500 animate-pulse" : ""}
+            className={`transition-all ${isListening ? "text-red-500 animate-pulse ring-2 ring-red-500/50" : "hover:text-primary"}`}
             title="Voice Input"
             disabled={!hasKey || isLoading}
           >
             <Mic className="w-4 h-4" />
           </Button>
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={isListening ? "Listening..." : (hasKey ? "Ask a question..." : "Please set API key first")}
-            disabled={!hasKey || (isLoading && !isStreaming)}
-            className="flex-1"
-          />
+          <div className="flex-1 relative">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={isListening ? "Listening..." : (hasKey ? "Ask a question..." : "Please set API key first")}
+              disabled={!hasKey || (isLoading && !isStreaming)}
+              className="pr-3 py-2.5 rounded-lg transition-all focus:ring-2 focus:ring-primary/50"
+            />
+            {isListening && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+                <span className="w-1 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="w-1 h-4 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></span>
+                <span className="w-1 h-3 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></span>
+              </div>
+            )}
+          </div>
           {isStreaming ? (
-            <Button type="button" variant="destructive" size="icon" onClick={handleStop} title="Stop Generation">
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              onClick={handleStop}
+              title="Stop Generation"
+              className="transition-all hover:scale-105 active:scale-95"
+            >
               <Square className="w-4 h-4 fill-current" />
             </Button>
           ) : (
-            <Button type="submit" disabled={!hasKey || isLoading || !input.trim()}>
+            <Button
+              type="submit"
+              disabled={!hasKey || isLoading || !input.trim()}
+              className="transition-all hover:scale-105 active:scale-95 disabled:scale-100"
+            >
               <Send className="w-4 h-4" />
             </Button>
           )}
