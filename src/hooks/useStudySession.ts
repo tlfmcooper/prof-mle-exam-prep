@@ -32,27 +32,47 @@ export function useStudySession(sessionId: string) {
   return useQuery({
     queryKey: ['study_session', sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // 1. Fetch Session
+      const { data: session, error: sessionError } = await supabase
         .from('study_sessions')
-        .select(`
-          *,
-          session_attempts!inner (
-            attempt:user_attempts (
-              *,
-              question:questions (*)
-            )
-          )
-        `)
+        .select('*')
         .eq('id', sessionId)
         .single();
 
-      if (error) throw error;
+      if (sessionError) throw sessionError;
+      if (!session) throw new Error('Session not found');
 
-      // Transform the data
-      const session = data as any;
-      const attempts = session.session_attempts
-        ?.map((sa: any) => sa.attempt)
-        .filter(Boolean) || [];
+      // 2. Fetch Session Attempts (just the attempt_ids)
+      const { data: sessionAttempts, error: saError } = await supabase
+        .from('session_attempts')
+        .select('attempt_id, sequence_number')
+        .eq('session_id', sessionId)
+        .order('sequence_number', { ascending: true });
+
+      if (saError) throw saError;
+
+      if (!sessionAttempts || sessionAttempts.length === 0) {
+        return { ...session, attempts: [] } as StudySession;
+      }
+
+      const attemptIds = sessionAttempts.map((sa: any) => sa.attempt_id);
+
+      // 3. Fetch User Attempts with Questions
+      const { data: userAttempts, error: uaError } = await supabase
+        .from('user_attempts')
+        .select(`
+          *,
+          question:questions (*)
+        `)
+        .in('id', attemptIds);
+
+      if (uaError) throw uaError;
+
+      // 4. Map back to preserve order
+      const attemptsMap = new Map((userAttempts as any)?.map((ua: any) => [ua.id, ua]));
+      const attempts = sessionAttempts
+        .map((sa: any) => attemptsMap.get(sa.attempt_id))
+        .filter(Boolean);
 
       return {
         ...session,
@@ -128,6 +148,38 @@ export function useUpdateSession() {
       queryClient.invalidateQueries({ queryKey: ['study_sessions', data.user_id] });
       queryClient.invalidateQueries({ queryKey: ['study_session', data.id] });
       queryClient.invalidateQueries({ queryKey: ['user_stats', data.user_id] });
+    },
+  });
+}
+
+/**
+ * Hook to delete a study session
+ */
+export function useDeleteSession() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      // 1. Delete session_attempts first (manual cascade)
+      const { error: saError } = await supabase
+        .from('session_attempts')
+        .delete()
+        .eq('session_id', sessionId);
+      
+      if (saError) throw saError;
+
+      // 2. Delete the session
+      const { error } = await supabase
+        .from('study_sessions')
+        .delete()
+        .eq('id', sessionId);
+
+      if (error) throw error;
+      return sessionId;
+    },
+    onSuccess: (_, sessionId) => {
+      queryClient.invalidateQueries({ queryKey: ['study_sessions'] });
+      queryClient.removeQueries({ queryKey: ['study_session', sessionId] });
     },
   });
 }

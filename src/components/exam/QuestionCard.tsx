@@ -11,6 +11,7 @@ interface QuestionCardProps {
   previousAttempt?: UserAttempt;
   questionNumber?: number;
   onAskAI?: () => void;
+  autoSave?: boolean;
 }
 
 export function QuestionCard({
@@ -20,6 +21,7 @@ export function QuestionCard({
   previousAttempt,
   questionNumber,
   onAskAI,
+  autoSave = false,
 }: QuestionCardProps) {
   const [selected, setSelected] = useState<string[]>(previousAttempt?.selected_options || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,17 +30,23 @@ export function QuestionCard({
   const correctOptions = question.options.filter(o => o.is_correct).map(o => o.id);
   const isCorrect = previousAttempt?.is_correct ?? checkAnswer(selected, correctOptions);
 
-  const handleSelectOption = (optionId: string) => {
+  const handleSelectOption = async (optionId: string) => {
     if (showExplanation) return;
 
+    let newSelected: string[];
+
     if (isMultipleSelect) {
-      setSelected(prev =>
-        prev.includes(optionId)
-          ? prev.filter(id => id !== optionId)
-          : [...prev, optionId]
-      );
+      newSelected = selected.includes(optionId)
+        ? selected.filter(id => id !== optionId)
+        : [...selected, optionId];
     } else {
-      setSelected([optionId]);
+      newSelected = [optionId];
+    }
+
+    setSelected(newSelected);
+
+    if (autoSave) {
+      await onAnswer(newSelected);
     }
   };
 
@@ -146,7 +154,7 @@ export function QuestionCard({
         )}
       </CardContent>
 
-      {!showExplanation && (
+      {!showExplanation && !autoSave && (
         <CardFooter>
           <Button
             onClick={handleSubmit}
