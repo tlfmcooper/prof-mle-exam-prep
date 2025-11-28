@@ -350,7 +350,7 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold">
+                        <div className={`font-semibold ${isReviewWeek ? 'text-green-900' : ''}`}>
                           Week {week.week_number}
                           {isCurrentWeek && (
                             <Badge variant="default" className="ml-2">
@@ -358,16 +358,16 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
                             </Badge>
                           )}
                           {isReviewWeek && (
-                            <Badge variant="secondary" className="ml-2">
+                            <Badge variant="secondary" className="ml-2 bg-green-700 text-white border-green-800">
                               Review Week
                             </Badge>
                           )}
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {week.daily_target_questions} questions/day
+                        <div className={`text-sm ${isReviewWeek ? 'text-green-900 font-medium' : 'text-muted-foreground'}`}>
+                          {week.daily_target_questions} questions/ day
                         </div>
                       </div>
-                      <div className="text-sm">
+                      <div className={`text-sm ${isReviewWeek ? 'text-green-900' : ''}`}>
                         <span className="font-medium">Focus: </span>
                         <span>{week.topics_to_focus.join(', ')}</span>
                       </div>
