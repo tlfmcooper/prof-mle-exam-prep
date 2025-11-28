@@ -13,11 +13,12 @@ import { ExamChatWidget } from '@/components/exam/ExamChatWidget';
 import { checkAnswer } from '@/lib/utils';
 
 const EXAM_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-const TOTAL_QUESTIONS = 15; // Using 15 for demo, would be 50-60 in production
 
 export default function ExamSim() {
   const { user } = useAuth();
-  const { data: questions, isLoading } = useExamQuestions(TOTAL_QUESTIONS);
+  // Randomly select between 50 and 60 questions
+  const [targetQuestionCount] = useState(() => Math.floor(Math.random() * 11) + 50);
+  const { data: questions, isLoading } = useExamQuestions(targetQuestionCount);
   const submitAttempt = useSubmitAttempt();
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();

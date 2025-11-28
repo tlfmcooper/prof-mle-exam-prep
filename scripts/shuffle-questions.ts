@@ -46,12 +46,17 @@ function main() {
         return q;
     }
 
+    // Create mapping from old ID to new ID
+    const idMapping = new Map<string, string>();
+    
     // Shuffle options
     const shuffledOptions = shuffleArray(q.options);
 
-    // Re-assign IDs (A, B, C, D...) and update correct_answer_ids
+    // Re-assign IDs (A, B, C, D...) and build the mapping
     const newOptions = shuffledOptions.map((opt, index) => {
+        const oldId = opt.id;
         const newId = String.fromCharCode(65 + index); // A, B, C...
+        idMapping.set(oldId, newId);
         return {
             ...opt,
             id: newId
@@ -62,10 +67,30 @@ function main() {
         .filter(opt => opt.is_correct)
         .map(opt => opt.id);
 
+    // Update explanation to reflect new IDs
+    let updatedExplanation = q.explanation || '';
+    
+    // Sort the ID mapping by old ID to ensure consistent replacement order (D before C before B before A)
+    // This prevents issues where replacing A might affect already-replaced text
+    const sortedMappings = Array.from(idMapping.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+    
+    // Replace references to option IDs in the explanation
+    // We need to be careful to replace all instances of the letter when it refers to an option
+    sortedMappings.forEach(([oldId, newId]) => {
+        // Use a more comprehensive regex that matches the option letter in various contexts
+        // This matches: "A is", "A are", "option A", "choice A", "(A)", "A.", "A,", "A;", etc.
+        const regex = new RegExp(
+            `\\b${oldId}\\b(?=\\s+(is|are|and|or|provides|ensures|allows|because|since|as|requires|causes|refers|means|would|should|can|will|might|may)|[\\.,:;\\)]|$)`,
+            'g'
+        );
+        updatedExplanation = updatedExplanation.replace(regex, newId);
+    });
+
     return {
       ...q,
       options: newOptions,
-      correct_answer_ids: newCorrectAnswerIds
+      correct_answer_ids: newCorrectAnswerIds,
+      explanation: updatedExplanation
     };
   });
 
