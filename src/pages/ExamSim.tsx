@@ -35,6 +35,15 @@ export default function ExamSim() {
   const [attemptIds, setAttemptIds] = useState<Record<string, string>>({});
   const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, Date>>({});
 
+  // Chat state
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeChatQuestionId, setActiveChatQuestionId] = useState<string | null>(null);
+
+  const handleOpenChat = (questionId: string) => {
+    setActiveChatQuestionId(questionId);
+    setIsChatOpen(true);
+  };
+
   const currentQuestion = questions?.[currentQuestionIndex];
   const totalQuestions = questions?.length || 0;
 
@@ -309,14 +318,7 @@ export default function ExamSim() {
     );
   }
 
-  // Chat state
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [activeChatQuestionId, setActiveChatQuestionId] = useState<string | null>(null);
 
-  const handleOpenChat = (questionId: string) => {
-    setActiveChatQuestionId(questionId);
-    setIsChatOpen(true);
-  };
 
   // Results screen
   if (hasEnded && results) {
