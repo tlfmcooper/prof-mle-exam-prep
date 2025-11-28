@@ -1,16 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useExamQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
-import { useCreateSession, useUpdateSession, useLinkAttemptToSession, useStudySessions, useStudySession, useDeleteSession } from '@/hooks/useStudySession';
+import { useCreateSession, useUpdateSession, useLinkAttemptToSession, useStudySession } from '@/hooks/useStudySession';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { QuestionCard } from '@/components/exam/QuestionCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
-import { Flag, Filter, History, Eye, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
+import { Flag } from 'lucide-react';
 import { ExamChatWidget } from '@/components/exam/ExamChatWidget';
 import { checkAnswer } from '@/lib/utils';
 
@@ -18,6 +17,7 @@ const EXAM_DURATION_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
 export default function ExamSim() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   // Randomly select between 50 and 60 questions
   const [targetQuestionCount] = useState(() => Math.floor(Math.random() * 11) + 50);
   const { data: questions, isLoading } = useExamQuestions(targetQuestionCount);
@@ -25,7 +25,6 @@ export default function ExamSim() {
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const linkAttempt = useLinkAttemptToSession();
-  const deleteSession = useDeleteSession();
 
   // Exam state
   const [hasStarted, setHasStarted] = useState(false);
@@ -45,35 +44,15 @@ export default function ExamSim() {
   // New features state
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<'all' | 'correct' | 'wrong'>('all');
-  const [viewingSessionId, setViewingSessionId] = useState<string | null>(null);
+  
+  // Get viewing session ID from URL parameter
+  const viewingSessionId = searchParams.get('session');
 
-  const { data: pastSessions } = useStudySessions(user?.id);
   const { data: viewingSession, isLoading: isLoadingSession, error: sessionError } = useStudySession(viewingSessionId || '');
 
   const handleOpenChat = (questionId: string) => {
     setActiveChatQuestionId(questionId);
     setIsChatOpen(true);
-  };
-
-  const handleDeleteSession = async (e: React.MouseEvent, sessionId: string) => {
-    e.stopPropagation();
-    console.log('Delete clicked for session:', sessionId);
-    
-    if (!confirm('Are you sure you want to delete this exam session?')) {
-      console.log('Delete cancelled by user');
-      return;
-    }
-    
-    console.log('Starting deletion...');
-    try {
-      const result = await deleteSession.mutateAsync(sessionId);
-      console.log('Delete successful:', result);
-      alert('Session deleted successfully!');
-    } catch (error) {
-      console.error('Delete failed:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-      alert(`Failed to delete session: ${error instanceof Error ? error.message : JSON.stringify(error)}`);
-    }
   };
 
   const handleFlagQuestion = (questionId: string) => {
@@ -211,7 +190,10 @@ export default function ExamSim() {
     setStartTime(now);
     setHasStarted(true);
     setFlaggedQuestions(new Set());
-    setViewingSessionId(null);
+    // Clear viewing session from URL if present
+    if (viewingSessionId) {
+      setSearchParams({});
+    }
 
     // Create session
     try {
@@ -416,52 +398,6 @@ export default function ExamSim() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Past Exams History */}
-          {pastSessions && pastSessions.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <History className="h-5 w-5" />
-                  Past Exams
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {pastSessions.map((session) => (
-                    <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
-                      <div className="space-y-1">
-                        <div className="font-medium">
-                          {format(new Date(session.started_at), 'PPP p')}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Score: {session.score_percentage?.toFixed(1)}% ({session.correct_answers}/{session.total_questions})
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => setViewingSessionId(session.id)}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Results
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={(e) => handleDeleteSession(e, session.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     );
@@ -486,7 +422,9 @@ export default function ExamSim() {
           <Card>
             <CardContent className="py-8 text-center">
               <p className="text-destructive mb-4">Failed to load session results.</p>
-              <Button onClick={() => setViewingSessionId(null)}>Back to Exam</Button>
+              <Link to="/dashboard">
+                <Button>Back to Dashboard</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
@@ -538,9 +476,11 @@ export default function ExamSim() {
                   {viewingSessionId ? 'Past Exam Results' : 'Exam Results'}
                 </CardTitle>
                 {viewingSessionId && (
-                  <Button variant="ghost" onClick={() => setViewingSessionId(null)}>
-                    Close
-                  </Button>
+                  <Link to="/dashboard">
+                    <Button variant="ghost">
+                      Back to Dashboard
+                    </Button>
+                  </Link>
                 )}
               </div>
             </CardHeader>

@@ -160,7 +160,17 @@ export function useDeleteSession() {
 
   return useMutation({
     mutationFn: async (sessionId: string) => {
-      // 1. Delete session_attempts first (manual cascade)
+      // 1. Get the session first to know the user_id for cache invalidation
+      const { data: session, error: fetchError } = await supabase
+        .from('study_sessions')
+        .select('user_id')
+        .eq('id', sessionId)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      const userId = session?.user_id;
+
+      // 2. Delete session_attempts first (manual cascade)
       const { error: saError } = await supabase
         .from('session_attempts')
         .delete()
@@ -168,18 +178,32 @@ export function useDeleteSession() {
       
       if (saError) throw saError;
 
-      // 2. Delete the session
+      // 3. Delete the session
       const { error } = await supabase
         .from('study_sessions')
         .delete()
         .eq('id', sessionId);
 
       if (error) throw error;
-      return sessionId;
+      return { sessionId, userId };
     },
-    onSuccess: (_, sessionId) => {
-      queryClient.invalidateQueries({ queryKey: ['study_sessions'] });
+    onSuccess: ({ sessionId, userId }) => {
+      // Remove the specific session query
       queryClient.removeQueries({ queryKey: ['study_session', sessionId] });
+      
+      // Directly update the cache by removing the deleted session from all matching queries
+      queryClient.setQueriesData<StudySession[]>(
+        { queryKey: ['study_sessions'], exact: false },
+        (oldData) => {
+          if (!oldData) return oldData;
+          return oldData.filter((session) => session.id !== sessionId);
+        }
+      );
+      
+      // Also invalidate to ensure fresh data on next fetch
+      if (userId) {
+        queryClient.invalidateQueries({ queryKey: ['user_stats', userId] });
+      }
     },
   });
 }

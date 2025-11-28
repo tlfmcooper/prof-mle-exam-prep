@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserStats } from '@/hooks/useAttempts';
 import { useTopicStats, useOverallProgress } from '@/hooks/useTopicStats';
-import { useRecentActivity, useStudyStreak } from '@/hooks/useStudySession';
+import { useRecentActivity, useStudyStreak, useStudySessions, useDeleteSession } from '@/hooks/useStudySession';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { KeyboardShortcutsHelp } from '@/components/ui/keyboard-shortcuts-help';
 import { TopicProgressCard } from '@/components/analytics/TopicProgressCard';
+import { History, Eye, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -19,6 +21,20 @@ export default function Dashboard() {
   const { data: overallProgress, isLoading: progressLoading } = useOverallProgress(user?.id);
   const { data: recentActivity } = useRecentActivity(user?.id, 7);
   const { data: streak } = useStudyStreak(user?.id);
+  const { data: pastSessions } = useStudySessions(user?.id);
+  const deleteSession = useDeleteSession();
+
+  const handleDeleteSession = async (e: React.MouseEvent, sessionId: string) => {
+    e.stopPropagation();
+    if (!confirm('Are you sure you want to delete this exam session?')) {
+      return;
+    }
+    try {
+      await deleteSession.mutateAsync(sessionId);
+    } catch (error) {
+      alert(`Failed to delete session: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
 
   // Keyboard shortcuts
   const shortcuts = useMemo(() => [
@@ -229,6 +245,50 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Past Exams History */}
+        {pastSessions && pastSessions.length > 0 && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Past Exams
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {pastSessions.map((session) => (
+                  <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                    <div className="space-y-1">
+                      <div className="font-medium">
+                        {format(new Date(session.started_at), 'PPP p')}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Score: {session.score_percentage?.toFixed(1)}% ({session.correct_answers}/{session.total_questions})
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Link to={`/exam-sim?session=${session.id}`}>
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Results
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={(e) => handleDeleteSession(e, session.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Data Notice */}
         <Card className="mt-8 bg-accent/50 border-border">
