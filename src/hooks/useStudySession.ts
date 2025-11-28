@@ -31,16 +31,18 @@ export function useStudySessions(userId?: string, limit = 10) {
 export function useStudySession(sessionId: string) {
   return useQuery({
     queryKey: ['study_session', sessionId],
-    queryFn: async () => {
+    queryFn: async (): Promise<StudySession> => {
       // 1. Fetch Session
-      const { data: session, error: sessionError } = await supabase
+      const { data: sessionData, error: sessionError } = await supabase
         .from('study_sessions')
         .select('*')
         .eq('id', sessionId)
         .single();
 
       if (sessionError) throw sessionError;
-      if (!session) throw new Error('Session not found');
+      if (!sessionData) throw new Error('Session not found');
+      
+      const session = sessionData as unknown as StudySession;
 
       // 2. Fetch Session Attempts (just the attempt_ids)
       const { data: sessionAttempts, error: saError } = await supabase
@@ -52,7 +54,7 @@ export function useStudySession(sessionId: string) {
       if (saError) throw saError;
 
       if (!sessionAttempts || sessionAttempts.length === 0) {
-        return { ...session, attempts: [] } as StudySession;
+        return { ...session, attempts: [] };
       }
 
       const attemptIds = sessionAttempts.map((sa: any) => sa.attempt_id);
@@ -72,12 +74,12 @@ export function useStudySession(sessionId: string) {
       const attemptsMap = new Map((userAttempts as any)?.map((ua: any) => [ua.id, ua]));
       const attempts = sessionAttempts
         .map((sa: any) => attemptsMap.get(sa.attempt_id))
-        .filter(Boolean);
+        .filter(Boolean) as StudySession['attempts'];
 
       return {
         ...session,
         attempts,
-      } as StudySession;
+      };
     },
     enabled: !!sessionId,
   });
@@ -168,7 +170,7 @@ export function useDeleteSession() {
         .single();
       
       if (fetchError) throw fetchError;
-      const userId = session?.user_id;
+      const userId = (session as { user_id: string } | null)?.user_id;
 
       // 2. Delete session_attempts first (manual cascade)
       const { error: saError } = await supabase
