@@ -135,8 +135,8 @@ export function QuestionCard({
 
         {showExplanation && question.explanation && (
           <div className={`mt-6 p-4 rounded-lg ${isCorrect ? 'bg-green-50 border-l-4 border-green-500' : 'bg-blue-50 border-l-4 border-blue-500'}`}>
-            <h4 className="font-semibold text-sm mb-2">Explanation:</h4>
-            <p className="text-sm text-gray-700">{question.explanation}</p>
+            <h4 className="font-semibold text-sm mb-2 text-gray-900">Explanation:</h4>
+            <p className="text-sm text-gray-900">{question.explanation}</p>
           </div>
         )}
 

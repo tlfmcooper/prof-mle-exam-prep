@@ -185,7 +185,11 @@ export default function Dashboard() {
           ) : topicStats && topicStats.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {topicStats.map((stat) => (
-                <TopicProgressCard key={stat.topic_id} stat={stat} />
+                <TopicProgressCard 
+                  key={stat.topic_id} 
+                  stat={stat} 
+                  onClick={() => navigate(`/practice?topics=${stat.topic_id}`)}
+                />
               ))}
             </div>
           ) : (
