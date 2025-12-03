@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
@@ -16,6 +16,9 @@ import { supabase } from '@/lib/supabase';
 
 export default function Practice() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const topicIds = searchParams.get('topics')?.split(',').filter(Boolean);
+  
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [customCount, setCustomCount] = useState<string>('');
   const [isConfigured, setIsConfigured] = useState(false);
@@ -26,7 +29,10 @@ export default function Practice() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [activeChatQuestionId, setActiveChatQuestionId] = useState<string | null>(null);
 
-  const { data: questions, isLoading, refetch } = useQuestions({ limit: questionCount });
+  const { data: questions, isLoading, refetch } = useQuestions({ 
+    limit: questionCount,
+    topicIds: topicIds
+  });
   const submitAttempt = useSubmitAttempt();
 
   // Get total questions count on mount
@@ -180,8 +186,9 @@ export default function Practice() {
           <div>
             <h1 className="text-3xl font-bold text-foreground">Configure Practice Session</h1>
             <p className="mt-2 text-muted-foreground">
-              Select the number of questions for your practice set. Questions will be
-              proportionally distributed across all domains.
+              {topicIds && topicIds.length > 0 
+                ? `Practicing ${topicIds.length} specific topic${topicIds.length > 1 ? 's' : ''}. ` 
+                : 'Select the number of questions for your practice set. Questions will be proportionally distributed across all domains.'}
             </p>
           </div>
 

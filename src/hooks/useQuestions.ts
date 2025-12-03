@@ -18,28 +18,34 @@ export function useQuestions(filters?: QuestionFilters) {
       if (topicsError) throw topicsError;
 
       // Get all questions with their topic associations
-      let questionsQuery = supabase
-        .from('questions')
-        .select(`
-          *,
-          question_topics!inner (
-            topic:topics!inner (
-              id,
-              name,
-              parent_topic_id
-            )
+
+      
+      // Re-constructing the query to properly handle topic filtering
+      let query = supabase.from('questions').select(`
+        *,
+        question_topics!inner (
+          topic:topics!inner (
+            id,
+            name,
+            parent_topic_id
           )
-        `);
+        )
+      `);
 
       if (filters?.difficulty) {
-        questionsQuery = questionsQuery.eq('difficulty', filters.difficulty);
+        query = query.eq('difficulty', filters.difficulty);
       }
 
       if (filters?.source) {
-        questionsQuery = questionsQuery.eq('source', filters.source);
+        query = query.eq('source', filters.source);
       }
 
-      const { data: allQuestions, error: questionsError } = await (questionsQuery as any);
+      if (filters?.topicIds && filters.topicIds.length > 0) {
+        // This filters the questions based on the inner joined topics
+        query = query.in('question_topics.topic_id', filters.topicIds);
+      }
+
+      const { data: allQuestions, error: questionsError } = await (query as any);
 
       if (questionsError) throw questionsError;
       if (!allQuestions || allQuestions.length === 0) return [];

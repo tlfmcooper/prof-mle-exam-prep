@@ -79,8 +79,8 @@ export function WeakAreasAlert({
             size="sm"
             onClick={() => {
               // Navigate to practice with weak topics
-              // We could pass topic IDs as query params
-              navigate('/practice');
+              const topicIds = weakTopics.map(t => t.topic_id).join(',');
+              navigate(`/practice?topics=${topicIds}`);
             }}
           >
             Practice These Topics

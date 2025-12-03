@@ -70,20 +70,19 @@ function main() {
     // Update explanation to reflect new IDs
     let updatedExplanation = q.explanation || '';
     
-    // Sort the ID mapping by old ID to ensure consistent replacement order (D before C before B before A)
-    // This prevents issues where replacing A might affect already-replaced text
-    const sortedMappings = Array.from(idMapping.entries()).sort((a, b) => b[0].localeCompare(a[0]));
-    
-    // Replace references to option IDs in the explanation
-    // We need to be careful to replace all instances of the letter when it refers to an option
-    sortedMappings.forEach(([oldId, newId]) => {
-        // Use a more comprehensive regex that matches the option letter in various contexts
-        // This matches: "A is", "A are", "option A", "choice A", "(A)", "A.", "A,", "A;", etc.
+    // PHASE 1: Replace Old IDs with Unique Placeholders
+    // We use a placeholder format that won't appear in normal text, e.g., {{OPT_A}}
+    idMapping.forEach((newId, oldId) => {
         const regex = new RegExp(
             `\\b${oldId}\\b(?=\\s+(is|are|and|or|provides|ensures|allows|because|since|as|requires|causes|refers|means|would|should|can|will|might|may)|[\\.,:;\\)]|$)`,
             'g'
         );
-        updatedExplanation = updatedExplanation.replace(regex, newId);
+        updatedExplanation = updatedExplanation.replace(regex, `{{OPT_${oldId}}}`);
+    });
+
+    // PHASE 2: Replace Placeholders with New IDs
+    idMapping.forEach((newId, oldId) => {
+        updatedExplanation = updatedExplanation.replace(new RegExp(`{{OPT_${oldId}}}`, 'g'), newId);
     });
 
     return {
