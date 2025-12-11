@@ -343,14 +343,20 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
                       key={week.week_number}
                       className={`p-4 rounded-lg border-2 ${
                         isCurrentWeek
-                          ? 'bg-primary/5 border-primary'
+                          ? 'bg-primary/10 border-primary shadow-sm'
                           : isReviewWeek
-                          ? 'bg-green-50 border-green-300'
-                          : 'bg-background border-border'
+                          ? 'bg-green-50 dark:bg-green-950/30 border-green-300 dark:border-green-700 shadow-sm'
+                          : 'bg-card border-border hover:bg-accent/50 transition-colors'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <div className={`font-semibold ${isReviewWeek ? 'text-green-900' : ''}`}>
+                        <div className={`font-semibold ${
+                          isCurrentWeek
+                            ? 'text-primary'
+                            : isReviewWeek
+                            ? 'text-green-700 dark:text-green-400'
+                            : 'text-foreground'
+                        }`}>
                           Week {week.week_number}
                           {isCurrentWeek && (
                             <Badge variant="default" className="ml-2">
@@ -358,18 +364,30 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
                             </Badge>
                           )}
                           {isReviewWeek && (
-                            <Badge variant="secondary" className="ml-2 bg-green-700 text-white border-green-800">
+                            <Badge variant="secondary" className="ml-2 bg-green-600 dark:bg-green-700 text-white border-green-700 dark:border-green-600">
                               Review Week
                             </Badge>
                           )}
                         </div>
-                        <div className={`text-sm ${isReviewWeek ? 'text-green-900 font-medium' : 'text-muted-foreground'}`}>
+                        <div className={`text-sm font-medium ${
+                          isCurrentWeek
+                            ? 'text-primary'
+                            : isReviewWeek
+                            ? 'text-green-700 dark:text-green-400'
+                            : 'text-muted-foreground'
+                        }`}>
                           {week.daily_target_questions} questions/ day
                         </div>
                       </div>
-                      <div className={`text-sm ${isReviewWeek ? 'text-green-900' : ''}`}>
+                      <div className={`text-sm ${
+                        isCurrentWeek
+                          ? 'text-foreground'
+                          : isReviewWeek
+                          ? 'text-green-800 dark:text-green-300'
+                          : 'text-foreground'
+                      }`}>
                         <span className="font-medium">Focus: </span>
-                        <span>{week.topics_to_focus.join(', ')}</span>
+                        <span>{week.topics_to_focus.length > 0 ? week.topics_to_focus.join(', ') : 'Comprehensive review'}</span>
                       </div>
                     </div>
                   );
@@ -378,9 +396,9 @@ export function StudyPlanGenerator({ topics, currentAccuracy }: StudyPlanGenerat
             </div>
 
             {/* Success Tips */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h4 className="font-semibold text-green-900 mb-2">Study Tips for Success:</h4>
-              <ul className="text-sm text-green-800 space-y-1 list-disc list-inside">
+            <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <h4 className="font-semibold text-green-900 dark:text-green-300 mb-2">Study Tips for Success:</h4>
+              <ul className="text-sm text-green-800 dark:text-green-200 space-y-1 list-disc list-inside">
                 <li>Start with high-priority topics to maximize impact</li>
                 <li>Practice consistently - aim for 5 days per week</li>
                 <li>Review explanations thoroughly, even for correct answers</li>
