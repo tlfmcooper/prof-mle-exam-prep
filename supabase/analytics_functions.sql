@@ -64,7 +64,7 @@ BEGIN
   RETURN QUERY
   SELECT
     DATE(ua.attempted_at) AS date,
-    COUNT(DISTINCT ua.question_id) AS questions_attempted,  -- Count unique questions
+    COUNT(ua.id) AS questions_attempted,
     ROUND(
       (COUNT(*) FILTER (WHERE ua.is_correct = true)::DECIMAL / NULLIF(COUNT(ua.id), 0) * 100),
       2
