@@ -2,6 +2,34 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Question, QuestionFilters } from '@/lib/types';
 
+// Mapping of Official Topic IDs to their Duplicate/Orphan counterparts
+// This ensures questions tagged with orphan topics are included when filtering by official topics
+const TOPIC_MAPPINGS: Record<string, string[]> = {
+  // Architecting low-code AI solutions
+  '550e8400-e29b-41d4-a716-446655440001': ['eb3efdfe-2acd-4890-9e32-f333100e3f70'], // Low Code Ai
+
+  // Data and Model Collaboration
+  '550e8400-e29b-41d4-a716-446655440002': ['5eb76235-a9e7-468e-a2a6-944398cf715e'], // Data Prep
+
+  // Model Development
+  '550e8400-e29b-41d4-a716-446655440003': ['71af905b-8cc5-43a2-aa44-8ce2dc97dc3b'], // Model Dev
+
+  // Model Serving
+  '550e8400-e29b-41d4-a716-446655440004': ['4954d4a9-911f-492f-ac76-d05bbf69f720'], // Ab Testing
+
+  // MLOps & Automation
+  '550e8400-e29b-41d4-a716-446655440005': [
+    '847b7dd0-05ed-44bb-aa2e-e2f0a041c1de', // Mlops
+    '72179a26-c625-4f85-a906-419123a855db'  // Cicd
+  ],
+
+  // Monitoring & Optimization
+  '550e8400-e29b-41d4-a716-446655440006': [
+    'abd39a8f-9eb5-4924-adc8-6c197312f1b6', // Monitoring
+    'd36ca108-3416-415b-bfd0-ae508450d7b6'  // Training Serving Skew
+  ]
+};
+
 export function useQuestions(filters?: QuestionFilters, userId?: string, excludeAttempts = false) {
   return useQuery({
     queryKey: ['questions', filters, userId, excludeAttempts],
@@ -53,8 +81,17 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
       }
 
       if (filters?.topicIds && filters.topicIds.length > 0) {
+        // Expand topic IDs to include mapped orphan topics
+        let expandedTopicIds = [...filters.topicIds];
+
+        // Add mapped orphan topics for each requested topic
+        filters.topicIds.forEach(topicId => {
+          const mappedIds = TOPIC_MAPPINGS[topicId] || [];
+          expandedTopicIds = [...expandedTopicIds, ...mappedIds];
+        });
+
         // This filters the questions based on the inner joined topics
-        query = query.in('question_topics.topic_id', filters.topicIds);
+        query = query.in('question_topics.topic_id', expandedTopicIds);
       }
 
       const { data: allQuestions, error: questionsError } = await (query as any);
@@ -95,11 +132,22 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
       const questionsByTopic = new Map<string, any[]>();
 
       topics.forEach((topic: any) => {
+        // Find mapped orphan topic IDs for this official topic
+        const mappedIds = TOPIC_MAPPINGS[topic.id] || [];
+
         const topicQuestions = allQuestions.filter((q: any) => {
           const questionTopics = q.question_topics || [];
           return questionTopics.some((qt: any) => {
             const qTopic = qt.topic;
-            return qTopic.id === topic.id || qTopic.parent_topic_id === topic.id;
+            // Match if:
+            // 1. Question is directly tagged with this topic
+            // 2. Question is tagged with a subtopic of this topic
+            // 3. Question is tagged with a mapped orphan topic
+            return (
+              qTopic.id === topic.id ||
+              qTopic.parent_topic_id === topic.id ||
+              mappedIds.includes(qTopic.id)
+            );
           });
         });
 
@@ -327,11 +375,22 @@ export function useExamQuestions(totalQuestions = 50, userId?: string, excludeAt
       const questionsByTopic = new Map<string, any[]>();
 
       topics.forEach((topic: any) => {
+        // Find mapped orphan topic IDs for this official topic
+        const mappedIds = TOPIC_MAPPINGS[topic.id] || [];
+
         const topicQuestions = allQuestions.filter((q: any) => {
           const questionTopics = q.question_topics || [];
           return questionTopics.some((qt: any) => {
             const qTopic = qt.topic;
-            return qTopic.id === topic.id || qTopic.parent_topic_id === topic.id;
+            // Match if:
+            // 1. Question is directly tagged with this topic
+            // 2. Question is tagged with a subtopic of this topic
+            // 3. Question is tagged with a mapped orphan topic
+            return (
+              qTopic.id === topic.id ||
+              qTopic.parent_topic_id === topic.id ||
+              mappedIds.includes(qTopic.id)
+            );
           });
         });
 
