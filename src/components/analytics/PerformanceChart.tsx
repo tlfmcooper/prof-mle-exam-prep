@@ -25,12 +25,15 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
 
   // Calculate domain for questions axis to ensure proper scaling
   const maxQuestions = Math.max(...data.map(d => d.questions_attempted));
-  const questionsDomain = [0, Math.ceil(maxQuestions * 1.1)]; // Add 10% padding
+  // Round up to nearest nice number for better readability
+  const niceMax = Math.ceil(maxQuestions / 10) * 10; // Round to nearest 10
+  const questionsDomain = [0, niceMax] as [number, number];
 
   // Debug logging
   console.log('Performance Chart Data:', {
     data,
     maxQuestions,
+    niceMax,
     questionsDomain,
     firstPoint: data[0],
     lastPoint: data[data.length - 1]
@@ -57,7 +60,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
         <YAxis
           yAxisId="right"
           orientation="right"
-          domain={[0, 100]}
+          domain={[0, 100] as [number, number]}
           tick={{ fontSize: 12 }}
           label={{ value: 'Accuracy %', angle: 90, position: 'insideRight', style: { textAnchor: 'middle' } }}
         />
