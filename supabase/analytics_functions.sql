@@ -27,8 +27,20 @@ BEGIN
     ROUND(AVG(ua.confidence_level), 2) AS avg_confidence,
     MAX(ua.attempted_at) AS last_attempted
   FROM topics t
-  LEFT JOIN question_topics qt ON qt.topic_id = t.id OR qt.topic_id IN (
-    SELECT id FROM topics WHERE parent_topic_id = t.id
+  LEFT JOIN question_topics qt ON (
+    -- Direct match
+    qt.topic_id = t.id
+    OR
+    -- Subtopic match
+    qt.topic_id IN (SELECT id FROM topics WHERE parent_topic_id = t.id)
+    OR
+    -- Orphan topic mappings (map orphan topics to their official exam topics)
+    (t.id = '550e8400-e29b-41d4-a716-446655440001'::uuid AND qt.topic_id = 'eb3efdfe-2acd-4890-9e32-f333100e3f70'::uuid) OR
+    (t.id = '550e8400-e29b-41d4-a716-446655440002'::uuid AND qt.topic_id = '5eb76235-a9e7-468e-a2a6-944398cf715e'::uuid) OR
+    (t.id = '550e8400-e29b-41d4-a716-446655440003'::uuid AND qt.topic_id IN ('71af905b-8cc5-43a2-aa44-8ce2dc97dc3b'::uuid, '6b45e087-c586-4d25-8786-fe0df8fb5b0f'::uuid)) OR
+    (t.id = '550e8400-e29b-41d4-a716-446655440004'::uuid AND qt.topic_id = '4954d4a9-911f-492f-ac76-d05bbf69f720'::uuid) OR
+    (t.id = '550e8400-e29b-41d4-a716-446655440005'::uuid AND qt.topic_id IN ('847b7dd0-05ed-44bb-aa2e-e2f0a041c1de'::uuid, '72179a26-c625-4f85-a906-419123a855db'::uuid)) OR
+    (t.id = '550e8400-e29b-41d4-a716-446655440006'::uuid AND qt.topic_id IN ('abd39a8f-9eb5-4924-adc8-6c197312f1b6'::uuid, 'd36ca108-3416-415b-bfd0-ae508450d7b6'::uuid))
   )
   LEFT JOIN user_attempts ua ON ua.question_id = qt.question_id AND ua.user_id = p_user_id
   WHERE t.parent_topic_id IS NULL

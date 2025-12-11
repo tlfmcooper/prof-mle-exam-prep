@@ -11,7 +11,7 @@ const TOPIC_MAPPINGS: Record<string, string[]> = {
   '550e8400-e29b-41d4-a716-446655440002': ['5eb76235-a9e7-468e-a2a6-944398cf715e'], // Data Prep
   
   // Model Development
-  '550e8400-e29b-41d4-a716-446655440003': ['71af905b-8cc5-43a2-aa44-8ce2dc97dc3b'], // Model Dev
+  '550e8400-e29b-41d4-a716-446655440003': ['71af905b-8cc5-43a2-aa44-8ce2dc97dc3b', '6b45e087-c586-4d25-8786-fe0df8fb5b0f'], // Model Dev, Model Interpretability
   
   // Model Serving
   '550e8400-e29b-41d4-a716-446655440004': ['4954d4a9-911f-492f-ac76-d05bbf69f720'], // Ab Testing
