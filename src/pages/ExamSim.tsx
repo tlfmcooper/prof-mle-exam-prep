@@ -20,7 +20,7 @@ export default function ExamSim() {
   const [searchParams, setSearchParams] = useSearchParams();
   // Randomly select between 50 and 60 questions
   const [targetQuestionCount] = useState(() => Math.floor(Math.random() * 11) + 50);
-  const { data: questions, isLoading } = useExamQuestions(targetQuestionCount);
+  const { data: questions, isLoading } = useExamQuestions(targetQuestionCount, user?.id, true);
   const submitAttempt = useSubmitAttempt();
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
@@ -44,6 +44,7 @@ export default function ExamSim() {
   // New features state
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<'all' | 'correct' | 'wrong'>('all');
+  const [showQuestionList, setShowQuestionList] = useState(true);
   
   // Get viewing session ID from URL parameter
   const viewingSessionId = searchParams.get('session');
@@ -628,42 +629,52 @@ export default function ExamSim() {
               >
                 End
               </Button>
+              <Button
+                 variant="outline"
+                 size="sm"
+                 onClick={() => setShowQuestionList(!showQuestionList)}
+                 className="hidden sm:flex"
+               >
+                 {showQuestionList ? 'Hide List' : 'Show List'}
+               </Button>
             </div>
           </div>
 
           {/* Question navigator */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {questions.map((q, index) => {
-              const isFlagged = flaggedQuestions.has(q.id);
-              const isAnswered = !!answers[q.id];
-              const isCurrent = index === currentQuestionIndex;
+          {showQuestionList && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {questions.map((q, index) => {
+                const isFlagged = flaggedQuestions.has(q.id);
+                const isAnswered = !!answers[q.id];
+                const isCurrent = index === currentQuestionIndex;
 
-              let className = "w-8 h-8 rounded text-sm font-medium transition-all relative ";
-              
-              if (isCurrent) {
-                className += "bg-primary text-primary-foreground";
-              } else if (isFlagged) {
-                className += "bg-yellow-100 text-yellow-800 border-2 border-yellow-400";
-              } else if (isAnswered) {
-                className += "bg-green-100 text-green-800 hover:bg-green-200";
-              } else {
-                className += "bg-gray-100 text-gray-600 hover:bg-gray-200";
-              }
+                let className = "w-8 h-8 rounded text-sm font-medium transition-all relative ";
+                
+                if (isCurrent) {
+                  className += "bg-primary text-primary-foreground";
+                } else if (isFlagged) {
+                  className += "bg-yellow-100 text-yellow-800 border-2 border-yellow-400";
+                } else if (isAnswered) {
+                  className += "bg-green-100 text-green-800 hover:bg-green-200";
+                } else {
+                  className += "bg-gray-100 text-gray-600 hover:bg-gray-200";
+                }
 
-              return (
-                <button
-                  key={q.id}
-                  onClick={() => handleGoToQuestion(index)}
-                  className={className}
-                >
-                  {index + 1}
-                  {isFlagged && !isCurrent && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                return (
+                  <button
+                    key={q.id}
+                    onClick={() => handleGoToQuestion(index)}
+                    className={className}
+                  >
+                    {index + 1}
+                    {isFlagged && !isCurrent && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </header>
 
@@ -671,6 +682,7 @@ export default function ExamSim() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentQuestion && (
           <QuestionCard
+            key={currentQuestion.id} // Force re-mount when question changes to reset internal state
             question={currentQuestion}
             onAnswer={(selected) => handleAnswer(currentQuestion.id, selected)}
             showExplanation={false}

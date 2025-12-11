@@ -32,7 +32,7 @@ export default function Practice() {
   const { data: questions, isLoading, refetch } = useQuestions({ 
     limit: questionCount,
     topicIds: topicIds
-  });
+  }, user?.id, true);
   const submitAttempt = useSubmitAttempt();
 
   // Get total questions count on mount
@@ -413,6 +413,7 @@ export default function Practice() {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <QuestionCard
+          key={currentQuestion.id} // Force re-mount to reset internal state
           question={currentQuestion}
           onAnswer={handleAnswer}
           showExplanation={showExplanation}

@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Question, QuestionFilters } from '@/lib/types';
 
-export function useQuestions(filters?: QuestionFilters) {
+export function useQuestions(filters?: QuestionFilters, userId?: string, excludeAttempts = false) {
   return useQuery({
-    queryKey: ['questions', filters],
+    queryKey: ['questions', filters, userId, excludeAttempts],
     queryFn: async () => {
       const totalQuestions = filters?.limit || 50;
 
@@ -17,9 +17,21 @@ export function useQuestions(filters?: QuestionFilters) {
 
       if (topicsError) throw topicsError;
 
-      // Get all questions with their topic associations
+      // Get user attempts if needed
+      let attemptedQuestionIds = new Set<string>();
+      if (userId && excludeAttempts) {
+        const { data: attempts, error: attemptsError } = await supabase
+          .from('user_attempts')
+          .select('question_id')
+          .eq('user_id', userId);
+        
+        if (attemptsError) throw attemptsError;
+        if (attempts) {
+          attempts.forEach((a: any) => attemptedQuestionIds.add(a.question_id));
+        }
+      }
 
-      
+      // Get all questions with their topic associations
       // Re-constructing the query to properly handle topic filtering
       let query = supabase.from('questions').select(`
         *,
@@ -52,8 +64,27 @@ export function useQuestions(filters?: QuestionFilters) {
 
       // If no topics or weights, fall back to random selection
       if (!topics || topics.length === 0) {
-        const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, totalQuestions).map((q: any) => ({
+        // Filter out attempted questions first
+        let finalSelection: any[] = [];
+        
+        if (excludeAttempts && attemptedQuestionIds.size > 0) {
+          const unattempted = allQuestions.filter((q: any) => !attemptedQuestionIds.has(q.id));
+          const attempted = allQuestions.filter((q: any) => attemptedQuestionIds.has(q.id));
+          
+          const shuffledUnattempted = [...unattempted].sort(() => Math.random() - 0.5);
+          finalSelection = shuffledUnattempted.slice(0, totalQuestions);
+          
+          if (finalSelection.length < totalQuestions) {
+             const remaining = totalQuestions - finalSelection.length;
+             const shuffledAttempted = [...attempted].sort(() => Math.random() - 0.5);
+             finalSelection = [...finalSelection, ...shuffledAttempted.slice(0, remaining)];
+          }
+        } else {
+           // Normal logic without attempt exclusion
+           finalSelection = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+        }
+
+        return finalSelection.map((q: any) => ({
           ...q,
           options: Array.isArray(q.options) ? q.options : JSON.parse(q.options || '[]'),
           topics: q.question_topics?.map((qt: any) => qt.topic) || []
@@ -88,9 +119,28 @@ export function useQuestions(filters?: QuestionFilters) {
         const weight = topic.exam_weight || 0;
         const questionsForTopic = Math.round((weight / totalWeight) * totalQuestions);
         const availableQuestions = questionsByTopic.get(topic.id) || [];
+        
+        let shuffled: any[] = [];
 
-        // Randomly select questions from this topic
-        const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+        if (excludeAttempts && attemptedQuestionIds.size > 0) {
+          // Split into unattempted and attempted
+          const unattempted = availableQuestions.filter((q: any) => !attemptedQuestionIds.has(q.id));
+          const attempted = availableQuestions.filter((q: any) => attemptedQuestionIds.has(q.id));
+          
+          // Prioritize unattempted
+          const shuffledUnattempted = [...unattempted].sort(() => Math.random() - 0.5);
+          
+          if (shuffledUnattempted.length >= questionsForTopic) {
+             shuffled = shuffledUnattempted;
+          } else {
+             // Fill remainder with attempted
+             const shuffledAttempted = [...attempted].sort(() => Math.random() - 0.5);
+             shuffled = [...shuffledUnattempted, ...shuffledAttempted];
+          }
+        } else {
+          shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+        }
+
         const selected = shuffled.slice(0, Math.min(questionsForTopic, shuffled.length));
 
         selectedQuestions.push(...selected);
@@ -99,11 +149,29 @@ export function useQuestions(filters?: QuestionFilters) {
       // If we don't have enough questions, add more randomly
       if (selectedQuestions.length < totalQuestions) {
         const remaining = totalQuestions - selectedQuestions.length;
-        const allAvailable = allQuestions.filter(
-          (q: any) => !selectedQuestions.find((sq) => sq.id === q.id)
-        );
-        const shuffled = [...allAvailable].sort(() => Math.random() - 0.5);
-        selectedQuestions.push(...shuffled.slice(0, remaining));
+        
+        // Build pool of questions not yet selected
+        const selectedIds = new Set(selectedQuestions.map(q => q.id));
+        const allAvailable = allQuestions.filter((q: any) => !selectedIds.has(q.id));
+        
+        // Use logic similar to topic selection: prioritize unattempted
+        let shuffledPool: any[] = [];
+        
+        if (excludeAttempts && attemptedQuestionIds.size > 0) {
+            const unattempted = allAvailable.filter((q: any) => !attemptedQuestionIds.has(q.id));
+            const attempted = allAvailable.filter((q: any) => attemptedQuestionIds.has(q.id));
+            
+            shuffledPool = [...unattempted].sort(() => Math.random() - 0.5);
+            
+            if (shuffledPool.length < remaining) {
+                const remainderFromAttempted = [...attempted].sort(() => Math.random() - 0.5);
+                shuffledPool = [...shuffledPool, ...remainderFromAttempted];
+            }
+        } else {
+            shuffledPool = [...allAvailable].sort(() => Math.random() - 0.5);
+        }
+
+        selectedQuestions.push(...shuffledPool.slice(0, remaining));
       }
 
       // Shuffle final selection and transform data
@@ -212,9 +280,9 @@ export function useRandomQuestions(count: number, filters?: QuestionFilters) {
  * Hook to get exam questions with weighted distribution by topic
  * Selects questions proportionally to each topic's exam weight
  */
-export function useExamQuestions(totalQuestions = 50) {
+export function useExamQuestions(totalQuestions = 50, userId?: string, excludeAttempts = false) {
   return useQuery({
-    queryKey: ['exam-questions', totalQuestions],
+    queryKey: ['exam-questions', totalQuestions, userId, excludeAttempts],
     queryFn: async () => {
       // Get all main topics with their weights
       const { data: topics, error: topicsError } = await (supabase
@@ -224,6 +292,20 @@ export function useExamQuestions(totalQuestions = 50) {
         .order('exam_weight', { ascending: false }) as any);
 
       if (topicsError) throw topicsError;
+
+      // Get user attempts if needed
+      let attemptedQuestionIds = new Set<string>();
+      if (userId && excludeAttempts) {
+        const { data: attempts, error: attemptsError } = await supabase
+          .from('user_attempts')
+          .select('question_id')
+          .eq('user_id', userId);
+        
+        if (attemptsError) throw attemptsError;
+        if (attempts) {
+          attempts.forEach((a: any) => attemptedQuestionIds.add(a.question_id));
+        }
+      }
 
       // Get all questions with their topic associations
       const { data: allQuestions, error: questionsError } = await (supabase
@@ -253,7 +335,7 @@ export function useExamQuestions(totalQuestions = 50) {
           });
         });
 
-        // Remove duplicates
+        // Remove duplicates within topic
         const uniqueQuestions = Array.from(
           new Map(topicQuestions.map((q: any) => [q.id, q])).values()
         );
@@ -263,28 +345,72 @@ export function useExamQuestions(totalQuestions = 50) {
 
       // Calculate number of questions per topic based on weight
       const selectedQuestions: any[] = [];
+      const globalSelectedIds = new Set<string>(); // Track ALL selected IDs to prevent cross-topic duplicates
+      
       const totalWeight = topics.reduce((sum: number, t: any) => sum + (t.exam_weight || 0), 0);
 
       topics.forEach((topic: any) => {
         const weight = topic.exam_weight || 0;
         const questionsForTopic = Math.round((weight / totalWeight) * totalQuestions);
-        const availableQuestions = questionsByTopic.get(topic.id) || [];
+        let availableQuestions = questionsByTopic.get(topic.id) || [];
+        
+        // Filter out questions already selected by previous topics
+        availableQuestions = availableQuestions.filter((q: any) => !globalSelectedIds.has(q.id));
 
-        // Randomly select questions from this topic
-        const shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+        let shuffled: any[] = [];
+
+        if (excludeAttempts && attemptedQuestionIds.size > 0) {
+            // Split into unattempted and attempted
+            const unattempted = availableQuestions.filter((q: any) => !attemptedQuestionIds.has(q.id));
+            const attempted = availableQuestions.filter((q: any) => attemptedQuestionIds.has(q.id));
+            
+            // Prioritize unattempted
+            const shuffledUnattempted = [...unattempted].sort(() => Math.random() - 0.5);
+            
+            if (shuffledUnattempted.length >= questionsForTopic) {
+               shuffled = shuffledUnattempted;
+            } else {
+               // Fill remainder with attempted
+               const shuffledAttempted = [...attempted].sort(() => Math.random() - 0.5);
+               shuffled = [...shuffledUnattempted, ...shuffledAttempted];
+            }
+        } else {
+            shuffled = [...availableQuestions].sort(() => Math.random() - 0.5);
+        }
+
         const selected = shuffled.slice(0, Math.min(questionsForTopic, shuffled.length));
-
+        
+        selected.forEach((q: any) => globalSelectedIds.add(q.id));
         selectedQuestions.push(...selected);
       });
 
       // If we don't have enough questions, add more randomly
       if (selectedQuestions.length < totalQuestions) {
         const remaining = totalQuestions - selectedQuestions.length;
+        
+        // Build pool available from all questions not yet selected
         const allAvailable = allQuestions.filter(
-          (q: any) => !selectedQuestions.find((sq) => sq.id === q.id)
+          (q: any) => !globalSelectedIds.has(q.id)
         );
-        const shuffled = [...allAvailable].sort(() => Math.random() - 0.5);
-        selectedQuestions.push(...shuffled.slice(0, remaining));
+        
+        let shuffledPool: any[] = [];
+        
+        if (excludeAttempts && attemptedQuestionIds.size > 0) {
+             const unattempted = allAvailable.filter((q: any) => !attemptedQuestionIds.has(q.id));
+             const attempted = allAvailable.filter((q: any) => attemptedQuestionIds.has(q.id));
+             
+             shuffledPool = [...unattempted].sort(() => Math.random() - 0.5);
+             if (shuffledPool.length < remaining) {
+                 const remainderAttempts = [...attempted].sort(() => Math.random() - 0.5);
+                 shuffledPool = [...shuffledPool, ...remainderAttempts];
+             }
+        } else {
+             shuffledPool = [...allAvailable].sort(() => Math.random() - 0.5);
+        }
+
+        const fallbackSelected = shuffledPool.slice(0, remaining);
+        fallbackSelected.forEach((q: any) => globalSelectedIds.add(q.id));
+        selectedQuestions.push(...fallbackSelected);
       }
 
       // Shuffle final selection and transform data
