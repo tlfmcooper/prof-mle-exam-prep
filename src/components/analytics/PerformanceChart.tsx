@@ -27,6 +27,15 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
   const maxQuestions = Math.max(...data.map(d => d.questions_attempted));
   const questionsDomain = [0, Math.ceil(maxQuestions * 1.1)]; // Add 10% padding
 
+  // Debug logging
+  console.log('Performance Chart Data:', {
+    data,
+    maxQuestions,
+    questionsDomain,
+    firstPoint: data[0],
+    lastPoint: data[data.length - 1]
+  });
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
