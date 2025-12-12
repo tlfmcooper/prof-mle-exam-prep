@@ -388,7 +388,7 @@ export default function Practice() {
 
       {/* Header */}
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex items-center justify-between gap-2">
             <Link to="/dashboard">
               <Button variant="ghost" size="sm">
@@ -411,7 +411,7 @@ export default function Practice() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <QuestionCard
           key={currentQuestion.id} // Force re-mount to reset internal state
           question={currentQuestion}
@@ -422,7 +422,7 @@ export default function Practice() {
         />
 
         {/* Navigation */}
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           <Button
             variant="outline"
             onClick={handlePrevious}
@@ -452,7 +452,7 @@ export default function Practice() {
         </div>
 
         {/* Progress Bar */}
-        <div className="mt-8">
+        <div className="mt-2">
           <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
             <span>Progress</span>
             <span>{Math.round(((currentQuestionIndex + 1) / currentQuestions.length) * 100)}%</span>

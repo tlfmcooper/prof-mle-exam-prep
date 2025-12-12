@@ -88,10 +88,10 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
         const { data: subtopics } = await supabase
           .from('topics')
           .select('id')
-          .in('parent_topic_id', filters.topicIds);
+          .in('parent_topic_id', filters.topicIds) as any;
 
         if (subtopics && subtopics.length > 0) {
-          expandedTopicIds = [...expandedTopicIds, ...subtopics.map(t => t.id)];
+          expandedTopicIds = [...expandedTopicIds, ...subtopics.map((t: any) => t.id)];
         }
 
         // 2. Add mapped orphan topics for each requested topic

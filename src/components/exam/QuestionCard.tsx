@@ -63,7 +63,7 @@ export function QuestionCard({
 
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className="p-3 pb-2">
         <div className="flex items-center justify-between">
           {questionNumber && (
             <span className="text-sm text-muted-foreground">Question {questionNumber}</span>
@@ -74,7 +74,7 @@ export function QuestionCard({
             </span>
           )}
           </div>
-        <CardTitle className="text-lg font-medium mt-2">
+        <CardTitle className="text-base font-medium mt-1 leading-tight">
           {question.question_text}
         </CardTitle>
         {isMultipleSelect && (
@@ -84,12 +84,12 @@ export function QuestionCard({
         )}
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-1.5 p-3 pt-0">
         {question.options.map((option) => {
           const isSelected = selected.includes(option.id);
           const isCorrectOption = option.is_correct;
 
-          let optionStyle = 'border-2 p-4 rounded-lg cursor-pointer transition-all';
+          let optionStyle = 'border p-2 rounded-lg cursor-pointer transition-all';
 
           if (showExplanation) {
             if (isCorrectOption) {
@@ -111,8 +111,8 @@ export function QuestionCard({
               className={optionStyle}
               onClick={() => handleSelectOption(option.id)}
             >
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center font-semibold text-sm">
+              <div className="flex items-start gap-2">
+                <div className="flex-shrink-0 w-5 h-5 rounded-full border flex items-center justify-center font-semibold text-xs">
                   {option.id}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export function QuestionCard({
       
       {/* Ask AI Button in Footer (Always visible if onAskAI provided) */}
       {onAskAI && (
-        <CardFooter className={!showExplanation ? "pt-0" : ""}>
+        <CardFooter className={`p-3 pt-0 ${!showExplanation ? "pt-0" : ""}`}>
            <Button 
             variant="outline" 
             size="sm" 
