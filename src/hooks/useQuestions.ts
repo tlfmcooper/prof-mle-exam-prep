@@ -81,10 +81,20 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
       }
 
       if (filters?.topicIds && filters.topicIds.length > 0) {
-        // Expand topic IDs to include mapped orphan topics
+        // Expand topic IDs to include mapped orphan topics AND subtopics
         let expandedTopicIds = [...filters.topicIds];
 
-        // Add mapped orphan topics for each requested topic
+        // 1. Fetch subtopics for the selected topics
+        const { data: subtopics } = await supabase
+          .from('topics')
+          .select('id')
+          .in('parent_topic_id', filters.topicIds);
+
+        if (subtopics && subtopics.length > 0) {
+          expandedTopicIds = [...expandedTopicIds, ...subtopics.map(t => t.id)];
+        }
+
+        // 2. Add mapped orphan topics for each requested topic
         filters.topicIds.forEach(topicId => {
           const mappedIds = TOPIC_MAPPINGS[topicId] || [];
           expandedTopicIds = [...expandedTopicIds, ...mappedIds];
