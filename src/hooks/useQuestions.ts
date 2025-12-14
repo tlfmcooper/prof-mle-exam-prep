@@ -245,7 +245,7 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
       return shuffledQuestions as Question[];
     },
     retry: 1,
-    staleTime: 0, // Don't cache - we want fresh random selection each time
+    staleTime: Infinity, // Keep data fresh for the lifetime of the component
     gcTime: 0,
   });
 }
@@ -494,7 +494,7 @@ export function useExamQuestions(totalQuestions = 50, userId?: string, excludeAt
 
       return shuffledQuestions as Question[];
     },
-    staleTime: 0, // Always fetch fresh for each exam
+    staleTime: Infinity, // Keep data fresh for the lifetime of the component
     gcTime: 0, // Don't cache exam questions (renamed from cacheTime in React Query v5)
   });
 }
