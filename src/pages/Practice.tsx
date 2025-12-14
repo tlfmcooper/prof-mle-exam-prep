@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuestions } from '@/hooks/useQuestions';
 import { useSubmitAttempt } from '@/hooks/useAttempts';
@@ -121,8 +122,10 @@ export default function Practice() {
         time_spent_seconds: timeSpent,
         confidence_level: 3, // Default
       });
+      console.log('[Practice] Successfully submitted answer for question:', currentQuestion.id);
     } catch (error) {
-      // Silently fail - user can continue practicing
+      console.error('[Practice] Failed to submit answer:', error);
+      toast.error('Failed to save answer. Please check your connection.');
     }
 
     // Reset timer for next question

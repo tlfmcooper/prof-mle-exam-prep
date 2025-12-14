@@ -273,6 +273,7 @@ export function useRecentActivity(userId?: string, days = 7) {
 
 /**
  * Hook to calculate study streak
+ * Counts both formal study sessions AND practice attempts
  */
 export function useStudyStreak(userId?: string) {
   return useQuery({
@@ -280,23 +281,43 @@ export function useStudyStreak(userId?: string) {
     queryFn: async () => {
       if (!userId) return { current_streak: 0, longest_streak: 0, last_study_date: null };
 
-      // Get all sessions ordered by date
-      const { data: sessions, error } = await supabase
+      // Get all study sessions
+      const { data: sessions, error: sessionsError } = await supabase
         .from('study_sessions')
         .select('started_at')
-        .eq('user_id', userId)
-        .order('started_at', { ascending: false });
+        .eq('user_id', userId);
 
-      if (error) throw error;
+      if (sessionsError) throw sessionsError;
 
-      if (!sessions || sessions.length === 0) {
+      // Also get all practice attempts to count practice days
+      const { data: attempts, error: attemptsError } = await supabase
+        .from('user_attempts')
+        .select('attempted_at')
+        .eq('user_id', userId);
+
+      if (attemptsError) throw attemptsError;
+
+      // Combine all activity dates
+      const allDates: string[] = [];
+      
+      if (sessions) {
+        sessions.forEach((s: any) => {
+          allDates.push(new Date(s.started_at).toDateString());
+        });
+      }
+      
+      if (attempts) {
+        attempts.forEach((a: any) => {
+          allDates.push(new Date(a.attempted_at).toDateString());
+        });
+      }
+
+      if (allDates.length === 0) {
         return { current_streak: 0, longest_streak: 0, last_study_date: null };
       }
 
-      // Group sessions by date
-      const studyDates = new Set(
-        sessions.map((s: any) => new Date(s.started_at).toDateString())
-      );
+      // Get unique dates
+      const studyDates = new Set(allDates);
 
       const sortedDates = Array.from(studyDates)
         .map((d) => new Date(d))

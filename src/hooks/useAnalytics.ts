@@ -12,6 +12,37 @@ import {
 } from '@/lib/types/analytics';
 
 /**
+ * Helper function to fetch all user attempts with pagination
+ * Supabase has a default limit of 1000 rows per request
+ */
+async function fetchAllUserAttemptsWithQuestions(userId: string): Promise<any[]> {
+  const allAttempts: any[] = [];
+  const pageSize = 1000;
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('user_attempts')
+      .select('*, question:questions(*)')
+      .eq('user_id', userId)
+      .range(offset, offset + pageSize - 1);
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      allAttempts.push(...data);
+      offset += pageSize;
+      hasMore = data.length === pageSize;
+    } else {
+      hasMore = false;
+    }
+  }
+
+  return allAttempts;
+}
+
+/**
  * Main analytics hook - fetches all performance metrics for a user
  */
 export function useUserAnalytics(userId?: string) {
@@ -20,14 +51,9 @@ export function useUserAnalytics(userId?: string) {
     queryFn: async () => {
       if (!userId) return null;
 
-      // Fetch all user attempts with questions
-      const { data: attempts, error: attemptsError } = await supabase
-        .from('user_attempts')
-        .select('*, question:questions(*)')
-        .eq('user_id', userId);
-
-      if (attemptsError) throw attemptsError;
-      if (!attempts) return null;
+      // Fetch all user attempts with questions using pagination
+      const attempts = await fetchAllUserAttemptsWithQuestions(userId);
+      if (!attempts || attempts.length === 0) return null;
 
       // Get total questions count
       const { count: totalQuestions } = await supabase

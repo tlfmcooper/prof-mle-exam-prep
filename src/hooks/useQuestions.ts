@@ -51,7 +51,8 @@ export function useQuestions(filters?: QuestionFilters, userId?: string, exclude
         const { data: attempts, error: attemptsError } = await supabase
           .from('user_attempts')
           .select('question_id')
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .limit(10000);
         
         if (attemptsError) throw attemptsError;
         if (attempts) {
@@ -357,7 +358,8 @@ export function useExamQuestions(totalQuestions = 50, userId?: string, excludeAt
         const { data: attempts, error: attemptsError } = await supabase
           .from('user_attempts')
           .select('question_id')
-          .eq('user_id', userId);
+          .eq('user_id', userId)
+          .limit(10000);
         
         if (attemptsError) throw attemptsError;
         if (attempts) {

@@ -73,16 +73,8 @@ export function useTopicStats(userId?: string) {
 
       if (questionsError) throw questionsError;
 
-      // Get user attempts
-      const { data: attempts, error: attemptsError } = await supabase
-        .from('user_attempts')
-        .select(`
-          question_id,
-          is_correct
-        `)
-        .eq('user_id', userId);
-
-      if (attemptsError) throw attemptsError;
+      // Get ALL user attempts using pagination helper
+      const attempts = await fetchAllUserAttempts(userId);
 
       // Calculate stats for each main topic
       const stats: TopicStats[] = topics.map((topic: any) => {
@@ -151,7 +143,7 @@ export function useTopicStats(userId?: string) {
       return stats.filter((stat: TopicStats) => OFFICIAL_TOPIC_NAMES.includes(stat.topic_name));
     },
     enabled: !!userId,
-    staleTime: 60 * 1000, // 1 minute
+    staleTime: 0, // Always refetch when invalidated to ensure fresh data
   });
 }
 
@@ -219,6 +211,37 @@ export function useTopicQuestions(topicId: string, includeSubtopics = true) {
 }
 
 /**
+ * Helper function to fetch all user attempts with pagination
+ * Supabase has a default limit of 1000 rows per request
+ */
+async function fetchAllUserAttempts(userId: string): Promise<{ question_id: string; is_correct: boolean }[]> {
+  const allAttempts: { question_id: string; is_correct: boolean }[] = [];
+  const pageSize = 1000;
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('user_attempts')
+      .select('question_id, is_correct')
+      .eq('user_id', userId)
+      .range(offset, offset + pageSize - 1);
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      allAttempts.push(...data);
+      offset += pageSize;
+      hasMore = data.length === pageSize;
+    } else {
+      hasMore = false;
+    }
+  }
+
+  return allAttempts;
+}
+
+/**
  * Hook to get overall progress across all topics
  */
 export function useOverallProgress(userId?: string) {
@@ -227,6 +250,8 @@ export function useOverallProgress(userId?: string) {
     queryFn: async () => {
       if (!userId) return null;
 
+      console.log('[useOverallProgress] Fetching progress for user:', userId);
+
       // Get total questions count
       const { count: totalQuestions, error: questionsError } = await supabase
         .from('questions')
@@ -234,13 +259,8 @@ export function useOverallProgress(userId?: string) {
 
       if (questionsError) throw questionsError;
 
-      // Get user attempts
-      const { data: attempts, error: attemptsError } = await supabase
-        .from('user_attempts')
-        .select('question_id, is_correct')
-        .eq('user_id', userId);
-
-      if (attemptsError) throw attemptsError;
+      // Get ALL user attempts using pagination
+      const attempts = await fetchAllUserAttempts(userId);
 
       // Calculate unique questions attempted
       const uniqueQuestionsAttempted = new Set(
@@ -249,6 +269,13 @@ export function useOverallProgress(userId?: string) {
 
       const totalAttempts = attempts.length;
       const correctAttempts = attempts.filter((a: any) => a.is_correct).length;
+
+      console.log('[useOverallProgress] Stats:', {
+        totalQuestions,
+        uniqueQuestionsAttempted,
+        totalAttempts,
+        correctAttempts
+      });
 
       return {
         total_questions: totalQuestions || 0,
@@ -261,6 +288,6 @@ export function useOverallProgress(userId?: string) {
       };
     },
     enabled: !!userId,
-    staleTime: 60 * 1000, // 1 minute
+    staleTime: 0, // Always refetch when invalidated to ensure fresh data
   });
 }

@@ -67,12 +67,32 @@ export function useSubmitAttempt() {
       if (error) throw error;
       return data as UserAttempt;
     },
-    onSuccess: (data) => {
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ['user_attempts', data.user_id] });
-      queryClient.invalidateQueries({ queryKey: ['question_attempts', data.question_id] });
-      queryClient.invalidateQueries({ queryKey: ['user_stats', data.user_id] });
-      queryClient.invalidateQueries({ queryKey: ['topic_stats', data.user_id] });
+    onSuccess: async (data) => {
+      console.log('[useSubmitAttempt] Successfully saved attempt:', data.id);
+      
+      const keys = [
+        ['user_attempts', data.user_id],
+        ['question_attempts', data.question_id],
+        ['user_stats', data.user_id],
+        ['topic_stats', data.user_id],
+        ['overall_progress', data.user_id],
+        ['analytics', data.user_id],
+        ['questions'], // Invalidate questions to ensure excludeAttempts works correctly
+        ['exam-questions'], // Invalidate exam questions as well
+      ];
+
+      // Mark all related queries stale and force refetch
+      await Promise.all(keys.map((key) => 
+        queryClient.invalidateQueries({ 
+          queryKey: key,
+          refetchType: 'all' // Force refetch even if not active
+        })
+      ));
+      
+      console.log('[useSubmitAttempt] Invalidated all related queries');
+    },
+    onError: (error) => {
+      console.error('[useSubmitAttempt] Failed to submit attempt:', error);
     },
   });
 }
@@ -83,16 +103,33 @@ export function useUserStats(userId?: string) {
     queryFn: async () => {
       if (!userId) return null;
 
-      const { data, error } = await supabase
-        .from('user_attempts')
-        .select('is_correct, time_spent_seconds')
-        .eq('user_id', userId);
+      // Paginate through all attempts since Supabase has a 1000 row limit
+      const allAttempts: { is_correct: boolean; time_spent_seconds: number }[] = [];
+      const pageSize = 1000;
+      let offset = 0;
+      let hasMore = true;
 
-      if (error) throw error;
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('user_attempts')
+          .select('is_correct, time_spent_seconds')
+          .eq('user_id', userId)
+          .range(offset, offset + pageSize - 1);
 
-      const totalAttempts = data.length;
-      const totalCorrect = data.filter((a: any) => a.is_correct).length;
-      const totalTime = data.reduce((sum: number, a: any) => sum + (a.time_spent_seconds || 0), 0);
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          allAttempts.push(...data);
+          offset += pageSize;
+          hasMore = data.length === pageSize;
+        } else {
+          hasMore = false;
+        }
+      }
+
+      const totalAttempts = allAttempts.length;
+      const totalCorrect = allAttempts.filter((a: any) => a.is_correct).length;
+      const totalTime = allAttempts.reduce((sum: number, a: any) => sum + (a.time_spent_seconds || 0), 0);
 
       return {
         total_attempts: totalAttempts,
