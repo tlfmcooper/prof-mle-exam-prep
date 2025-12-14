@@ -289,13 +289,29 @@ export function useStudyStreak(userId?: string) {
 
       if (sessionsError) throw sessionsError;
 
-      // Also get all practice attempts to count practice days
-      const { data: attempts, error: attemptsError } = await supabase
-        .from('user_attempts')
-        .select('attempted_at')
-        .eq('user_id', userId);
+      // Fetch ALL practice attempts with pagination (Supabase limits to 1000 per request)
+      const allAttempts: { attempted_at: string }[] = [];
+      const pageSize = 1000;
+      let offset = 0;
+      let hasMore = true;
 
-      if (attemptsError) throw attemptsError;
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('user_attempts')
+          .select('attempted_at')
+          .eq('user_id', userId)
+          .range(offset, offset + pageSize - 1);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          allAttempts.push(...data);
+          offset += pageSize;
+          hasMore = data.length === pageSize;
+        } else {
+          hasMore = false;
+        }
+      }
 
       // Combine all activity dates
       const allDates: string[] = [];
@@ -306,11 +322,9 @@ export function useStudyStreak(userId?: string) {
         });
       }
       
-      if (attempts) {
-        attempts.forEach((a: any) => {
-          allDates.push(new Date(a.attempted_at).toDateString());
-        });
-      }
+      allAttempts.forEach((a: any) => {
+        allDates.push(new Date(a.attempted_at).toDateString());
+      });
 
       if (allDates.length === 0) {
         return { current_streak: 0, longest_streak: 0, last_study_date: null };
@@ -322,6 +336,9 @@ export function useStudyStreak(userId?: string) {
       const sortedDates = Array.from(studyDates)
         .map((d) => new Date(d))
         .sort((a, b) => b.getTime() - a.getTime());
+      
+      console.log('[useStudyStreak] Most recent study dates:', sortedDates.slice(0, 5).map(d => d.toDateString()));
+      console.log('[useStudyStreak] Today is:', new Date().toDateString());
 
       // Calculate current streak
       let currentStreak = 0;
