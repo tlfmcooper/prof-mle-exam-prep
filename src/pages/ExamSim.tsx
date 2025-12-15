@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useExamQuestions } from '@/hooks/useQuestions';
@@ -20,20 +20,31 @@ export default function ExamSim() {
   const [searchParams, setSearchParams] = useSearchParams();
   // Randomly select between 50 and 60 questions
   const [targetQuestionCount] = useState(() => Math.floor(Math.random() * 11) + 50);
-  const { data: fetchedQuestions, isLoading } = useExamQuestions(targetQuestionCount, user?.id, true);
+  
+  // Store questions in a ref to prevent them from EVER changing during the exam
+  // Using ref instead of state because we don't want setting this to trigger re-renders
+  const frozenQuestionsRef = useRef<any[] | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  
+  // Only fetch questions if exam hasn't started yet
+  // Once exam starts, we use frozenQuestionsRef and don't need this query anymore
+  const { data: fetchedQuestions, isLoading } = useExamQuestions(
+    targetQuestionCount, 
+    user?.id, 
+    !hasStarted // Disable query once exam starts - this prevents any refetching
+  );
+  
+  // Use frozen questions from ref once exam starts, otherwise use fetchedQuestions for preview
+  const questions = hasStarted && frozenQuestionsRef.current 
+    ? frozenQuestionsRef.current 
+    : fetchedQuestions;
+  
   const submitAttempt = useSubmitAttempt();
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const linkAttempt = useLinkAttemptToSession();
 
-  // Store questions in local state to prevent them from changing during the exam
-  const [examQuestions, setExamQuestions] = useState<typeof fetchedQuestions | null>(null);
-  
-  // Use examQuestions if exam has started, otherwise use fetchedQuestions
-  const questions = examQuestions || fetchedQuestions;
-
   // Exam state
-  const [hasStarted, setHasStarted] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
@@ -193,9 +204,11 @@ export default function ExamSim() {
   const handleStartExam = async () => {
     if (!user || !fetchedQuestions) return;
 
-    // IMPORTANT: Freeze the questions at the start of the exam
-    // This prevents questions from changing if the query refetches
-    setExamQuestions([...fetchedQuestions]);
+    // CRITICAL: Freeze the questions in a ref at the start of the exam
+    // This creates a deep copy that will NEVER change, regardless of React Query
+    frozenQuestionsRef.current = JSON.parse(JSON.stringify(fetchedQuestions));
+    
+    console.log('[ExamSim] Froze', frozenQuestionsRef.current.length, 'questions for exam');
 
     const now = new Date();
     setStartTime(now);
@@ -211,7 +224,7 @@ export default function ExamSim() {
       const session = await createSession.mutateAsync({
         user_id: user.id,
         session_type: 'timed_exam',
-        total_questions: fetchedQuestions.length,
+        total_questions: frozenQuestionsRef.current.length,
         correct_answers: 0,
         score_percentage: 0,
       });
@@ -219,8 +232,8 @@ export default function ExamSim() {
       setSessionId(session.id);
 
       // Track start time for first question
-      if (fetchedQuestions[0]) {
-        setQuestionStartTimes({ [fetchedQuestions[0].id]: now });
+      if (frozenQuestionsRef.current[0]) {
+        setQuestionStartTimes({ [frozenQuestionsRef.current[0].id]: now });
       }
     } catch (error) {
       // Continue even if session creation fails

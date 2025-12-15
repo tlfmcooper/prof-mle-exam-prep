@@ -497,6 +497,9 @@ export function useExamQuestions(totalQuestions = 50, userId?: string, excludeAt
       return shuffledQuestions as Question[];
     },
     staleTime: Infinity, // Keep data fresh for the lifetime of the component
-    gcTime: 0, // Don't cache exam questions (renamed from cacheTime in React Query v5)
+    gcTime: Infinity, // Keep cached data so it doesn't refetch on re-mount
+    refetchOnMount: false, // Don't refetch when component mounts
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnReconnect: false, // Don't refetch on network reconnect
   });
 }
