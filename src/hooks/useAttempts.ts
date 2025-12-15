@@ -70,6 +70,8 @@ export function useSubmitAttempt() {
     onSuccess: async (data) => {
       console.log('[useSubmitAttempt] Successfully saved attempt:', data.id);
       
+      // Only invalidate stats-related queries, NOT questions
+      // Questions should NOT be invalidated mid-session to prevent exam questions from changing
       const keys = [
         ['user_attempts', data.user_id],
         ['question_attempts', data.question_id],
@@ -77,8 +79,9 @@ export function useSubmitAttempt() {
         ['topic_stats', data.user_id],
         ['overall_progress', data.user_id],
         ['analytics', data.user_id],
-        ['questions'], // Invalidate questions to ensure excludeAttempts works correctly
-        ['exam-questions'], // Invalidate exam questions as well
+        ['study_streak', data.user_id],
+        // NOTE: Do NOT invalidate ['questions'] or ['exam-questions'] here
+        // as it causes the exam to refresh mid-session
       ];
 
       // Mark all related queries stale and force refetch
