@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Send, MessageCircle, Settings, ExternalLink, Loader2, Maximize2, Minimize2, Mic, Square, Volume2, VolumeX } from 'lucide-react';
+import { X, Send, MessageCircle, Settings, ExternalLink, Loader2, Maximize2, Minimize2, Mic, Square, Volume2, VolumeX, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
@@ -161,6 +161,28 @@ export function ExamChatWidget({
     window.speechSynthesis.speak(utterance);
   };
 
+  const handleDownloadChat = () => {
+    if (messages.length === 0) return;
+
+    const chatContent = messages
+      .map(m => {
+        const role = m.role === 'user' ? 'User' : 'Smart Tutor';
+        const date = new Date(m.timestamp).toLocaleTimeString();
+        return `[${date}] ${role}:\n${m.text}\n`;
+      })
+      .join('\n' + '-'.repeat(50) + '\n\n');
+
+    const blob = new Blob([chatContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-session-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleSend = async () => {
     if (!input.trim() || !apiKey) return;
 
@@ -282,6 +304,9 @@ export function ExamChatWidget({
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" onClick={handleDownloadChat} title="Download Chat" disabled={messages.length === 0}>
+            <Download className="w-4 h-4" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => setShowKeyInput(!showKeyInput)} title="API Key Settings">
             <Settings className="w-4 h-4" />
           </Button>
@@ -341,59 +366,56 @@ export function ExamChatWidget({
             </p>
           </div>
         )}
-        {messages.map((msg, index) => (
-          <div
-            key={msg.id}
-            className={`flex animate-in fade-in slide-in-from-bottom-2 duration-300 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
+        {messages.map((msg, index) => {
+          if (msg.role === 'model' && !msg.text) return null;
+          return (
             <div
-              className={`max-w-[85%] rounded-lg p-3.5 text-sm relative group break-words shadow-sm ${
-                msg.role === 'user'
-                  ? 'bg-primary text-primary-foreground rounded-br-sm'
-                  : 'bg-muted text-foreground rounded-bl-sm'
-              }`}
+              key={msg.id}
+              className={`flex animate-in fade-in slide-in-from-bottom-2 duration-300 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="markdown-body text-sm break-words overflow-auto">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline" />,
-                    p: ({node, ...props}) => <p {...props} className="mb-2 last:mb-0" />,
-                    ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 mb-2" />,
-                    ol: ({node, ...props}) => <ol {...props} className="list-decimal pl-4 mb-2" />,
-                    li: ({node, ...props}) => <li {...props} className="mb-1" />,
-                    code: ({node, ...props}) => <code {...props} className="bg-black/10 rounded px-1 py-0.5" />,
-                  }}
-                >
-                  {msg.text}
-                </ReactMarkdown>
-              </div>
-              {/* Audio button - shows on hover for completed messages */}
-              {msg.role === 'model' && msg.text && !(isStreaming && index === messages.length - 1) && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-7 w-7 bg-background/90 backdrop-blur-sm hover:bg-background shadow-sm"
-                  onClick={() => handleSpeak(msg.text, msg.id)}
-                  title={speakingId === msg.id ? "Stop reading" : "Read aloud"}
-                >
-                  {speakingId === msg.id ? (
-                    <VolumeX className="w-3.5 h-3.5" />
-                  ) : (
-                    <Volume2 className="w-3.5 h-3.5" />
-                  )}
-                </Button>
-              )}
-              {/* Typing indicator - shows while streaming the last message */}
-              {isStreaming && index === messages.length - 1 && msg.role === 'model' && (
-                <div className="inline-flex items-center ml-1">
-                  <span className="inline-block w-0.5 h-4 bg-primary animate-pulse"></span>
+              <div
+                className={`max-w-[85%] rounded-lg p-3.5 text-sm relative group break-words shadow-sm ${
+                  msg.role === 'user'
+                    ? 'bg-primary text-primary-foreground rounded-br-sm'
+                    : 'bg-muted text-foreground rounded-bl-sm'
+                }`}
+              >
+                <div className="markdown-body text-sm break-words overflow-auto">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline" />,
+                      p: ({node, ...props}) => <p {...props} className="mb-2 last:mb-0" />,
+                      ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 mb-2" />,
+                      ol: ({node, ...props}) => <ol {...props} className="list-decimal pl-4 mb-2" />,
+                      li: ({node, ...props}) => <li {...props} className="mb-1" />,
+                      code: ({node, ...props}) => <code {...props} className="bg-black/10 rounded px-1 py-0.5" />,
+                    }}
+                  >
+                    {msg.text}
+                  </ReactMarkdown>
                 </div>
-              )}
+                {/* Audio button - shows on hover for completed messages */}
+                {msg.role === 'model' && msg.text && !(isStreaming && index === messages.length - 1) && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-7 w-7 bg-background/90 backdrop-blur-sm hover:bg-background shadow-sm"
+                    onClick={() => handleSpeak(msg.text, msg.id)}
+                    title={speakingId === msg.id ? "Stop reading" : "Read aloud"}
+                  >
+                    {speakingId === msg.id ? (
+                      <VolumeX className="w-3.5 h-3.5" />
+                    ) : (
+                      <Volume2 className="w-3.5 h-3.5" />
+                    )}
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {isLoading && messages.length > 0 && !messages[messages.length - 1]?.text && (
           <div className="flex justify-start animate-in fade-in slide-in-from-left-2 duration-300">
             <div className="bg-muted rounded-lg p-3 flex items-center gap-2">
