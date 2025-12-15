@@ -20,11 +20,17 @@ export default function ExamSim() {
   const [searchParams, setSearchParams] = useSearchParams();
   // Randomly select between 50 and 60 questions
   const [targetQuestionCount] = useState(() => Math.floor(Math.random() * 11) + 50);
-  const { data: questions, isLoading } = useExamQuestions(targetQuestionCount, user?.id, true);
+  const { data: fetchedQuestions, isLoading } = useExamQuestions(targetQuestionCount, user?.id, true);
   const submitAttempt = useSubmitAttempt();
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const linkAttempt = useLinkAttemptToSession();
+
+  // Store questions in local state to prevent them from changing during the exam
+  const [examQuestions, setExamQuestions] = useState<typeof fetchedQuestions | null>(null);
+  
+  // Use examQuestions if exam has started, otherwise use fetchedQuestions
+  const questions = examQuestions || fetchedQuestions;
 
   // Exam state
   const [hasStarted, setHasStarted] = useState(false);
@@ -185,7 +191,11 @@ export default function ExamSim() {
   const activeResults = displayData.results;
 
   const handleStartExam = async () => {
-    if (!user || !questions) return;
+    if (!user || !fetchedQuestions) return;
+
+    // IMPORTANT: Freeze the questions at the start of the exam
+    // This prevents questions from changing if the query refetches
+    setExamQuestions([...fetchedQuestions]);
 
     const now = new Date();
     setStartTime(now);
@@ -201,7 +211,7 @@ export default function ExamSim() {
       const session = await createSession.mutateAsync({
         user_id: user.id,
         session_type: 'timed_exam',
-        total_questions: questions.length,
+        total_questions: fetchedQuestions.length,
         correct_answers: 0,
         score_percentage: 0,
       });
@@ -209,8 +219,8 @@ export default function ExamSim() {
       setSessionId(session.id);
 
       // Track start time for first question
-      if (questions[0]) {
-        setQuestionStartTimes({ [questions[0].id]: now });
+      if (fetchedQuestions[0]) {
+        setQuestionStartTimes({ [fetchedQuestions[0].id]: now });
       }
     } catch (error) {
       // Continue even if session creation fails
