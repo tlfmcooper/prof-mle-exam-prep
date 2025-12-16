@@ -122,7 +122,7 @@ export default function ExamSim() {
 
     const scored = questions.map((q) => {
       const selectedOptions = answers[q.id] || [];
-      const correctOptions = q.options.filter((o) => o.is_correct).map((o) => o.id);
+      const correctOptions = q.options.filter((o: any) => o.is_correct).map((o: any) => o.id);
       const isCorrect = checkAnswer(selectedOptions, correctOptions);
 
       return {
@@ -208,7 +208,7 @@ export default function ExamSim() {
     // This creates a deep copy that will NEVER change, regardless of React Query
     frozenQuestionsRef.current = JSON.parse(JSON.stringify(fetchedQuestions));
     
-    console.log('[ExamSim] Froze', frozenQuestionsRef.current.length, 'questions for exam');
+    console.log('[ExamSim] Froze', frozenQuestionsRef.current?.length, 'questions for exam');
 
     const now = new Date();
     setStartTime(now);
@@ -224,7 +224,7 @@ export default function ExamSim() {
       const session = await createSession.mutateAsync({
         user_id: user.id,
         session_type: 'timed_exam',
-        total_questions: frozenQuestionsRef.current.length,
+        total_questions: frozenQuestionsRef.current?.length || 0,
         correct_answers: 0,
         score_percentage: 0,
       });
@@ -232,7 +232,7 @@ export default function ExamSim() {
       setSessionId(session.id);
 
       // Track start time for first question
-      if (frozenQuestionsRef.current[0]) {
+      if (frozenQuestionsRef.current && frozenQuestionsRef.current[0]) {
         setQuestionStartTimes({ [frozenQuestionsRef.current[0].id]: now });
       }
     } catch (error) {
@@ -246,7 +246,7 @@ export default function ExamSim() {
     const questionStartTime = questionStartTimes[questionId] || new Date();
     const timeSpent = Math.floor((new Date().getTime() - questionStartTime.getTime()) / 1000);
 
-    const correctOptions = currentQuestion.options.filter((o) => o.is_correct).map((o) => o.id);
+    const correctOptions = currentQuestion.options.filter((o: any) => o.is_correct).map((o: any) => o.id);
     const isCorrect = checkAnswer(selectedOptions, correctOptions);
 
     // Save answer locally
@@ -337,7 +337,7 @@ export default function ExamSim() {
     const totalCorrect = Object.entries(answers).filter(([questionId, selected]) => {
       const question = questions.find((q) => q.id === questionId);
       if (!question) return false;
-      const correctOptions = question.options.filter((o) => o.is_correct).map((o) => o.id);
+      const correctOptions = question.options.filter((o: any) => o.is_correct).map((o: any) => o.id);
       return checkAnswer(selected, correctOptions);
     }).length;
 
